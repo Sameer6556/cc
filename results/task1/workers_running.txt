@@ -1,0 +1,12 @@
+# 2026-11-02T09:21:52Z  kubectl -n pipeline get pods -l job-name=teacher-label -o wide
+NAME                    READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+teacher-label-0-q8f89   1/1     Running   0          5s    10.42.0.13   k3d-cc-server-0   <none>           <none>
+teacher-label-1-hd9v9   1/1     Running   0          5s    10.42.0.14   k3d-cc-server-0   <none>           <none>
+teacher-label-2-f2tvr   1/1     Running   0          5s    10.42.0.16   k3d-cc-server-0   <none>           <none>
+teacher-label-3-h6gzb   1/1     Running   0          5s    10.42.0.15   k3d-cc-server-0   <none>           <none>
+
+# SHARD_INDEX / SHARD_COUNT seen by each Pod
+pod/teacher-label-0-q8f89: SHARD_INDEX=0 SHARD_COUNT=4
+pod/teacher-label-1-hd9v9: SHARD_INDEX=1 SHARD_COUNT=4
+pod/teacher-label-2-f2tvr: SHARD_INDEX=2 SHARD_COUNT=4
+pod/teacher-label-3-h6gzb: SHARD_INDEX=3 SHARD_COUNT=4

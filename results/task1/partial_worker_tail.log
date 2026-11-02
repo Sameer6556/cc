@@ -1,0 +1,800 @@
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-2-8zn2z/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-2-8zn2z/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-2-8zn2z/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-2-8zn2z/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-2-8zn2z/worker]     self.send(msg)
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-2-8zn2z/worker]     self.connect()
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-2-8zn2z/worker]     self.sock = self._create_connection(
+[pod/teacher-label-2-8zn2z/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-2-8zn2z/worker]     raise exceptions[0]
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-2-8zn2z/worker]     sock.connect(sa)
+[pod/teacher-label-2-8zn2z/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-2-8zn2z/worker] 
+[pod/teacher-label-2-8zn2z/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-2-8zn2z/worker] 
+[pod/teacher-label-2-8zn2z/worker] Traceback (most recent call last):
+[pod/teacher-label-2-8zn2z/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-2-8zn2z/worker]     main()
+[pod/teacher-label-2-8zn2z/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-2-8zn2z/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-2-8zn2z/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-2-8zn2z/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-2-8zn2z/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-2-8zn2z/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-2-8zn2z/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-2-8zn2z/worker]     response = self._open(req, data)
+[pod/teacher-label-2-8zn2z/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-2-8zn2z/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-2-8zn2z/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-2-8zn2z/worker]     result = func(*args)
+[pod/teacher-label-2-8zn2z/worker]              ^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-2-8zn2z/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-2-8zn2z/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-8zn2z/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-2-8zn2z/worker]     raise URLError(err)
+[pod/teacher-label-2-8zn2z/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-2-cd2sh/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-2-cd2sh/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-2-cd2sh/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-2-cd2sh/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-2-cd2sh/worker]     self.send(msg)
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-2-cd2sh/worker]     self.connect()
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-2-cd2sh/worker]     self.sock = self._create_connection(
+[pod/teacher-label-2-cd2sh/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-2-cd2sh/worker]     raise exceptions[0]
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-2-cd2sh/worker]     sock.connect(sa)
+[pod/teacher-label-2-cd2sh/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-2-cd2sh/worker] 
+[pod/teacher-label-2-cd2sh/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-2-cd2sh/worker] 
+[pod/teacher-label-2-cd2sh/worker] Traceback (most recent call last):
+[pod/teacher-label-2-cd2sh/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-2-cd2sh/worker]     main()
+[pod/teacher-label-2-cd2sh/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-2-cd2sh/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-2-cd2sh/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-2-cd2sh/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-2-cd2sh/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-2-cd2sh/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-2-cd2sh/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-2-cd2sh/worker]     response = self._open(req, data)
+[pod/teacher-label-2-cd2sh/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-2-cd2sh/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-2-cd2sh/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-2-cd2sh/worker]     result = func(*args)
+[pod/teacher-label-2-cd2sh/worker]              ^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-2-cd2sh/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-2-cd2sh/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-cd2sh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-2-cd2sh/worker]     raise URLError(err)
+[pod/teacher-label-2-cd2sh/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-0-pg589/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-0-pg589/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-0-pg589/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-0-pg589/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-0-pg589/worker]     self.send(msg)
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-0-pg589/worker]     self.connect()
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-0-pg589/worker]     self.sock = self._create_connection(
+[pod/teacher-label-0-pg589/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-0-pg589/worker]     raise exceptions[0]
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-0-pg589/worker]     sock.connect(sa)
+[pod/teacher-label-0-pg589/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-0-pg589/worker] 
+[pod/teacher-label-0-pg589/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-0-pg589/worker] 
+[pod/teacher-label-0-pg589/worker] Traceback (most recent call last):
+[pod/teacher-label-0-pg589/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-0-pg589/worker]     main()
+[pod/teacher-label-0-pg589/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-0-pg589/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-0-pg589/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-0-pg589/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-0-pg589/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-0-pg589/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-0-pg589/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-0-pg589/worker]     response = self._open(req, data)
+[pod/teacher-label-0-pg589/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-0-pg589/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-0-pg589/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-0-pg589/worker]     result = func(*args)
+[pod/teacher-label-0-pg589/worker]              ^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-0-pg589/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-0-pg589/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-pg589/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-0-pg589/worker]     raise URLError(err)
+[pod/teacher-label-0-pg589/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-0-q8f89/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-0-q8f89/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-0-q8f89/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-0-q8f89/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-0-q8f89/worker]     self.send(msg)
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-0-q8f89/worker]     self.connect()
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-0-q8f89/worker]     self.sock = self._create_connection(
+[pod/teacher-label-0-q8f89/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-0-q8f89/worker]     raise exceptions[0]
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-0-q8f89/worker]     sock.connect(sa)
+[pod/teacher-label-0-q8f89/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-0-q8f89/worker] 
+[pod/teacher-label-0-q8f89/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-0-q8f89/worker] 
+[pod/teacher-label-0-q8f89/worker] Traceback (most recent call last):
+[pod/teacher-label-0-q8f89/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-0-q8f89/worker]     main()
+[pod/teacher-label-0-q8f89/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-0-q8f89/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-0-q8f89/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-0-q8f89/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-0-q8f89/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-0-q8f89/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-0-q8f89/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-0-q8f89/worker]     response = self._open(req, data)
+[pod/teacher-label-0-q8f89/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-0-q8f89/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-0-q8f89/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-0-q8f89/worker]     result = func(*args)
+[pod/teacher-label-0-q8f89/worker]              ^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-0-q8f89/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-0-q8f89/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-q8f89/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-0-q8f89/worker]     raise URLError(err)
+[pod/teacher-label-0-q8f89/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-0-rdfcp/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-0-rdfcp/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-0-rdfcp/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-0-rdfcp/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-0-rdfcp/worker]     self.send(msg)
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-0-rdfcp/worker]     self.connect()
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-0-rdfcp/worker]     self.sock = self._create_connection(
+[pod/teacher-label-0-rdfcp/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-0-rdfcp/worker]     raise exceptions[0]
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-0-rdfcp/worker]     sock.connect(sa)
+[pod/teacher-label-0-rdfcp/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-0-rdfcp/worker] 
+[pod/teacher-label-0-rdfcp/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-0-rdfcp/worker] 
+[pod/teacher-label-0-rdfcp/worker] Traceback (most recent call last):
+[pod/teacher-label-0-rdfcp/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-0-rdfcp/worker]     main()
+[pod/teacher-label-0-rdfcp/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-0-rdfcp/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-0-rdfcp/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-0-rdfcp/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-0-rdfcp/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-0-rdfcp/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-0-rdfcp/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-0-rdfcp/worker]     response = self._open(req, data)
+[pod/teacher-label-0-rdfcp/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-0-rdfcp/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-0-rdfcp/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-0-rdfcp/worker]     result = func(*args)
+[pod/teacher-label-0-rdfcp/worker]              ^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-0-rdfcp/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-0-rdfcp/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-rdfcp/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-0-rdfcp/worker]     raise URLError(err)
+[pod/teacher-label-0-rdfcp/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-1-slwdq/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-1-slwdq/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-1-slwdq/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-1-slwdq/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-1-slwdq/worker]     self.send(msg)
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-1-slwdq/worker]     self.connect()
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-1-slwdq/worker]     self.sock = self._create_connection(
+[pod/teacher-label-1-slwdq/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-1-slwdq/worker]     raise exceptions[0]
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-1-slwdq/worker]     sock.connect(sa)
+[pod/teacher-label-1-slwdq/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-1-slwdq/worker] 
+[pod/teacher-label-1-slwdq/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-1-slwdq/worker] 
+[pod/teacher-label-1-slwdq/worker] Traceback (most recent call last):
+[pod/teacher-label-1-slwdq/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-1-slwdq/worker]     main()
+[pod/teacher-label-1-slwdq/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-1-slwdq/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-1-slwdq/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-1-slwdq/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-1-slwdq/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-1-slwdq/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-1-slwdq/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-1-slwdq/worker]     response = self._open(req, data)
+[pod/teacher-label-1-slwdq/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-1-slwdq/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-1-slwdq/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-1-slwdq/worker]     result = func(*args)
+[pod/teacher-label-1-slwdq/worker]              ^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-1-slwdq/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-1-slwdq/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-slwdq/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-1-slwdq/worker]     raise URLError(err)
+[pod/teacher-label-1-slwdq/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-3-9mfwg/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-3-9mfwg/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-3-9mfwg/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-3-9mfwg/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-3-9mfwg/worker]     self.send(msg)
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-3-9mfwg/worker]     self.connect()
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-3-9mfwg/worker]     self.sock = self._create_connection(
+[pod/teacher-label-3-9mfwg/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-3-9mfwg/worker]     raise exceptions[0]
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-3-9mfwg/worker]     sock.connect(sa)
+[pod/teacher-label-3-9mfwg/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-3-9mfwg/worker] 
+[pod/teacher-label-3-9mfwg/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-3-9mfwg/worker] 
+[pod/teacher-label-3-9mfwg/worker] Traceback (most recent call last):
+[pod/teacher-label-3-9mfwg/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-3-9mfwg/worker]     main()
+[pod/teacher-label-3-9mfwg/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-3-9mfwg/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-3-9mfwg/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-3-9mfwg/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-3-9mfwg/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-3-9mfwg/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-3-9mfwg/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-3-9mfwg/worker]     response = self._open(req, data)
+[pod/teacher-label-3-9mfwg/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-3-9mfwg/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-3-9mfwg/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-3-9mfwg/worker]     result = func(*args)
+[pod/teacher-label-3-9mfwg/worker]              ^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-3-9mfwg/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-3-9mfwg/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-9mfwg/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-3-9mfwg/worker]     raise URLError(err)
+[pod/teacher-label-3-9mfwg/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-3-pf6b7/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-3-pf6b7/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-3-pf6b7/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-3-pf6b7/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-3-pf6b7/worker]     self.send(msg)
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-3-pf6b7/worker]     self.connect()
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-3-pf6b7/worker]     self.sock = self._create_connection(
+[pod/teacher-label-3-pf6b7/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-3-pf6b7/worker]     raise exceptions[0]
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-3-pf6b7/worker]     sock.connect(sa)
+[pod/teacher-label-3-pf6b7/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-3-pf6b7/worker] 
+[pod/teacher-label-3-pf6b7/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-3-pf6b7/worker] 
+[pod/teacher-label-3-pf6b7/worker] Traceback (most recent call last):
+[pod/teacher-label-3-pf6b7/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-3-pf6b7/worker]     main()
+[pod/teacher-label-3-pf6b7/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-3-pf6b7/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-3-pf6b7/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-3-pf6b7/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-3-pf6b7/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-3-pf6b7/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-3-pf6b7/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-3-pf6b7/worker]     response = self._open(req, data)
+[pod/teacher-label-3-pf6b7/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-3-pf6b7/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-3-pf6b7/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-3-pf6b7/worker]     result = func(*args)
+[pod/teacher-label-3-pf6b7/worker]              ^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-3-pf6b7/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-3-pf6b7/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-pf6b7/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-3-pf6b7/worker]     raise URLError(err)
+[pod/teacher-label-3-pf6b7/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-3-h6gzb/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-3-h6gzb/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-3-h6gzb/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-3-h6gzb/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-3-h6gzb/worker]     self.send(msg)
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-3-h6gzb/worker]     self.connect()
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-3-h6gzb/worker]     self.sock = self._create_connection(
+[pod/teacher-label-3-h6gzb/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-3-h6gzb/worker]     raise exceptions[0]
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-3-h6gzb/worker]     sock.connect(sa)
+[pod/teacher-label-3-h6gzb/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-3-h6gzb/worker] 
+[pod/teacher-label-3-h6gzb/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-3-h6gzb/worker] 
+[pod/teacher-label-3-h6gzb/worker] Traceback (most recent call last):
+[pod/teacher-label-3-h6gzb/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-3-h6gzb/worker]     main()
+[pod/teacher-label-3-h6gzb/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-3-h6gzb/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-3-h6gzb/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-3-h6gzb/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-3-h6gzb/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-3-h6gzb/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-3-h6gzb/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-3-h6gzb/worker]     response = self._open(req, data)
+[pod/teacher-label-3-h6gzb/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-3-h6gzb/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-3-h6gzb/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-3-h6gzb/worker]     result = func(*args)
+[pod/teacher-label-3-h6gzb/worker]              ^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-3-h6gzb/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-3-h6gzb/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-h6gzb/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-3-h6gzb/worker]     raise URLError(err)
+[pod/teacher-label-3-h6gzb/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-0-7mlnh/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-0-7mlnh/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-0-7mlnh/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-0-7mlnh/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-0-7mlnh/worker]     self.send(msg)
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-0-7mlnh/worker]     self.connect()
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-0-7mlnh/worker]     self.sock = self._create_connection(
+[pod/teacher-label-0-7mlnh/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-0-7mlnh/worker]     raise exceptions[0]
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-0-7mlnh/worker]     sock.connect(sa)
+[pod/teacher-label-0-7mlnh/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-0-7mlnh/worker] 
+[pod/teacher-label-0-7mlnh/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-0-7mlnh/worker] 
+[pod/teacher-label-0-7mlnh/worker] Traceback (most recent call last):
+[pod/teacher-label-0-7mlnh/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-0-7mlnh/worker]     main()
+[pod/teacher-label-0-7mlnh/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-0-7mlnh/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-0-7mlnh/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-0-7mlnh/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-0-7mlnh/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-0-7mlnh/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-0-7mlnh/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-0-7mlnh/worker]     response = self._open(req, data)
+[pod/teacher-label-0-7mlnh/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-0-7mlnh/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-0-7mlnh/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-0-7mlnh/worker]     result = func(*args)
+[pod/teacher-label-0-7mlnh/worker]              ^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-0-7mlnh/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-0-7mlnh/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-0-7mlnh/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-0-7mlnh/worker]     raise URLError(err)
+[pod/teacher-label-0-7mlnh/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-1-9994f/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-1-9994f/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-1-9994f/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-1-9994f/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-1-9994f/worker]     self.send(msg)
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-1-9994f/worker]     self.connect()
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-1-9994f/worker]     self.sock = self._create_connection(
+[pod/teacher-label-1-9994f/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-1-9994f/worker]     raise exceptions[0]
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-1-9994f/worker]     sock.connect(sa)
+[pod/teacher-label-1-9994f/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-1-9994f/worker] 
+[pod/teacher-label-1-9994f/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-1-9994f/worker] 
+[pod/teacher-label-1-9994f/worker] Traceback (most recent call last):
+[pod/teacher-label-1-9994f/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-1-9994f/worker]     main()
+[pod/teacher-label-1-9994f/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-1-9994f/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-1-9994f/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-1-9994f/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-1-9994f/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-1-9994f/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-1-9994f/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-1-9994f/worker]     response = self._open(req, data)
+[pod/teacher-label-1-9994f/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-1-9994f/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-1-9994f/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-1-9994f/worker]     result = func(*args)
+[pod/teacher-label-1-9994f/worker]              ^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-1-9994f/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-1-9994f/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-9994f/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-1-9994f/worker]     raise URLError(err)
+[pod/teacher-label-1-9994f/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-2-f2tvr/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-2-f2tvr/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-2-f2tvr/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-2-f2tvr/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-2-f2tvr/worker]     self.send(msg)
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-2-f2tvr/worker]     self.connect()
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-2-f2tvr/worker]     self.sock = self._create_connection(
+[pod/teacher-label-2-f2tvr/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-2-f2tvr/worker]     raise exceptions[0]
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-2-f2tvr/worker]     sock.connect(sa)
+[pod/teacher-label-2-f2tvr/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-2-f2tvr/worker] 
+[pod/teacher-label-2-f2tvr/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-2-f2tvr/worker] 
+[pod/teacher-label-2-f2tvr/worker] Traceback (most recent call last):
+[pod/teacher-label-2-f2tvr/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-2-f2tvr/worker]     main()
+[pod/teacher-label-2-f2tvr/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-2-f2tvr/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-2-f2tvr/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-2-f2tvr/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-2-f2tvr/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-2-f2tvr/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-2-f2tvr/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-2-f2tvr/worker]     response = self._open(req, data)
+[pod/teacher-label-2-f2tvr/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-2-f2tvr/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-2-f2tvr/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-2-f2tvr/worker]     result = func(*args)
+[pod/teacher-label-2-f2tvr/worker]              ^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-2-f2tvr/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-2-f2tvr/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-f2tvr/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-2-f2tvr/worker]     raise URLError(err)
+[pod/teacher-label-2-f2tvr/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-2-zdgzv/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-2-zdgzv/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-2-zdgzv/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-2-zdgzv/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-2-zdgzv/worker]     self.send(msg)
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-2-zdgzv/worker]     self.connect()
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-2-zdgzv/worker]     self.sock = self._create_connection(
+[pod/teacher-label-2-zdgzv/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-2-zdgzv/worker]     raise exceptions[0]
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-2-zdgzv/worker]     sock.connect(sa)
+[pod/teacher-label-2-zdgzv/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-2-zdgzv/worker] 
+[pod/teacher-label-2-zdgzv/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-2-zdgzv/worker] 
+[pod/teacher-label-2-zdgzv/worker] Traceback (most recent call last):
+[pod/teacher-label-2-zdgzv/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-2-zdgzv/worker]     main()
+[pod/teacher-label-2-zdgzv/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-2-zdgzv/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-2-zdgzv/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-2-zdgzv/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-2-zdgzv/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-2-zdgzv/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-2-zdgzv/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-2-zdgzv/worker]     response = self._open(req, data)
+[pod/teacher-label-2-zdgzv/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-2-zdgzv/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-2-zdgzv/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-2-zdgzv/worker]     result = func(*args)
+[pod/teacher-label-2-zdgzv/worker]              ^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-2-zdgzv/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-2-zdgzv/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-2-zdgzv/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-2-zdgzv/worker]     raise URLError(err)
+[pod/teacher-label-2-zdgzv/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-3-z6ghk/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-3-z6ghk/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-3-z6ghk/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-3-z6ghk/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-3-z6ghk/worker]     self.send(msg)
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-3-z6ghk/worker]     self.connect()
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-3-z6ghk/worker]     self.sock = self._create_connection(
+[pod/teacher-label-3-z6ghk/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-3-z6ghk/worker]     raise exceptions[0]
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-3-z6ghk/worker]     sock.connect(sa)
+[pod/teacher-label-3-z6ghk/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-3-z6ghk/worker] 
+[pod/teacher-label-3-z6ghk/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-3-z6ghk/worker] 
+[pod/teacher-label-3-z6ghk/worker] Traceback (most recent call last):
+[pod/teacher-label-3-z6ghk/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-3-z6ghk/worker]     main()
+[pod/teacher-label-3-z6ghk/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-3-z6ghk/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-3-z6ghk/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-3-z6ghk/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-3-z6ghk/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-3-z6ghk/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-3-z6ghk/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-3-z6ghk/worker]     response = self._open(req, data)
+[pod/teacher-label-3-z6ghk/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-3-z6ghk/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-3-z6ghk/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-3-z6ghk/worker]     result = func(*args)
+[pod/teacher-label-3-z6ghk/worker]              ^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-3-z6ghk/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-3-z6ghk/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-3-z6ghk/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-3-z6ghk/worker]     raise URLError(err)
+[pod/teacher-label-3-z6ghk/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-1-8wbsz/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-1-8wbsz/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-1-8wbsz/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-1-8wbsz/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-1-8wbsz/worker]     self.send(msg)
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-1-8wbsz/worker]     self.connect()
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-1-8wbsz/worker]     self.sock = self._create_connection(
+[pod/teacher-label-1-8wbsz/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-1-8wbsz/worker]     raise exceptions[0]
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-1-8wbsz/worker]     sock.connect(sa)
+[pod/teacher-label-1-8wbsz/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-1-8wbsz/worker] 
+[pod/teacher-label-1-8wbsz/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-1-8wbsz/worker] 
+[pod/teacher-label-1-8wbsz/worker] Traceback (most recent call last):
+[pod/teacher-label-1-8wbsz/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-1-8wbsz/worker]     main()
+[pod/teacher-label-1-8wbsz/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-1-8wbsz/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-1-8wbsz/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-1-8wbsz/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-1-8wbsz/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-1-8wbsz/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-1-8wbsz/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-1-8wbsz/worker]     response = self._open(req, data)
+[pod/teacher-label-1-8wbsz/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-1-8wbsz/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-1-8wbsz/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-1-8wbsz/worker]     result = func(*args)
+[pod/teacher-label-1-8wbsz/worker]              ^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-1-8wbsz/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-1-8wbsz/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-8wbsz/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-1-8wbsz/worker]     raise URLError(err)
+[pod/teacher-label-1-8wbsz/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1344, in do_open
+[pod/teacher-label-1-hd9v9/worker]     h.request(req.get_method(), req.selector, req.data, headers,
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1386, in request
+[pod/teacher-label-1-hd9v9/worker]     self._send_request(method, url, body, headers, encode_chunked)
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1432, in _send_request
+[pod/teacher-label-1-hd9v9/worker]     self.endheaders(body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1381, in endheaders
+[pod/teacher-label-1-hd9v9/worker]     self._send_output(message_body, encode_chunked=encode_chunked)
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1141, in _send_output
+[pod/teacher-label-1-hd9v9/worker]     self.send(msg)
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1085, in send
+[pod/teacher-label-1-hd9v9/worker]     self.connect()
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/http/client.py", line 1051, in connect
+[pod/teacher-label-1-hd9v9/worker]     self.sock = self._create_connection(
+[pod/teacher-label-1-hd9v9/worker]                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/socket.py", line 865, in create_connection
+[pod/teacher-label-1-hd9v9/worker]     raise exceptions[0]
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/socket.py", line 850, in create_connection
+[pod/teacher-label-1-hd9v9/worker]     sock.connect(sa)
+[pod/teacher-label-1-hd9v9/worker] ConnectionRefusedError: [Errno 111] Connection refused
+[pod/teacher-label-1-hd9v9/worker] 
+[pod/teacher-label-1-hd9v9/worker] During handling of the above exception, another exception occurred:
+[pod/teacher-label-1-hd9v9/worker] 
+[pod/teacher-label-1-hd9v9/worker] Traceback (most recent call last):
+[pod/teacher-label-1-hd9v9/worker]   File "/app/worker.py", line 127, in <module>
+[pod/teacher-label-1-hd9v9/worker]     main()
+[pod/teacher-label-1-hd9v9/worker]   File "/app/worker.py", line 105, in main
+[pod/teacher-label-1-hd9v9/worker]     reply, meta = teacher.generate(ollama_url, teacher.build_prompt(template, rec['text']),
+[pod/teacher-label-1-hd9v9/worker]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/app/teacher.py", line 52, in generate
+[pod/teacher-label-1-hd9v9/worker]     with urllib.request.urlopen(req, timeout=timeout) as resp:
+[pod/teacher-label-1-hd9v9/worker]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 215, in urlopen
+[pod/teacher-label-1-hd9v9/worker]     return opener.open(url, data, timeout)
+[pod/teacher-label-1-hd9v9/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 515, in open
+[pod/teacher-label-1-hd9v9/worker]     response = self._open(req, data)
+[pod/teacher-label-1-hd9v9/worker]                ^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 532, in _open
+[pod/teacher-label-1-hd9v9/worker]     result = self._call_chain(self.handle_open, protocol, protocol +
+[pod/teacher-label-1-hd9v9/worker]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 492, in _call_chain
+[pod/teacher-label-1-hd9v9/worker]     result = func(*args)
+[pod/teacher-label-1-hd9v9/worker]              ^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1373, in http_open
+[pod/teacher-label-1-hd9v9/worker]     return self.do_open(http.client.HTTPConnection, req)
+[pod/teacher-label-1-hd9v9/worker]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[pod/teacher-label-1-hd9v9/worker]   File "/usr/local/lib/python3.12/urllib/request.py", line 1347, in do_open
+[pod/teacher-label-1-hd9v9/worker]     raise URLError(err)
+[pod/teacher-label-1-hd9v9/worker] urllib.error.URLError: <urlopen error [Errno 111] Connection refused>
