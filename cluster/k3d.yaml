@@ -17,6 +17,14 @@ ports:
   - port: 127.0.0.1:30333:30333
     nodeFilters:
       - loadbalancer
+# Pull Docker Hub images through Google's public mirror first (avoids Docker Hub's anonymous rate
+# limit); containerd falls back to Docker Hub itself if the mirror does not have an image.
+registries:
+  config: |
+    mirrors:
+      "docker.io":
+        endpoint:
+          - "https://mirror.gcr.io"
 options:
   k3d:
     wait: true
