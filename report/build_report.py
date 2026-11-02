@@ -307,7 +307,8 @@ of the assistant are never places), followed by 18
 examples I wrote and a closing reminder. None of the 18 commands occurs in the pool or the validation set (checked by
 script), so no hand-made label can leak into the training data. Before the full run I compared two prompt versions on
 the 100 validation commands (teacher-dev workflow): the first gave {pi_a}, the second {pi_b}, so the second was used
-<span class="tag m">M</span> (results/task1/prompt_iterations.json). <span class="tag a">A</span> Because the prompt was
+<span class="tag m">M</span> (results/task1/prompt_iterations.json; the final in-cluster run of the same prompt and settings,
+on another runner, scored {v((t2["teacher"] or {}).get("full_frame"), "{:.0f}", " %")} full frame, Task 2). <span class="tag a">A</span> Because the prompt was
 chosen by looking at validation errors, the teacher's validation score is optimistic; this raises, not lowers, the bar
 of "half the teacher's full frame" for the student, whose score on the hidden set is unaffected.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies

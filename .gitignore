@@ -23,3 +23,6 @@ artifacts/
 # Local scratch
 *.tmp
 .DS_Store
+
+# The submission zip is built by scripts/make_submission.sh and handed in, never committed
+/*.zip
