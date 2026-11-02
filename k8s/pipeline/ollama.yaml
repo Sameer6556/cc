@@ -1,5 +1,8 @@
 # The teacher: phi3.5 served by Ollama inside the cluster (Task 1).
-# OLLAMA_NUM_PARALLEL=4 decodes the four labelling workers' requests together (batched on the CPU).
+# OLLAMA_NUM_PARALLEL=2 decodes two workers' requests together. Measured on a 4-vCPU runner: 4 parallel
+# sequences were no faster than 1 (about 6.3 s per command overall), 2 were the best trade-off.
+# The probes are TCP checks: while every core is busy generating, the HTTP handler can take seconds to
+# answer, and an HTTP liveness probe with the default 1 s timeout restarted the server 23 times.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -54,7 +57,7 @@ spec:
           image: ollama/ollama:0.40.9
           env:
             - name: OLLAMA_NUM_PARALLEL
-              value: "4"
+              value: "2"
             - name: OLLAMA_KEEP_ALIVE
               value: "24h"
           ports:
@@ -67,16 +70,18 @@ spec:
             limits:
               memory: 10Gi        # no CPU limit: CPU inference should use every core it can get
           readinessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: http
-            periodSeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 6
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: http
-            initialDelaySeconds: 30
-            periodSeconds: 20
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 10
           volumeMounts:
             - name: models
               mountPath: /root/.ollama

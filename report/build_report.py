@@ -307,13 +307,13 @@ chosen by looking at validation errors, the teacher's validation score is optimi
 of "half the teacher's full frame" for the student, whose score on the hidden set is unaffected.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
 <i>n</i> mod <i>K</i> = <i>k</i>. The workers are one Kubernetes <i>Indexed Job</i> with
-<code>completions = parallelism = 4</code>; each Pod receives its completion index through the downward API as
-<code>SHARD_INDEX</code>, and <code>SHARD_COUNT</code>=4. The assignment is a pure function of the line number, so the
+<code>completions</code> = 4 shards of which <code>parallelism</code> = 2 run at the same time; each Pod receives its
+completion index through the downward API as <code>SHARD_INDEX</code>, and <code>SHARD_COUNT</code>=4. The assignment is a pure function of the line number, so the
 shards are disjoint and together cover every line without any coordination, locking or shared state; each worker
 writes only its own object <code>datasets/teacher/shard-k.jsonl</code>, so there are no write conflicts. Round-robin
 (rather than contiguous blocks) keeps the shards balanced even if command length drifts through the file. A worker
 uploads its partial object every 25 replies and, when restarted, skips the ids already present, so a Pod failure
-costs at most 25 teacher calls. Ollama decodes the four workers' requests together in one batch (<code>OLLAMA_NUM_PARALLEL=4</code>), which raises CPU throughput because one pass over the weights serves four sequences.
+costs at most 25 teacher calls. Ollama decodes the two running workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>). <span class="tag m">M</span> A first attempt with 4 concurrent workers was no faster than a single stream (about 25 s per command per worker, 6.3 s overall, against 5.9 s for one stream), and its HTTP liveness probe (1 s timeout) restarted the busy Ollama server 23 times until the Job gave up; the 900 replies saved by then were reused (the run was resumed with <code>RESUME=1</code>), the probes became TCP checks and the concurrency was set to 2 (results/task1/label_timeline.log, pods_all_namespaces.txt from commit 772487b).
 The trade-off of a static split is that a slow worker cannot hand work to a fast one.</p>
 <div class="two"><div>
 <table><tr><th>clean.py outcome (each record counted once, first rule that applies)</th><th class="n">records</th></tr>
@@ -328,7 +328,7 @@ The trade-off of a static split is that a slow worker cannot hand work to a fast
 </div><div>
 <table><tr><th>worker</th><th class="n">replies</th><th class="n">wall time</th><th class="n">s / command</th><th class="n">reply tokens</th></tr>
 {shard_rows}
-<caption><span class="tag m">M</span> results/task1/worker-shard-*.log (all four Pods ran concurrently: workers_running.txt).</caption></table>
+<caption><span class="tag m">M</span> results/task1/worker-shard-*.log (two Pods at a time: workers_running.txt).</caption></table>
 <p class="small">Coverage (every id in exactly one shard, in the shard its line number dictates):
 <b>{v({True: "no gaps, no repeats", False: "FAILED"}.get(t1["coverage_ok"]))}</b> (coverage.txt).
 Re-running <code>clean.py</code> outside the cluster reproduces <code>train.sha256</code>:
