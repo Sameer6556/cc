@@ -1,0 +1,12 @@
+NAMESPACE     NAME                                      READY   STATUS      RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+data          seaweedfs-759fbb76bb-gqdnv                1/1     Running     0          13m   10.42.0.8    k3d-cc-server-0   <none>           <none>
+kube-system   coredns-5688c889c9-rh9sg                  1/1     Running     0          13m   10.42.0.3    k3d-cc-server-0   <none>           <none>
+kube-system   helm-install-traefik-2qk52                0/1     Completed   2          13m   10.42.0.6    k3d-cc-server-0   <none>           <none>
+kube-system   helm-install-traefik-crd-g8zd7            0/1     Completed   0          13m   10.42.0.5    k3d-cc-server-0   <none>           <none>
+kube-system   local-path-provisioner-67d6887d65-dzlc4   1/1     Running     0          13m   10.42.0.2    k3d-cc-server-0   <none>           <none>
+kube-system   metrics-server-74c8c4d68b-vj7b2           1/1     Running     0          13m   10.42.0.4    k3d-cc-server-0   <none>           <none>
+kube-system   svclb-traefik-38e449e2-9tnrs              2/2     Running     0          12m   10.42.0.9    k3d-cc-server-0   <none>           <none>
+kube-system   traefik-7f6d8db88c-w9zbp                  1/1     Running     0          12m   10.42.0.10   k3d-cc-server-0   <none>           <none>
+pipeline      ollama-866dd9b7bd-gvdnw                   1/1     Running     0          12m   10.42.0.12   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-0-bhcgs                     1/1     Running     0          11m   10.42.0.13   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-1-hvlm7                     1/1     Running     0          11m   10.42.0.14   k3d-cc-server-0   <none>           <none>
