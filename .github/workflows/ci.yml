@@ -1,0 +1,104 @@
+# Task 6: continuous integration. Stages run in this order:
+#   1. lint (+ gitleaks secret scan)  2. unit tests  3. model evaluation from the GitHub Release
+#   4. quality gate: score.py --min-validity 95
+# To show the gate failing, run it by hand with model = untrained (the original Pythia-70M).
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "release = trained student from the GitHub Release; untrained = original Pythia-70M"
+        type: choice
+        options: [release, untrained]
+        default: release
+      release_tag:
+        description: "GitHub Release holding the model"
+        default: model-v1
+
+permissions:
+  contents: read
+
+env:
+  MODEL: ${{ inputs.model || 'release' }}
+  RELEASE_TAG: ${{ inputs.release_tag || 'model-v1' }}
+
+jobs:
+  lint:
+    name: "1. lint + secret scan"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0               # gitleaks scans the whole history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: ruff
+        run: |
+          pip install ruff==0.16.10
+          ruff check .
+      - name: gitleaks (must report nothing)
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
+            | tar -xz gitleaks
+          ./gitleaks git --redact --verbose --exit-code 1 .
+
+  unit-tests:
+    name: "2. unit tests"
+    needs: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -v tests
+
+  evaluate:
+    name: "3. model evaluation (${{ inputs.model || 'release' }})"
+    needs: unit-tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CPU-only PyTorch and the pinned libraries
+        run: |
+          pip install --no-deps --index-url https://download.pytorch.org/whl/cpu torch==2.14.1+cpu
+          pip install --no-deps -r service/requirements.txt
+      - name: Download the model from the GitHub Release and verify its checksums
+        if: env.MODEL == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir model
+          ls -l model
+          (cd model && sha256sum -c model.sha256)
+      - name: Predict on data/validation.jsonl
+        run: |
+          if [ "$MODEL" = release ]; then M=model; else M=EleutherAI/pythia-70m; fi
+          python training/predict.py --model "$M" --out results/ci/predictions.jsonl
+      - name: score.py
+        run: python tools/score.py results/ci/predictions.jsonl data/validation.jsonl --out results/ci/score.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evaluation
+          path: results/ci/
+
+  quality-gate:
+    name: "4. quality gate (json_validity >= 95)"
+    needs: evaluate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: evaluation
+          path: results/ci/
+      - run: python3 tools/score.py results/ci/predictions.jsonl data/validation.jsonl --min-validity 95

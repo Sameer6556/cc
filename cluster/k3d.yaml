@@ -1,0 +1,26 @@
+# Local Kubernetes cluster for the project (Task 1).
+#   k3d cluster create --config cluster/k3d.yaml      (make cluster)
+#   k3d cluster delete cc                              (make down)
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: cc
+servers: 1            # a single-node cluster on one machine: no fault tolerance across machines
+agents: 0
+image: rancher/k3s:v1.34.12-k3s1
+ports:
+  # Traefik ingress (k3s default) -> http://localhost:8080/parse
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
+  # SeaweedFS S3 NodePort, bound to localhost only, used by `make up` to create buckets and seed objects
+  - port: 127.0.0.1:30333:30333
+    nodeFilters:
+      - loadbalancer
+options:
+  k3d:
+    wait: true
+    timeout: "300s"
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true

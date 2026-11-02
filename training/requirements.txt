@@ -1,0 +1,3 @@
+# Training uses exactly the same pinned libraries as the service (one lock for train and serve).
+# torch is installed first from https://download.pytorch.org/whl/cpu (see the Makefile target venv-train).
+-r ../service/requirements.txt

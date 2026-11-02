@@ -1,0 +1,62 @@
+# Parallel teacher labelling (Task 1): an Indexed Job runs SHARD_COUNT workers at the same time.
+# Each Pod gets its completion index (0, 1, ...) as SHARD_INDEX, labels the commands whose line
+# number n satisfies n % SHARD_COUNT == SHARD_INDEX, and writes its own object
+# s3://datasets/teacher/shard-<SHARD_INDEX>.jsonl. A restarted Pod resumes from that object.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: teacher-label
+  namespace: pipeline
+spec:
+  completionMode: Indexed
+  completions: 2
+  parallelism: 2
+  backoffLimitPerIndex: 3
+  maxFailedIndexes: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: teacher-worker
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: worker
+          image: teacher-worker:0.1.0
+          imagePullPolicy: IfNotPresent
+          command: ["python", "worker.py"]
+          env:
+            - name: SHARD_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+            - name: SHARD_COUNT
+              value: "2"
+            - name: INPUT_URI
+              value: s3://datasets/commands_pool.jsonl
+            - name: OUTPUT_URI
+              value: s3://datasets/teacher/shard-{shard}.jsonl
+            - name: OLLAMA_URL
+              value: http://ollama.pipeline.svc.cluster.local:11434
+            - name: S3_ENDPOINT
+              value: http://seaweedfs-s3.data.svc.cluster.local:8333
+            - name: PROMPT_FILE
+              value: /etc/teacher/teacher_prompt.txt
+          envFrom:
+            - secretRef:
+                name: s3-credentials
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: prompt
+              mountPath: /etc/teacher
+              readOnly: true
+      volumes:
+        - name: prompt
+          configMap:
+            name: teacher-prompt

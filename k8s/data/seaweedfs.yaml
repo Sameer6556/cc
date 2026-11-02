@@ -1,0 +1,113 @@
+# SeaweedFS object storage with an S3-compatible API (Task 1).
+# Credentials are NOT in this file: scripts/secrets.sh generates them and creates the Secret
+# "seaweedfs-s3-config" (key s3.json) in this namespace.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: seaweedfs-data
+  namespace: data
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seaweedfs
+  namespace: data
+  labels:
+    app: seaweedfs
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # a single writer on a ReadWriteOnce volume
+  selector:
+    matchLabels:
+      app: seaweedfs
+  template:
+    metadata:
+      labels:
+        app: seaweedfs
+    spec:
+      containers:
+        - name: seaweedfs
+          image: chrislusf/seaweedfs:4.47
+          args:
+            - server
+            - -dir=/data
+            - -ip=127.0.0.1
+            - -ip.bind=0.0.0.0
+            - -master.volumeSizeLimitMB=256
+            - -volume.max=0
+            - -s3
+            - -s3.port=8333
+            - -s3.config=/etc/seaweedfs/s3.json
+          ports:
+            - name: s3
+              containerPort: 8333
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          readinessProbe:
+            tcpSocket:
+              port: s3
+            periodSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: s3
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: s3-config
+              mountPath: /etc/seaweedfs
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: seaweedfs-data
+        - name: s3-config
+          secret:
+            secretName: seaweedfs-s3-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: seaweedfs-s3
+  namespace: data
+spec:
+  selector:
+    app: seaweedfs
+  ports:
+    - name: s3
+      port: 8333
+      targetPort: s3
+---
+# Host access for seeding buckets (k3d maps 127.0.0.1:30333 to this NodePort).
+apiVersion: v1
+kind: Service
+metadata:
+  name: seaweedfs-s3-nodeport
+  namespace: data
+spec:
+  type: NodePort
+  selector:
+    app: seaweedfs
+  ports:
+    - name: s3
+      port: 8333
+      targetPort: s3
+      nodePort: 30333

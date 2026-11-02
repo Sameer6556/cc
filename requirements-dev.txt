@@ -1,0 +1,8 @@
+# Host tools: S3 seeding (boto3), unit tests and lint. The service image has its own full lock.
+boto3==1.43.100
+fastapi==0.135.0
+httpx==0.28.1
+jsonschema==4.26.0
+pytest==9.0.3
+pyyaml==6.0.3
+ruff==0.16.10
