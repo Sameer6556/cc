@@ -301,12 +301,14 @@ plus <code>num_predict</code> 128, <code>num_ctx</code> 2048 and the stop sequen
 <code>\nCommand:</code> (a frame is one line, so they only end trailing chatter early; the stored reply is still
 exactly what was generated).</p>
 <p><b>Prompt</b> (<code>prompts/teacher_prompt.txt</code>). It restates the four keys, gives a one-line definition per
-intent, the three slot rules plus three conventions of the data (drop "next"; parts of the day and vague words such as
-"upcoming" are never dates or times; "near me", time zones and people's names are never places), followed by 18
+intent, the three slot rules of <code>schema.json</code> plus three conventions of the data (drop "next" but keep "this"; parts
+of the day and vague words such as "upcoming" are never dates or times; "near me", time zones and the names of people or
+of the assistant are never places), followed by 18
 examples I wrote and a closing reminder. None of the 18 commands occurs in the pool or the validation set (checked by
 script), so no hand-made label can leak into the training data. Before the full run I compared two prompt versions on
 the 100 validation commands (teacher-dev workflow): the first gave {pi_a}, the second {pi_b}, so the second was used
-<span class="tag m">M</span> (results/task1/prompt_iterations.json). <span class="tag a">A</span> Because the prompt was
+<span class="tag m">M</span> (results/task1/prompt_iterations.json; the final in-cluster run of the same prompt and settings,
+on another runner, scored {v((t2["teacher"] or {}).get("full_frame"), "{:.0f}", " %")} full frame, Task 2). <span class="tag a">A</span> Because the prompt was
 chosen by looking at validation errors, the teacher's validation score is optimistic; this raises, not lowers, the bar
 of "half the teacher's full frame" for the student, whose score on the hidden set is unaffected.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
@@ -328,7 +330,7 @@ more teacher replicas on more machines.
 The trade-off of a static split is that a slow worker cannot hand work to a fast one.</p>
 <div class="two"><div>
 <table><tr><th>clean.py outcome (each record counted once, first rule that applies)</th><th class="n">records</th></tr>
-<tr><td>input records (both shards)</td><td class="n">{v(total, "{:,}")}</td></tr>
+<tr><td>input records (all four shards)</td><td class="n">{v(total, "{:,}")}</td></tr>
 <tr><td>(a) reply is not valid JSON</td><td class="n">{v(c.get("invalid_json"))}</td></tr>
 <tr><td>(b) keys not exactly intent, date, time, place</td><td class="n">{v(c.get("bad_keys"))}</td></tr>
 <tr><td>(c) intent not one of the eight</td><td class="n">{v(c.get("bad_intent"))}</td></tr>
@@ -487,8 +489,8 @@ schema would make every answer valid by construction.</p>''')
 <p><b>Implementation</b> (<code>k8s/app/parser.yaml</code>). Namespace <code>app</code>: a Deployment starting at
 2 replicas (requests 500m CPU / 768 Mi, limits 1 CPU / 1 Gi; readiness probe <code>/readyz</code> every 2 s,
 liveness <code>/healthz</code> every 10 s with 6 allowed failures; rolling update <code>maxSurge 1,
-maxUnavailable 0</code>; <code>preStop</code> sleep 5 s so Traefik drops a terminating Pod before it stops; graceful
-shutdown 20 s), a ClusterIP Service, a Traefik Ingress for <code>/parse</code> only, and an <code>autoscaling/v2</code>
+maxUnavailable 0</code>; <code>preStop</code> sleep 5 s so Traefik drops a terminating Pod before it stops; uvicorn
+finishes in-flight requests for up to 20 s inside a 30 s termination grace period), a ClusterIP Service, a Traefik Ingress for <code>/parse</code> only, and an <code>autoscaling/v2</code>
 HPA (1 to 2 replicas, 70 % average CPU of the request, scale-down window shortened to 60 s so it can be observed).
 The scripts in <code>scripts/experiments/</code> produce every row below.</p>
 <table><tr><th>experiment</th><th>measured result</th><th>evidence (results/task4/)</th></tr>
