@@ -1,0 +1,97 @@
+Name:             ollama-6b989c8f99-mzkg6
+Namespace:        pipeline
+Priority:         0
+Service Account:  default
+Node:             k3d-cc-server-0/172.18.0.2
+Start Time:       Mon, 02 Nov 2026 13:04:47 +0000
+Labels:           app=ollama
+                  pod-template-hash=6b989c8f99
+Annotations:      <none>
+Status:           Running
+IP:               10.42.0.12
+IPs:
+  IP:           10.42.0.12
+Controlled By:  ReplicaSet/ollama-6b989c8f99
+Init Containers:
+  pull-teacher:
+    Container ID:  containerd://4f29ad48b3a74281d3f94a06368bb98ac652cb37311ea8f4e3e1d09873b0ead0
+    Image:         ollama/ollama:0.40.9
+    Image ID:      docker.io/ollama/ollama@sha256:5c6707fcf2e1a30cffe2ecb7e315584fc87747c389327e4bc711c4959aa1eecc
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+    Args:
+      ollama serve > /tmp/serve.log 2>&1 &
+      for i in $(seq 1 60); do ollama list >/dev/null 2>&1 && break; sleep 1; done
+      ollama pull phi3.5 && ollama show phi3.5 --modelfile | head -5
+      
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Mon, 02 Nov 2026 13:05:27 +0000
+      Finished:     Mon, 02 Nov 2026 13:05:43 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /root/.ollama from models (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rnr74 (ro)
+Containers:
+  ollama:
+    Container ID:   containerd://23354af4661ef609e4c1a5a412921bf3d69a0ff95ce7a2e3cf5c276ac45ec2c4
+    Image:          ollama/ollama:0.40.9
+    Image ID:       docker.io/ollama/ollama@sha256:5c6707fcf2e1a30cffe2ecb7e315584fc87747c389327e4bc711c4959aa1eecc
+    Port:           11434/TCP (http)
+    Host Port:      0/TCP (http)
+    State:          Running
+      Started:      Mon, 02 Nov 2026 17:02:31 +0000
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Mon, 02 Nov 2026 16:32:06 +0000
+      Finished:     Mon, 02 Nov 2026 17:02:31 +0000
+    Ready:          True
+    Restart Count:  8
+    Limits:
+      memory:  10Gi
+    Requests:
+      cpu:      2
+      memory:   5Gi
+    Liveness:   tcp-socket :http delay=60s timeout=10s period=30s #success=1 #failure=10
+    Readiness:  tcp-socket :http delay=0s timeout=10s period=10s #success=1 #failure=6
+    Environment:
+      OLLAMA_NUM_PARALLEL:  2
+      OLLAMA_KEEP_ALIVE:    24h
+    Mounts:
+      /root/.ollama from models (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rnr74 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  models:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  ollama-models
+    ReadOnly:   false
+  kube-api-access-rnr74:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason   Age                   From     Message
+  ----    ------   ----                  ----     -------
+  Normal  Pulled   2m1s (x9 over 3h58m)  kubelet  Container image "ollama/ollama:0.40.9" already present on machine
+  Normal  Created  2m1s (x9 over 3h58m)  kubelet  Created container: ollama
+  Normal  Started  2m1s (x9 over 3h58m)  kubelet  Started container ollama

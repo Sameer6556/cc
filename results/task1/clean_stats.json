@@ -1,0 +1,1009 @@
+{
+  "counts": {
+    "input": 3000,
+    "invalid_json": 5,
+    "bad_keys": 2,
+    "bad_intent": 7,
+    "slot_not_in_text": 187,
+    "duplicate": 46,
+    "kept": 2753
+  },
+  "per_shard": {
+    "shard-0.jsonl": 750,
+    "shard-1.jsonl": 750,
+    "shard-2.jsonl": 750,
+    "shard-3.jsonl": 750
+  },
+  "sha256": "432f46a3f35aacc0716bb2b239c87aaec6ac94eecf59949ddb4d5be3a249f0b1",
+  "raw_already_canonical": 2753,
+  "rejected": [
+    {
+      "id": "C0019",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0066",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0069",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0075",
+      "reason": "invalid_json"
+    },
+    {
+      "id": "C0077",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0083",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0088",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0092",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0098",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0105",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0125",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0139",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0156",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0158",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0161",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0184",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0213",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0218",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0239",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0272",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0286",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0294",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0308",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0338",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0355",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0357",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0359",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0368",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0416",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0422",
+      "reason": "invalid_json"
+    },
+    {
+      "id": "C0431",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0466",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0473",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0477",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C0484",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0503",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0515",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0518",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0522",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0566",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C0576",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0588",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0628",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0630",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0636",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0642",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C0651",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0657",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C0659",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0677",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0688",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0710",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0714",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0728",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0734",
+      "reason": "bad_keys"
+    },
+    {
+      "id": "C0741",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0766",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0813",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0814",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0820",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0846",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0853",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0859",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0906",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0924",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0927",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0934",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0937",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0951",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0961",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0975",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C0980",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0996",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C0999",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1000",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1003",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1010",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1029",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1033",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1038",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1040",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1041",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1042",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1046",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1052",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1054",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1055",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1070",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1073",
+      "reason": "invalid_json"
+    },
+    {
+      "id": "C1075",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1088",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1093",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1100",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1125",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1133",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1142",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1187",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1192",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1196",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1200",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1204",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1206",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1219",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1221",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1226",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1236",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1245",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1261",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1301",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1314",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1326",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1359",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1382",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1395",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1407",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1426",
+      "reason": "invalid_json"
+    },
+    {
+      "id": "C1446",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1449",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1472",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1476",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1483",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1503",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1505",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1527",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1534",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1604",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1617",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1634",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1639",
+      "reason": "bad_keys"
+    },
+    {
+      "id": "C1646",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1649",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1660",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1669",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1707",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1742",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1744",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1798",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1812",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1838",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1862",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1863",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1864",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1873",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1903",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1917",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1934",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1951",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C1964",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C1969",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2018",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2040",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2043",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2044",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2088",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2111",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2114",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2116",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2117",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2128",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C2139",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2141",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2153",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2177",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2195",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2199",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2225",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2226",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2238",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2262",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2266",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2273",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2276",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2299",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2323",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2332",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2345",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2358",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2381",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C2384",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2392",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2395",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2397",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2409",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2416",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2449",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2450",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2456",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2460",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2471",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2473",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2481",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2490",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2505",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2517",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2523",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2524",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2525",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2544",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2546",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2578",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2584",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2586",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2589",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2607",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2625",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2638",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2642",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2650",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2656",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2684",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2695",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2705",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2711",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2718",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2720",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2726",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2741",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2744",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2750",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2756",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C2768",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2774",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2786",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2787",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2793",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2824",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2832",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2835",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2840",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2846",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2848",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2850",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2854",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2867",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2878",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2885",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2893",
+      "reason": "invalid_json"
+    },
+    {
+      "id": "C2925",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2941",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2942",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2951",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2958",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2972",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2976",
+      "reason": "duplicate"
+    },
+    {
+      "id": "C2979",
+      "reason": "slot_not_in_text"
+    },
+    {
+      "id": "C2995",
+      "reason": "bad_intent"
+    },
+    {
+      "id": "C2998",
+      "reason": "slot_not_in_text"
+    }
+  ]
+}

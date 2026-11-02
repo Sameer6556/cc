@@ -1,0 +1,33 @@
+{"event": "start", "shard_index": 3, "shard_count": 4, "input": "s3://datasets/commands_pool.jsonl", "output": "s3://datasets/teacher/shard-3.jsonl", "assigned": 750, "already_done": 225, "todo": 525, "model": "phi3.5", "options": {"temperature": 0, "seed": 42, "num_predict": 128, "num_ctx": 2048, "stop": ["\n\n", "\nCommand:"]}}
+teacher request failed (RemoteDisconnected('Remote end closed connection without response')); retry 1/30 in 2s
+teacher request failed (URLError(ConnectionRefusedError(111, 'Connection refused'))); retry 2/30 in 4s
+{"event": "progress", "shard_index": 3, "done": 250, "assigned": 750, "last_id": "C1000", "line": 999, "mean_s_per_cmd": 15.56, "mean_reply_tokens": 28.0, "elapsed_s": 395, "eta_s": 7906}
+{"event": "progress", "shard_index": 3, "done": 275, "assigned": 750, "last_id": "C1100", "line": 1099, "mean_s_per_cmd": 14.19, "mean_reply_tokens": 27.3, "elapsed_s": 716, "eta_s": 6802}
+{"event": "progress", "shard_index": 3, "done": 300, "assigned": 750, "last_id": "C1200", "line": 1199, "mean_s_per_cmd": 13.85, "mean_reply_tokens": 27.2, "elapsed_s": 1045, "eta_s": 6271}
+{"event": "progress", "shard_index": 3, "done": 325, "assigned": 750, "last_id": "C1300", "line": 1299, "mean_s_per_cmd": 13.64, "mean_reply_tokens": 27.2, "elapsed_s": 1370, "eta_s": 5824}
+{"event": "progress", "shard_index": 3, "done": 350, "assigned": 750, "last_id": "C1400", "line": 1399, "mean_s_per_cmd": 13.5, "mean_reply_tokens": 27.1, "elapsed_s": 1694, "eta_s": 5421}
+teacher request failed (RemoteDisconnected('Remote end closed connection without response')); retry 1/30 in 2s
+teacher request failed (URLError(ConnectionRefusedError(111, 'Connection refused'))); retry 2/30 in 4s
+{"event": "progress", "shard_index": 3, "done": 375, "assigned": 750, "last_id": "C1500", "line": 1499, "mean_s_per_cmd": 13.74, "mean_reply_tokens": 27.2, "elapsed_s": 2074, "eta_s": 5185}
+{"event": "progress", "shard_index": 3, "done": 400, "assigned": 750, "last_id": "C1600", "line": 1599, "mean_s_per_cmd": 13.58, "mean_reply_tokens": 27.2, "elapsed_s": 2389, "eta_s": 4778}
+{"event": "progress", "shard_index": 3, "done": 425, "assigned": 750, "last_id": "C1700", "line": 1699, "mean_s_per_cmd": 13.49, "mean_reply_tokens": 27.1, "elapsed_s": 2712, "eta_s": 4406}
+{"event": "progress", "shard_index": 3, "done": 450, "assigned": 750, "last_id": "C1800", "line": 1799, "mean_s_per_cmd": 13.44, "mean_reply_tokens": 27.1, "elapsed_s": 3037, "eta_s": 4049}
+teacher request failed (RemoteDisconnected('Remote end closed connection without response')); retry 1/30 in 2s
+teacher request failed (URLError(ConnectionRefusedError(111, 'Connection refused'))); retry 2/30 in 4s
+{"event": "progress", "shard_index": 3, "done": 475, "assigned": 750, "last_id": "C1900", "line": 1899, "mean_s_per_cmd": 13.55, "mean_reply_tokens": 27.0, "elapsed_s": 3407, "eta_s": 3748}
+{"event": "progress", "shard_index": 3, "done": 500, "assigned": 750, "last_id": "C2000", "line": 1999, "mean_s_per_cmd": 13.54, "mean_reply_tokens": 27.1, "elapsed_s": 3744, "eta_s": 3403}
+{"event": "progress", "shard_index": 3, "done": 525, "assigned": 750, "last_id": "C2100", "line": 2099, "mean_s_per_cmd": 13.54, "mean_reply_tokens": 27.1, "elapsed_s": 4080, "eta_s": 3060}
+{"event": "progress", "shard_index": 3, "done": 550, "assigned": 750, "last_id": "C2200", "line": 2199, "mean_s_per_cmd": 13.49, "mean_reply_tokens": 27.1, "elapsed_s": 4402, "eta_s": 2709}
+{"event": "progress", "shard_index": 3, "done": 575, "assigned": 750, "last_id": "C2300", "line": 2299, "mean_s_per_cmd": 13.45, "mean_reply_tokens": 27.1, "elapsed_s": 4727, "eta_s": 2363}
+{"event": "progress", "shard_index": 3, "done": 600, "assigned": 750, "last_id": "C2400", "line": 2399, "mean_s_per_cmd": 13.46, "mean_reply_tokens": 27.1, "elapsed_s": 5068, "eta_s": 2027}
+teacher request failed (RemoteDisconnected('Remote end closed connection without response')); retry 1/30 in 2s
+teacher request failed (URLError(ConnectionRefusedError(111, 'Connection refused'))); retry 2/30 in 4s
+{"event": "progress", "shard_index": 3, "done": 625, "assigned": 750, "last_id": "C2500", "line": 2499, "mean_s_per_cmd": 13.55, "mean_reply_tokens": 27.1, "elapsed_s": 5445, "eta_s": 1702}
+{"event": "progress", "shard_index": 3, "done": 650, "assigned": 750, "last_id": "C2600", "line": 2599, "mean_s_per_cmd": 13.52, "mean_reply_tokens": 27.0, "elapsed_s": 5771, "eta_s": 1358}
+{"event": "progress", "shard_index": 3, "done": 675, "assigned": 750, "last_id": "C2700", "line": 2699, "mean_s_per_cmd": 13.5, "mean_reply_tokens": 27.0, "elapsed_s": 6099, "eta_s": 1016}
+{"event": "progress", "shard_index": 3, "done": 700, "assigned": 750, "last_id": "C2800", "line": 2799, "mean_s_per_cmd": 13.48, "mean_reply_tokens": 27.0, "elapsed_s": 6430, "eta_s": 677}
+{"event": "progress", "shard_index": 3, "done": 725, "assigned": 750, "last_id": "C2900", "line": 2899, "mean_s_per_cmd": 13.46, "mean_reply_tokens": 27.0, "elapsed_s": 6758, "eta_s": 338}
+teacher request failed (RemoteDisconnected('Remote end closed connection without response')); retry 1/30 in 2s
+teacher request failed (URLError(ConnectionRefusedError(111, 'Connection refused'))); retry 2/30 in 4s
+{"event": "progress", "shard_index": 3, "done": 750, "assigned": 750, "last_id": "C3000", "line": 2999, "mean_s_per_cmd": 13.48, "mean_reply_tokens": 27.0, "elapsed_s": 7109, "eta_s": 0}
+{"event": "finished", "shard_index": 3, "written": 750, "output": "s3://datasets/teacher/shard-3.jsonl", "seconds": 7108.6, "mean_s_per_cmd": 13.48}
