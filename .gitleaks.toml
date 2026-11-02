@@ -1,0 +1,15 @@
+# gitleaks configuration used by CI (stage 1) and by `gitleaks git .` locally: the default rules,
+# plus one documented false positive.
+#
+# results/task3/image.txt records `docker history` of the service image. The official python base
+# image sets ENV GPG_KEY=<40 hex digits>: the public fingerprint of the key that signs the CPython
+# release tarball, not a credential. The allowlist matches only that line, only in that file.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public GPG key fingerprint in the docker history of the official python base image"
+condition = "AND"
+regexTarget = "line"
+regexes = ['''ENV GPG_KEY=[0-9A-F]{40}\b''']
+paths = ['''^results/task3/image\.txt$''']
