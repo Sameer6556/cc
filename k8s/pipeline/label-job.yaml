@@ -9,8 +9,8 @@ metadata:
   namespace: pipeline
 spec:
   completionMode: Indexed
-  completions: 2
-  parallelism: 2
+  completions: 4
+  parallelism: 4
   backoffLimitPerIndex: 3
   maxFailedIndexes: 0
   ttlSecondsAfterFinished: 86400
@@ -31,7 +31,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
             - name: SHARD_COUNT
-              value: "2"
+              value: "4"
             - name: INPUT_URI
               value: s3://datasets/commands_pool.jsonl
             - name: OUTPUT_URI

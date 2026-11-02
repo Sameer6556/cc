@@ -71,6 +71,6 @@ jobs:
           done
           (cd artifacts/models/v1 && sha256sum -c model.sha256) | tee results/task2/release_v1_sha256_check.txt
       - name: Commit evidence
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           scripts/ci/commit-results.sh "Task 2: training, evaluation and release evidence" training models results

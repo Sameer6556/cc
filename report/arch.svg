@@ -49,8 +49,8 @@
   <rect class="ns" x="138" y="146" width="200" height="80" rx="4"/>
   <text class="tb" x="145" y="159">namespace pipeline</text>
   <text class="t" x="145" y="173">Ollama: phi3.5 (temp 0, seed 42)</text>
-  <text class="t" x="145" y="187">Indexed Job teacher-label x2</text>
-  <text class="ts" x="145" y="198">SHARD_INDEX 0,1  SHARD_COUNT 2</text>
+  <text class="t" x="145" y="187">Indexed Job teacher-label x4</text>
+  <text class="ts" x="145" y="198">SHARD_INDEX 0-3  SHARD_COUNT 4</text>
   <text class="t" x="145" y="212">Jobs: clean, teacher-eval</text>
 
   <!-- data ns -->
@@ -59,7 +59,7 @@
   <rect class="bx" x="360" y="50" width="170" height="92" rx="3"/>
   <text class="tb" x="367" y="63">bucket datasets</text>
   <text class="ts" x="367" y="76">commands_pool.jsonl</text>
-  <text class="ts" x="367" y="88">teacher/shard-0.jsonl, shard-1.jsonl</text>
+  <text class="ts" x="367" y="88">teacher/shard-0 ... shard-3.jsonl</text>
   <text class="ts" x="367" y="100">v1/train.jsonl, v1/train.sha256</text>
   <text class="ts" x="367" y="112">eval/validation_texts.jsonl</text>
   <text class="ts" x="367" y="124">eval/teacher_validation_raw.jsonl</text>

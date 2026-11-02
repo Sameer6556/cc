@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Task 1: run the teacher-labelling pipeline in the cluster and collect the evidence.
-#   Ollama (phi3.5) in namespace "pipeline" -> Indexed Job with 2 workers (SHARD_INDEX 0 and 1)
+#   Ollama (phi3.5) in namespace "pipeline" -> Indexed Job with SHARD_COUNT parallel workers
 #   -> clean Job -> teacher evaluation Job on the validation texts -> copy results into the repo.
 # Prerequisites: make cluster secrets storage seed-data worker-image
 set -euo pipefail
@@ -25,12 +25,13 @@ if [ "${RESUME:-0}" = 1 ]; then
     [ -e "$f" ] && $PY scripts/s3tool.py put "$f" "s3://datasets/teacher/$(basename "$f")"
   done
 fi
-log "starting the labelling Job (2 workers in parallel)"
 kubectl -n pipeline delete job teacher-label --ignore-not-found --wait=true
 kubectl apply -f k8s/pipeline/label-job.yaml
+WORKERS=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.spec.parallelism}')
+log "started the labelling Job ($WORKERS workers in parallel)"
 for i in $(seq 1 60); do
   running=$(kubectl -n pipeline get pods -l job-name=teacher-label --field-selector=status.phase=Running -o name | wc -l)
-  [ "$running" -ge 2 ] && break
+  [ "$running" -ge "$WORKERS" ] && break
   sleep 5
 done
 {
@@ -47,8 +48,8 @@ start=$(date +%s)
 while true; do
   done_=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.status.succeeded}')
   failed=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.status.failed}')
-  log "job teacher-label: succeeded=${done_:-0}/2 failed=${failed:-0}; $(kubectl -n pipeline logs -l job-name=teacher-label --tail=1 --prefix 2>/dev/null | tr '\n' ' ' | cut -c1-400)"
-  [ "${done_:-0}" -ge 2 ] && break
+  log "job teacher-label: succeeded=${done_:-0}/$WORKERS failed=${failed:-0}; $(kubectl -n pipeline logs -l job-name=teacher-label --tail=1 --prefix 2>/dev/null | tr '\n' ' ' | cut -c1-600)"
+  [ "${done_:-0}" -ge "$WORKERS" ] && break
   if kubectl -n pipeline get job teacher-label -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}' | grep -q True; then
     log "labelling job failed"; exit 1
   fi
@@ -76,6 +77,7 @@ kubectl -n pipeline wait --for=condition=complete job/teacher-eval --timeout=360
 kubectl -n pipeline logs job/teacher-eval > "$OUT/teacher_eval.log"
 
 log "copying objects out of SeaweedFS"
+rm -f datasets/teacher/shard-*.jsonl datasets/v1/train.jsonl datasets/v1/train.sha256
 $PY scripts/s3tool.py get s3://datasets/teacher/ datasets/teacher
 $PY scripts/s3tool.py get s3://datasets/v1/ datasets/v1
 $PY scripts/s3tool.py get s3://datasets/eval/ results/task2/teacher

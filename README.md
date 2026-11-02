@@ -23,7 +23,7 @@ and CI.
             |                                                         | model download at start-up
   namespace pipeline                         namespace data           v (read-only credentials)
   +---------------------------+    S3     +------------------------------------------------+
-  | Ollama phi3.5, 2 workers  | <-------> | SeaweedFS: buckets datasets/ and models/v1,v2/ |
+  | Ollama phi3.5, 4 workers  | <-------> | SeaweedFS: buckets datasets/ and models/v1,v2/ |
   | (Indexed Job), clean.py   |           +------------------------------------------------+
   +---------------------------+
 ```
@@ -114,7 +114,7 @@ balancing) run against a cluster created by `make up`:
 bash scripts/experiments/run_all.sh
 ```
 
-Teacher labelling (Task 1) takes several hours on a CPU. It deploys Ollama and two parallel workers, then
+Teacher labelling (Task 1) takes several hours on a CPU. It deploys Ollama and four parallel workers, then
 runs `clean.py` and the teacher's validation run:
 
 ```bash
@@ -134,7 +134,7 @@ environments and training outputs.
 
 | Task | Evidence |
 |---|---|
-| 1 | `results/task1/` (worker logs, two workers running, coverage check, clean counts, checksum reproduction, S3 listing), `datasets/` |
+| 1 | `results/task1/` (worker logs, four workers running, coverage check, clean counts, checksum reproduction, S3 listing), `datasets/` |
 | 2 | `training/config.yaml`, `training/loss.csv`, `training/loss_v2.csv`, `results/task2/`, `results/teacher_validation.json`, `models/v*/model.sha256` |
 | 3 | `results/task3/` (image size, no weights, endpoints, 50 requests at 1 CPU / 1 GiB, peak memory, fault injection) |
 | 4 | `results/task4/` (basics, cold start, HPA, rolling update and rollback, recovery, load balancing) |
