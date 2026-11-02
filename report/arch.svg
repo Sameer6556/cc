@@ -49,7 +49,7 @@
   <rect class="ns" x="138" y="146" width="200" height="80" rx="4"/>
   <text class="tb" x="145" y="159">namespace pipeline</text>
   <text class="t" x="145" y="173">Ollama: phi3.5 (temp 0, seed 42)</text>
-  <text class="t" x="145" y="187">Indexed Job teacher-label x4</text>
+  <text class="t" x="145" y="187">Indexed Job: 4 shards, 2 at a time</text>
   <text class="ts" x="145" y="198">SHARD_INDEX 0-3  SHARD_COUNT 4</text>
   <text class="t" x="145" y="212">Jobs: clean, teacher-eval</text>
 

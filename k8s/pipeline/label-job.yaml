@@ -1,4 +1,4 @@
-# Parallel teacher labelling (Task 1): an Indexed Job runs SHARD_COUNT workers at the same time.
+# Parallel teacher labelling (Task 1): an Indexed Job with SHARD_COUNT=4 shards, 2 workers running at a time.
 # Each Pod gets its completion index (0, 1, ...) as SHARD_INDEX, labels the commands whose line
 # number n satisfies n % SHARD_COUNT == SHARD_INDEX, and writes its own object
 # s3://datasets/teacher/shard-<SHARD_INDEX>.jsonl. A restarted Pod resumes from that object.
@@ -10,7 +10,7 @@ metadata:
 spec:
   completionMode: Indexed
   completions: 4
-  parallelism: 4
+  parallelism: 2
   backoffLimitPerIndex: 3
   maxFailedIndexes: 0
   ttlSecondsAfterFinished: 86400
