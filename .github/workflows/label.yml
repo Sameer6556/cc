@@ -1,3 +1,4 @@
+# Manual workflow (Actions tab > label > Run workflow).
 # Task 1 on a GitHub-hosted runner: k3d cluster from cluster/k3d.yaml, SeaweedFS, Ollama (phi3.5),
 # two parallel labelling workers, clean.py, and the teacher's run on the validation texts.
 # The evidence (shard outputs, train.jsonl + sha256, logs) is committed back to the branch.

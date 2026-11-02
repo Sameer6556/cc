@@ -1,3 +1,4 @@
+# Manual workflow (Actions tab > teacher-dev > Run workflow).
 # Prompt development: run the teacher (phi3.5 on Ollama, temperature 0, seed 42) on the
 # validation commands directly on the runner, to measure speed and quality before the
 # multi-hour labelling run. Nothing is trained on these results.
