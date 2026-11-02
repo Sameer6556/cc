@@ -1,0 +1,410 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Command Parser Report</title>
+<style>@page { size: A4; margin: 13mm 14mm 14mm 14mm; }
+:root {
+  --ink: #111110; --ink-2: #52514e; --ink-3: #7a7974; --rule: #d4d3cf; --fill: #f3f2ef;
+  --series-1: #2a78d6; --series-2: #eb6834; --measured: #e8f1fc; --assume: #fdf3e2; --pending: #d03b3b;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fff; }
+body { font-family: "Inter", "DejaVu Sans", sans-serif; font-size: 8.9pt; line-height: 1.34; color: var(--ink);
+       -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+h1 { font-size: 14.5pt; line-height: 1.2; margin: 0 0 2pt; letter-spacing: -0.01em; }
+.subtitle { color: var(--ink-2); font-size: 9.2pt; margin-bottom: 6pt; }
+h2 { font-size: 11pt; margin: 9pt 0 3pt; padding-bottom: 1.5pt; border-bottom: 0.7pt solid var(--ink-3);
+     break-after: avoid; }
+h3 { font-size: 9.2pt; margin: 5pt 0 1.5pt; break-after: avoid; }
+p { margin: 0 0 3.5pt; }
+ul, ol { margin: 0 0 3.5pt; padding-left: 13pt; }
+li { margin: 0 0 1pt; }
+code, .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 7.6pt; }
+a { color: #1c5cab; text-decoration: none; }
+table { border-collapse: collapse; width: 100%; font-size: 7.9pt; margin: 2pt 0 5pt; break-inside: avoid; }
+th, td { border-bottom: 0.4pt solid var(--rule); padding: 1.3pt 3.5pt; text-align: left; vertical-align: top; }
+th { background: var(--fill); font-weight: 600; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+caption { caption-side: bottom; text-align: left; font-size: 7.2pt; color: var(--ink-2); padding-top: 1.5pt; }
+.meta { display: grid; grid-template-columns: auto 1fr; gap: 0 8pt; font-size: 8.2pt; margin-bottom: 4pt; }
+.meta b { font-weight: 600; }
+.legend-box { display: flex; gap: 10pt; font-size: 7.8pt; color: var(--ink-2); margin: 3pt 0 4pt; }
+.tag { display: inline-block; padding: 0 3pt; border-radius: 2pt; font-size: 7pt; font-weight: 600; }
+.tag.m { background: var(--measured); color: #184f95; }
+.tag.a { background: var(--assume); color: #8a5a00; }
+.pending { color: var(--pending); font-weight: 700; }
+.box { border-left: 2pt solid var(--rule); background: #fafaf8; padding: 2.5pt 6pt; margin: 3pt 0 5pt; font-size: 8.3pt; }
+.box.a { border-left-color: #eda100; background: #fffaf0; }
+.box.m { border-left-color: var(--series-1); background: #f6f9fe; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 9pt; align-items: start; }
+.two > div { min-width: 0; }
+figure { margin: 2pt 0 5pt; break-inside: avoid; }
+figcaption { font-size: 7.2pt; color: var(--ink-2); }
+svg text { font-family: "Inter", "DejaVu Sans", sans-serif; }
+.small { font-size: 7.6pt; color: var(--ink-2); }
+.appendix { break-before: page; }
+.nowrap { white-space: nowrap; }
+</style></head><body><h1>Knowledge Distillation and Deployment of a Lightweight Command-Parsing Model on a Local Cloud</h1>
+<div class="subtitle">CS3081 Cloud Computing, mini project report</div>
+<div class="meta"><b>Name</b><span>[YOUR NAME]</span><b>Roll number</b><span>[ROLL NUMBER]</span>
+<b>Repository</b><span><a href="https://github.com/Sameer6556/cc">https://github.com/Sameer6556/cc</a> (assessed commit: tag <code>final</code>)</span>
+<b>Model releases</b><span><a href="https://github.com/Sameer6556/cc/releases/tag/model-v1">model-v1</a>, <a href="https://github.com/Sameer6556/cc/releases/tag/model-v2">model-v2</a></span></div>
+<h2>Overview, architecture and how to read this report</h2>
+<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 236" width="100%" role="img" aria-label="System architecture">
+  <defs>
+    <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="#52514e"/>
+    </marker>
+  </defs>
+  <style>
+    .bx { fill: #fff; stroke: #b9b8b3; stroke-width: 1; }
+    .ns { fill: #f6f5f2; stroke: #c9c8c3; stroke-width: 1; }
+    .cl { fill: none; stroke: #7a7974; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .t  { font-size: 9px; fill: #111110; }
+    .tb { font-size: 9px; fill: #111110; font-weight: 600; }
+    .ts { font-size: 7.6px; fill: #52514e; }
+    .ln { stroke: #52514e; stroke-width: 1.1; fill: none; marker-end: url(#ar); }
+    .lnd { stroke: #52514e; stroke-width: 1.1; fill: none; marker-end: url(#ar); stroke-dasharray: 3 2; }
+  </style>
+  <!-- host -->
+  <rect class="bx" x="4" y="22" width="112" height="196" rx="4"/>
+  <text class="tb" x="12" y="38">Host (laptop / CI runner)</text>
+  <text class="t" x="12" y="56">make up / down</text>
+  <text class="t" x="12" y="70">make label, make train</text>
+  <text class="t" x="12" y="84">docker build (no weights)</text>
+  <text class="t" x="12" y="98">k3d image import</text>
+  <text class="t" x="12" y="116">locust: 4 users</text>
+  <text class="ts" x="12" y="128">POST /parse via :8080</text>
+  <text class="t" x="12" y="146">scripts/s3tool.py</text>
+  <text class="ts" x="12" y="158">S3 via 127.0.0.1:30333</text>
+  <text class="ts" x="12" y="178">.secrets/ (git-ignored)</text>
+  <text class="ts" x="12" y="190">S3 keys -> K8s Secrets</text>
+
+  <!-- cluster -->
+  <rect class="cl" x="128" y="6" width="420" height="226" rx="6"/>
+  <text class="tb" x="138" y="20">k3d cluster "cc" (cluster/k3d.yaml): 1 k3s node</text>
+
+  <!-- traefik -->
+  <rect class="bx" x="138" y="28" width="92" height="30" rx="3"/>
+  <text class="t" x="145" y="41">Traefik ingress</text>
+  <text class="ts" x="145" y="52">host :8080 -> :80</text>
+
+  <!-- app ns -->
+  <rect class="ns" x="138" y="66" width="200" height="72" rx="4"/>
+  <text class="tb" x="145" y="79">namespace app</text>
+  <text class="t" x="145" y="93">Ingress /parse -> Service parser</text>
+  <text class="t" x="145" y="107">Deployment parser: 1-2 Pods</text>
+  <text class="ts" x="145" y="118">FastAPI :8000, 0.5-1 CPU, 768Mi-1Gi</text>
+  <text class="ts" x="145" y="129">probes /healthz /readyz; HPA 70 % CPU</text>
+
+  <!-- pipeline ns -->
+  <rect class="ns" x="138" y="146" width="200" height="80" rx="4"/>
+  <text class="tb" x="145" y="159">namespace pipeline</text>
+  <text class="t" x="145" y="173">Ollama: phi3.5 (temp 0, seed 42)</text>
+  <text class="t" x="145" y="187">Indexed Job teacher-label x2</text>
+  <text class="ts" x="145" y="198">SHARD_INDEX 0,1  SHARD_COUNT 2</text>
+  <text class="t" x="145" y="212">Jobs: clean, teacher-eval</text>
+
+  <!-- data ns -->
+  <rect class="ns" x="352" y="28" width="186" height="198" rx="4"/>
+  <text class="tb" x="359" y="41">namespace data: SeaweedFS (S3)</text>
+  <rect class="bx" x="360" y="50" width="170" height="92" rx="3"/>
+  <text class="tb" x="367" y="63">bucket datasets</text>
+  <text class="ts" x="367" y="76">commands_pool.jsonl</text>
+  <text class="ts" x="367" y="88">teacher/shard-0.jsonl, shard-1.jsonl</text>
+  <text class="ts" x="367" y="100">v1/train.jsonl, v1/train.sha256</text>
+  <text class="ts" x="367" y="112">eval/validation_texts.jsonl</text>
+  <text class="ts" x="367" y="124">eval/teacher_validation_raw.jsonl</text>
+  <rect class="bx" x="360" y="150" width="170" height="68" rx="3"/>
+  <text class="tb" x="367" y="163">bucket models</text>
+  <text class="ts" x="367" y="176">v1/  model + tokenizer + version.json</text>
+  <text class="ts" x="367" y="188">v2/  (one more epoch)</text>
+  <text class="ts" x="367" y="200">*/model.sha256</text>
+  <text class="ts" x="367" y="212">app reads with a read-only key</text>
+
+  <!-- github -->
+  <rect class="bx" x="560" y="22" width="136" height="196" rx="4"/>
+  <text class="tb" x="568" y="38">GitHub</text>
+  <text class="t" x="568" y="56">Actions: ci.yml</text>
+  <text class="ts" x="568" y="68">1 lint + gitleaks</text>
+  <text class="ts" x="568" y="79">2 unit tests</text>
+  <text class="ts" x="568" y="90">3 evaluate Release model</text>
+  <text class="ts" x="568" y="101">4 gate --min-validity 95</text>
+  <text class="t" x="568" y="124">Releases</text>
+  <text class="ts" x="568" y="136">model-v1, model-v2</text>
+  <text class="ts" x="568" y="147">weights, tokenizer,</text>
+  <text class="ts" x="568" y="158">version.json, model.sha256</text>
+  <text class="t" x="568" y="180">label / train /</text>
+  <text class="t" x="568" y="192">experiments workflows</text>
+  <text class="ts" x="568" y="204">commit evidence to results/</text>
+
+  <!-- arrows -->
+  <path class="ln" d="M116,121 L138,45"/>
+  <path class="ln" d="M184,58 L184,66"/>
+  <path class="ln" d="M338,104 C346,104 346,180 360,182"/>
+  <text class="ts" x="341" y="146" transform="rotate(90 341 146)">model at start-up</text>
+  <path class="ln" d="M338,190 C348,190 350,96 360,96"/>
+  <path class="ln" d="M116,150 C230,232 300,232 360,204"/>
+  <path class="lnd" d="M560,150 C548,150 545,170 530,170"/>
+  <text class="ts" x="533" y="146">seed</text>
+</svg>
+<figcaption>Figure 1. System architecture. Everything runs in one k3d cluster created from
+<code>cluster/k3d.yaml</code>; the only things outside it are the host tools and GitHub (CI and the model Releases).</figcaption></figure>
+<p>The teacher (phi3.5, 3.8 B parameters, served by Ollama) labels the 3,000 pool commands with a four-key
+JSON frame; <code>clean.py</code> filters the replies into a training set; Pythia-70M is fine-tuned on the
+first 1,500 records (sequence-level distillation); the student is served by a FastAPI service behind a
+Traefik Ingress with an HPA. All long-running experiments were executed with the repository's own Makefile
+targets and scripts on GitHub-hosted runners (Ubuntu 24.04, 4 vCPU, 16 GiB RAM), from a fresh clone each time,
+by the workflows <code>label</code>, <code>train</code> and <code>experiments</code>, which commit their evidence to
+<code>results/</code>; the same commands run unchanged on a laptop (see README).</p>
+<div class="legend-box"><span><span class="tag m">M</span> measured: read from the file named in the caption or row</span>
+<span><span class="tag a">A</span> assumption or design choice, not a measurement</span></div>
+<h2>Task 1. Object storage and parallel teacher labelling</h2>
+<p><b>Architecture.</b> The cluster is a single k3s node; Traefik is published on host port 8080 and the S3 port of
+SeaweedFS on 127.0.0.1:30333 only. SeaweedFS 4.47 runs as one <code>weed server -s3</code> Pod in namespace
+<code>data</code> on a 5 GiB volume. S3 credentials are generated at deploy time (<code>scripts/secrets.sh</code>)
+straight into Kubernetes Secrets: an admin identity for the pipeline and a read-only identity limited to the
+<code>models</code> bucket for the service (checked: GET/LIST on models allowed; GET on datasets, PUT and DELETE denied).
+<code>make up</code> creates the buckets <code>datasets</code> and <code>models</code> and uploads
+<code>commands_pool.jsonl</code>. The teacher runs inside the cluster (Ollama 0.40.9, namespace <code>pipeline</code>,
+phi3.5 pulled by an init container) with temperature 0 and seed 42 hard-coded in <code>worker/teacher.py</code>,
+plus <code>num_predict</code> 128 and <code>num_ctx</code> 2048.</p>
+<p><b>Prompt</b> (<code>prompts/teacher_prompt.txt</code>). It restates the four keys, gives a one-line definition per
+intent, the three slot rules, and two conventions of the data (drop "next"; parts of the day and words such as
+"near me" are not slots), followed by 13 examples I wrote. None of the 13 commands occurs in the pool or the
+validation set (checked by script), so no hand-made label can leak into the training data.</p>
+<p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
+<i>n</i> mod <i>K</i> = <i>k</i>. The workers are one Kubernetes <i>Indexed Job</i> with
+<code>completions = parallelism = 2</code>; each Pod receives its completion index through the downward API as
+<code>SHARD_INDEX</code>, and <code>SHARD_COUNT</code>=2. The assignment is a pure function of the line number, so the
+shards are disjoint and together cover every line without any coordination, locking or shared state; each worker
+writes only its own object <code>datasets/teacher/shard-k.jsonl</code>, so there are no write conflicts. Round-robin
+(rather than contiguous blocks) keeps the shards balanced even if command length drifts through the file. A worker
+uploads its partial object every 25 replies and, when restarted, skips the ids already present, so a Pod failure
+costs at most 25 teacher calls. Ollama decodes the two workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>).
+The trade-off of a static split is that a slow worker cannot hand work to a fast one.</p>
+<div class="two"><div>
+<table><tr><th>clean.py outcome (each record counted once, first rule that applies)</th><th class="n">records</th></tr>
+<tr><td>input records (both shards)</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>(a) reply is not valid JSON</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>(b) keys not exactly intent, date, time, place</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>(c) intent not one of the eight</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>(d) slot value neither null nor text of the command</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>(e) duplicate command (smallest id kept)</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td><b>kept</b></td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
+<caption><span class="tag m">M</span> results/task1/clean_stats.json. input = (a)+(b)+(c)+(d)+(e)+kept is asserted in clean.py.</caption></table>
+</div><div>
+<table><tr><th>worker</th><th class="n">replies</th><th class="n">wall time</th><th class="n">s / command</th><th class="n">reply tokens</th></tr>
+<tr><td colspan="5"><span class="pending">PENDING</span></td></tr>
+<caption><span class="tag m">M</span> results/task1/worker-shard-*.log (both Pods ran concurrently: workers_running.txt).</caption></table>
+<p class="small">Coverage (every id in exactly one shard, in the shard its line number dictates):
+<b><span class="pending">PENDING</span></b> (coverage.txt).
+Re-running <code>clean.py</code> outside the cluster reproduces <code>train.sha256</code>:
+<b><span class="pending">PENDING</span></b> (clean_reproduce.txt).
+SHA-256 of <code>datasets/v1/train.jsonl</code>: <code><span class="pending">PENDING</span></code>.
+Labelling wall time: <b><span class="pending">PENDING</span></b>.</p>
+</div></div>
+<p><b>Cleaning decisions</b> <span class="tag a">A</span>. A reply is parsed after trimming surrounding whitespace (as
+<code>score.py</code> does); a repeated key counts as (b); NaN is invalid JSON; rule (d) compares whole words, case-
+and space-insensitively, so "mon" does not match "monday" and an empty string never matches. Rules (a)-(d) are
+applied first, then duplicates among the survivors. Each kept line stores the exact <code>teacher_raw</code> reply and
+a <code>target</code>: the same object re-serialised with the key order intent, date, time, place (values unchanged;
+<span class="pending">PENDING</span> of <span class="pending">PENDING</span> kept replies were already byte-identical to it).
+<b>Limitations / improvements:</b> rule (d) checks form, not meaning, so a wrong-but-present span is kept; with only
+4 vCPU the teacher is compute-bound, so more workers would not help; a work queue (or a Job per chunk) would remove the
+static-split imbalance, and a second teacher pass on rejected commands could recover data.</p>
+<h2>Task 2. Training the student (sequence-level distillation)</h2>
+<div class="two"><div>
+<table><tr><th>training/config.yaml</th><th>value</th></tr>
+<tr><td>seed (fixed in code via set_seed before any randomness)</td><td>42</td></tr>
+<tr><td>learning rate (AdamW, 5 % warm-up, linear decay)</td><td>0.0003</td></tr>
+<tr><td>batch size</td><td>16</td></tr>
+<tr><td>epochs: v1 / v2</td><td>10 / 11 (v2 = one more epoch)</td></tr>
+<tr><td>maximum sequence length</td><td>128 tokens (no example truncated: <span class="pending">PENDING</span>)</td></tr>
+<tr><td>libraries</td><td>Python 3.12, torch 2.14.1 (CPU), transformers 5.19.0, tokenizers 0.23.3, safetensors 0.8.0</td></tr>
+<tr><td>records</td><td>first <span class="pending">PENDING</span> of train.jsonl (<span class="pending">PENDING</span> to <span class="pending">PENDING</span>)</td></tr>
+<tr><td>base model</td><td>EleutherAI/pythia-70m @ <code><span class="pending">PENDING</span></code></td></tr>
+<caption><span class="tag m">M</span> config and results/task2/train_v1.log. Training time v1 <span class="pending">PENDING</span>, v2 <span class="pending">PENDING</span> on 4 vCPU; <code>make train SUBSET=50</code> ran to the end in <span class="pending">PENDING</span> (train_subset50.log).</caption></table>
+</div><div><figure><p class="small">Loss chart: <span class="pending">PENDING</span></p>
+<figcaption>Figure 2. Mean per-token loss on the reply tokens, per epoch (training/loss.csv, loss_v2.csv) <span class="tag m">M</span></figcaption></figure></div></div>
+<p><b>Implementation.</b> Each example is <code>Command: &lt;text&gt;\nJSON: &lt;target&gt;&lt;|endoftext|&gt;</code>. The loss is
+computed only on the reply and the end-of-text token (prompt tokens are masked with -100), so the student learns
+p(reply | command) and learns to stop. The prompt format, greedy decoding (stop at end-of-text or newline,
+<code>MAX_NEW_TOKENS</code>=64) and validation live in one module, <code>service/parser_core.py</code>, used by
+training, offline evaluation and the service, so the scores below are produced exactly the way the service answers.
+Training runs in deterministic mode; two runs of <code>make train SUBSET=50</code> on the same runner gave weights that are <span class="pending">PENDING</span> (results/task2/determinism_check.txt). Both versions were
+uploaded to <code>s3://models/v1/</code> and <code>v2/</code> (results/task2/s3_listing.txt) and published as Releases
+whose files verify against <code>models/v1/model.sha256</code> with <code>sha256sum -c</code> (results/task2/release_v1_sha256_check.txt).
+Weights: <code class="small"><span class="pending">PENDING</span></code>.</p>
+<table><tr><th>model (validation.jsonl, 100 commands)</th><th class="n">JSON valid</th><th class="n">intent</th><th class="n">date</th><th class="n">time</th><th class="n">place</th><th class="n">full frame</th></tr>
+<tr><td>teacher phi3.5 (same prompt and settings as Task 1)</td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>Pythia-70M, untrained (same prompt and decoding)</td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td><b>student v1 (10 epochs)</b></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>student v2 (11 epochs)</td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td><td class="n"><span class="pending">PENDING</span></td></tr>
+<caption><span class="tag m">M</span> score.py reports: results/teacher_validation.json, results/task2/untrained_validation.json, student_v1_validation.json, student_v2_validation.json (raw outputs next to them). Student v1 full frame = <span class="pending">PENDING</span> of the teacher's.</caption></table>
+<p><b>What changed.</b> The untrained model does not produce the frame at all; after distillation the student
+emits a schema-valid frame for almost every command, and its errors are concentrated in the slots, where it has to
+copy an exact span. Because the student is trained only on the teacher's replies, the teacher's full-frame accuracy is
+effectively its ceiling, and the teacher's systematic deviations from the SLURP conventions are inherited.</p>
+<h3>Sequence-level vs logit-based distillation</h3>
+<p><b>(a) Sequence-level KD</b> (Kim and Rush, 2016), used here, trains the student with ordinary cross-entropy on the
+teacher's <i>generated output sequence</i>: the teacher's (approximate) mode, decoded greedily, is treated as the
+hard target y&#770;, and the student maximises log p<sub>S</sub>(y&#770; | x). <b>(b) Logit-based (word-level) KD</b>
+(Hinton et al., 2015) instead trains on the teacher's <i>full next-token probability distribution</i> at every position,
+minimising KL(p<sub>T</sub>(&middot; | x, y<sub>&lt;t</sub>) || p<sub>S</sub>(&middot; | x, y<sub>&lt;t</sub>)), usually with a temperature,
+so the student also learns how the teacher spreads probability over the alternatives (the "dark knowledge").
+<b>(c) It is not possible here</b> for two independent reasons: Ollama's API returns the generated text, not the
+per-position distribution over the whole vocabulary; and even with logits, phi3.5 (Llama-style SentencePiece,
+32,064 tokens) and Pythia (GPT-NeoX BPE, 50,304 tokens) tokenise text differently, so their distributions are over
+different vocabularies and different token boundaries and cannot be compared position by position without an
+alignment method. <b>(d) Limitation of what I did:</b> the student sees one hard answer per command, so it copies
+the teacher's mistakes with full confidence (for example its slot boundaries, which differ from the SLURP labels used
+for scoring), and it gets no signal about which commands the teacher was unsure of; the filter in Task 1 removes
+malformed replies but cannot remove fluent, wrong ones.</p>
+<h2>Task 3. The inference service in a container</h2>
+<p><b>Implementation.</b> FastAPI (<code>service/app.py</code>), port 8000. <code>POST /parse</code> runs greedy
+generation, validates the output against <code>schema.json</code> with <code>jsonschema</code> (exactly the four keys,
+one of the eight intents, string-or-null slots, NaN rejected) and returns either HTTP 200 with only the object or
+HTTP 500 <code>{"error": "invalid_model_output"}</code>; both carry <code>X-Model-Version</code> and
+<code>X-Served-By</code> (the Pod name from the downward API). <code>/healthz</code> answers 200 while the process
+lives; <code>/readyz</code> is 503 until a background thread has downloaded every object under <code>MODEL_URI</code>
+from <code>S3_ENDPOINT</code>, verified each file against <code>model.sha256</code>, loaded the model and run one
+warm-up generation. Configuration comes from <code>MODEL_URI</code>, <code>MODEL_VERSION</code>,
+<code>S3_ENDPOINT</code> and <code>MAX_NEW_TOKENS</code>; credentials only from the Secret; <code>FAULT_INJECT=1</code>
+replaces the output with <code>not json</code> before validation. One generation runs at a time per Pod (a lock), and
+torch uses as many threads as the container's CPU limit (read from the cgroup). The image (<code>service/Dockerfile</code>)
+installs the CPU-only torch wheel, then every other package from a fully pinned lock with <code>--no-deps</code> and
+<code>pip check</code>; it runs as a non-root user and contains no weights.</p>
+<table><tr><th>check</th><th>result</th><th>evidence (results/task3/)</th></tr>
+<tr><td>image size (limit 2 GB)</td><td><span class="pending">PENDING</span></td><td>image.txt</td></tr>
+<tr><td>model files inside the image</td><td><span class="pending">PENDING</span></td><td>no_weights_in_image.txt</td></tr>
+<tr><td>/readyz 503 while loading, then 200; /healthz 200 throughout</td><td><span class="pending">PENDING</span></td><td>readiness.log, endpoints.txt</td></tr>
+<tr><td>50 sequential requests at <code>--cpus 1 --memory 1g</code></td><td><span class="pending">PENDING</span>, codes <span class="pending">PENDING</span>; median <span class="pending">PENDING</span>, max <span class="pending">PENDING</span></td><td>sequential_50.txt</td></tr>
+<tr><td>peak memory (cgroup <code>memory.peak</code>), OOM-killed</td><td><b><span class="pending">PENDING</span></b> of 1,024 MiB; OOMKilled=<span class="pending">PENDING</span></td><td>memory_peak.txt, docker_stats.log</td></tr>
+<tr><td><code>FAULT_INJECT=1</code></td><td><span class="pending">PENDING</span></td><td>fault_inject.txt</td></tr>
+<caption><span class="tag m">M</span> all rows; non-200 codes in the 50-request run are invalid model outputs, which the service correctly refuses.</caption></table>
+<p><b>Limitations / improvements.</b> torch dominates the image size and start-up time; exporting the model to ONNX
+Runtime would shrink both. One request at a time per Pod caps throughput at one CPU's worth of decoding; batching
+concurrent requests would raise it. Invalid outputs are refused, not repaired; constrained decoding against the JSON
+schema would make every answer valid by construction.</p>
+<h2>Task 4. Kubernetes deployment, scaling and reliability</h2>
+<p><b>Implementation</b> (<code>k8s/app/parser.yaml</code>). Namespace <code>app</code>: a Deployment starting at
+2 replicas (requests 500m CPU / 768 Mi, limits 1 CPU / 1 Gi; readiness probe <code>/readyz</code> every 2 s,
+liveness <code>/healthz</code> every 10 s with 6 allowed failures; rolling update <code>maxSurge 1,
+maxUnavailable 0</code>; <code>preStop</code> sleep 5 s so Traefik drops a terminating Pod before it stops; graceful
+shutdown 20 s), a ClusterIP Service, a Traefik Ingress for <code>/parse</code> only, and an <code>autoscaling/v2</code>
+HPA (1 to 2 replicas, 70 % average CPU of the request, scale-down window shortened to 60 s so it can be observed).
+The scripts in <code>scripts/experiments/</code> produce every row below.</p>
+<table><tr><th>experiment</th><th>measured result</th><th>evidence (results/task4/)</th></tr>
+<tr><td>/parse through the Ingress</td><td><span class="pending">PENDING</span></td><td>basics/ingress_curl.txt, resources.txt</td></tr>
+<tr><td>no ready endpoints while the model loads</td><td><span class="pending">PENDING</span> timeline samples (0.5 s apart) with 0 ready endpoints after deleting all Pods</td><td>coldstart/run*_endpoints.log</td></tr>
+<tr><td>HPA under load (4 users)</td><td>replicas <span class="pending">PENDING</span> &rarr; <span class="pending">PENDING</span> &rarr; <span class="pending">PENDING</span>; <span class="pending">PENDING</span> failed of <span class="pending">PENDING</span></td><td>hpa/timeline.log, describe_hpa.txt</td></tr>
+<tr><td>rolling update v1&rarr;v2, then <code>rollout undo</code>, under load</td><td><b><span class="pending">PENDING</span></b> failed (<span class="pending">PENDING</span> of <span class="pending">PENDING</span>); versions served <span class="pending">PENDING</span>; after rollback <span class="pending">PENDING</span> of 5 answers say v1</td><td>rolling/rolling.log, version_timeline.log, after_rollback.txt</td></tr>
+<tr><td>delete one Pod under load</td><td>back to 2 Ready after <span class="pending">PENDING</span>; <b><span class="pending">PENDING</span></b> failed (<span class="pending">PENDING</span> of <span class="pending">PENDING</span>)</td><td>recovery/recovery.log, timeline.log</td></tr>
+<tr><td>cold start: delete all Pods, 3 runs</td><td><span class="pending">PENDING</span>; <b>median <span class="pending">PENDING</span></b> (Pod creation to Ready); logs show the download from <code>s3://models/v1/</code></td><td>coldstart/summary.txt, run*_*.log</td></tr>
+<tr><td>load balancing, exactly 2 Ready replicas</td><td>successful requests per replica: <span class="pending">PENDING</span> (each must be &ge; 30 %)</td><td>loadbalance/loadbalance.log</td></tr>
+<caption><span class="tag m">M</span> all rows. For the recovery and load-balancing runs the HPA minimum was held at 2 so that two replicas existed; it was set back to 1 afterwards.</caption></table>
+<p><b>Limitations.</b> <span class="tag a">A</span> The cluster is one k3s node in one container on one machine:
+the experiments show recovery from a lost <i>Pod</i>, not from a lost node, disk or machine; there is no fault tolerance
+across machines, and SeaweedFS is a single replica on a single volume. The HPA reacts to metrics-server samples (15 s)
+plus a stabilisation window, so it lags short bursts; and the replica count is capped at 2 by the assignment.
+<b>Improvements:</b> 3+ nodes (k3d agents) with pod anti-affinity, a PodDisruptionBudget, SeaweedFS replication, a
+startup probe instead of a long liveness delay, and an HPA on request latency rather than CPU.</p>
+<h2>Task 5. Subnetting and network access control</h2>
+<div class="two"><div>
+<table><tr><th>subnet</th><th>network / prefix</th><th>usable range</th><th>broadcast</th><th class="n">hosts</th></tr>
+<tr><td>app (1,000)</td><td>10.20.0.0/22</td><td>10.20.0.1 - 10.20.3.254</td><td>10.20.3.255</td><td class="n">1,022</td></tr>
+<tr><td>public (250)</td><td>10.20.4.0/24</td><td>10.20.4.1 - 10.20.4.254</td><td>10.20.4.255</td><td class="n">254</td></tr>
+<tr><td>data (100)</td><td>10.20.5.0/25</td><td>10.20.5.1 - 10.20.5.126</td><td>10.20.5.127</td><td class="n">126</td></tr>
+<tr><td>management (20)</td><td>10.20.5.128/27</td><td>10.20.5.129 - 10.20.5.158</td><td>10.20.5.159</td><td class="n">30</td></tr>
+<caption>Working in network/subnets.md: largest first, smallest prefix with 2<sup>32-p</sup>-2 &ge; need (one bit smaller gives 510, 126, 62, 14: too few); each block starts right after the previous one. Verified with Python ipaddress in tests/test_network.py.</caption></table>
+</div><div>
+<table><tr><th>dir</th><th>rule</th><th>match</th><th>action</th></tr>
+<tr><td>in</td><td>50</td><td>all, 198.51.100.0/24</td><td>deny</td></tr>
+<tr><td>in</td><td>100 / 110</td><td>tcp 80 / tcp 443, 0.0.0.0/0</td><td>allow</td></tr>
+<tr><td>in</td><td>120</td><td>tcp 22, 10.20.5.128/27 (management)</td><td>allow</td></tr>
+<tr><td>in</td><td>130</td><td>tcp 1024-65535, 10.20.0.0/22 (app replies)</td><td>allow</td></tr>
+<tr><td>out</td><td>100</td><td>tcp 8000, 10.20.0.0/22 (app)</td><td>allow</td></tr>
+<tr><td>out</td><td>110</td><td>tcp 1024-65535, 0.0.0.0/0 (client replies)</td><td>allow</td></tr>
+<tr><td>both</td><td>32766</td><td>all, 0.0.0.0/0</td><td>deny</td></tr>
+<caption><span class="tag m">M</span> nacl_sim.py on packets_sample.jsonl: 6 / 6 correct; 16 / 16 on my edge cases (results/network/nacl_check.txt).</caption></table>
+</div></div>
+<p><b>Why stateless rules need reply rules, and why order matters.</b> A NACL keeps no connection state: every packet,
+including a reply, is evaluated on its own. When a client opens a connection to the load balancer on 443, the answer
+leaves the subnet towards the client's ephemeral port (1024-65535); without outbound rule 110 every response would be
+dropped. Likewise the load balancer's request to the app goes out on TCP 8000, but the app's answer arrives on one of
+the load balancer's ephemeral ports and needs inbound rule 130 (a stateful security group would allow both
+automatically). Rules are checked from the lowest number and the first match wins. A packet from 198.51.100.9 to port
+443 matches both the deny and the "443 from anywhere" allow, so the deny only works if its number is lower than the
+allow it must override: renumbering it from 50 to 140 lets that packet in (results/network/nacl_wrong_order_check.txt,
+5 / 6). Limitation: a stateless NACL cannot tell a reply from a new connection, so outbound rule 110 also permits new
+connections to any high port.</p>
+<h2>Task 6. Reproducibility, testing and CI/CD</h2>
+<p><b>Reproducibility.</b> From a fresh clone the whole system comes up with three commands (<code>git clone</code>,
+<code>cd cc</code>, <code>make up</code>): cluster, Secrets, SeaweedFS, buckets and dataset, model Releases downloaded,
+verified and uploaded, image built and imported, app deployed, smoke request. <code>make down</code> deletes the cluster.
+The <code>experiments</code> workflow runs exactly this on a clean runner: <code>make up</code> took
+<span class="pending">PENDING</span> (results/task6/make_up.log) and <code>make down</code> left
+<span class="pending">PENDING</span> (make_down.log).
+Python dependencies are pinned (service image: full lock); the cluster image, SeaweedFS and Ollama tags are pinned.</p>
+<table><tr><th>ci.yml stage (in order)</th><th>what it does</th></tr>
+<tr><td>1. lint + secret scan</td><td><code>ruff check .</code>; gitleaks 8.30.1 over the full Git history (must report nothing)</td></tr>
+<tr><td>2. unit tests</td><td>54 pytest tests: clean.py rules, sharding, service API and headers, schema validation, subnets, NACL</td></tr>
+<tr><td>3. model evaluation</td><td>downloads the Release <code>model-v1</code>, checks <code>sha256sum -c model.sha256</code>, predicts validation.jsonl, runs score.py</td></tr>
+<tr><td>4. quality gate</td><td><code>score.py --min-validity 95</code>; fails the pipeline below 95 % JSON validity</td></tr>
+<caption><span class="tag m">M</span> passing run: <span class="pending">PENDING</span>;
+run with the untrained Pythia-70M failing at the gate: <span class="pending">PENDING</span>.</caption></table>
+<p>The AI tools used, and how their output was checked, are described in <code>AI_USE.md</code>.
+<b>Limitation:</b> CI evaluates on the 100 validation commands only and cannot reproduce the multi-hour labelling;
+<b>improvement:</b> a nightly job that re-runs <code>make up</code> and the load test, and a held-out split of the pool.</p>
+<h2>Task 7. Performance, cost and review</h2>
+<div class="two"><div>
+<table><tr><th>standard load test (4 users, 2 min, via Ingress)</th><th class="n">value</th></tr>
+<tr><td>requests / failed</td><td class="n"><span class="pending">PENDING</span> / <span class="pending">PENDING</span></td></tr>
+<tr><td>error rate</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
+<tr><td>p50 latency</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
+<tr><td>p95 latency</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
+<tr><td>throughput</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
+<tr><td>mean replicas during the run</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>cold start, median of 3 (Task 4)</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<caption><span class="tag m">M</span> results/loadtest_stats.csv, results/task7/summary.json, timeline.log.</caption></table>
+</div><div>
+<table><tr><th>Pod (kubectl top, every 10 s)</th><th class="n">CPU mean / max</th><th class="n">memory mean / max</th><th class="n">n</th></tr>
+<tr><td colspan="4"><span class="pending">PENDING</span></td></tr>
+<caption><span class="tag m">M</span> results/task7/top_pods.log. metrics-server reports a 15 s window, so the first sample after the load starts still shows idle CPU.</caption></table>
+<div class="box"><b>Cost per 1,000 requests</b> (data/rate_card.json: INR 3.50 per vCPU-hour, INR 0.45 per GiB-hour; each replica billed for its limits, 1 vCPU and 1 GiB):
+<ol><li><span class="pending">PENDING</span></li></ol></div>
+</div></div>
+<p><b>SLO.</b> <i><span class="pending">PENDING</span></i> over the window <i><span class="pending">PENDING</span></i>. Error budget =
+1 % of <span class="pending">PENDING</span> requests = <b><span class="pending">PENDING</span></b> failed requests;
+used: <span class="pending">PENDING</span> failed = <b><span class="pending">PENDING</span></b> of the budget
+(SLO <span class="pending">PENDING</span>).
+<span class="tag a">A</span> The cost counts only the parser replicas at their limits (not SeaweedFS, Traefik or the
+control plane) and assumes the measured throughput is sustained for the whole hour.</p>
+<table><tr><th>component or concern</th><th>evidence (a measured number)</th><th>limitation found</th><th>improvement proposed</th></tr><tr><td>Data and storage</td><td><span class="pending">PENDING</span> of <span class="pending">PENDING</span> teacher replies kept; train.jsonl checksum reproduced</td><td>rule (d) keeps fluent but wrong spans; single SeaweedFS replica</td><td>second teacher pass on rejects; replicated object store</td></tr><tr><td>Model quality</td><td>student full frame <span class="pending">PENDING</span>, JSON validity <span class="pending">PENDING</span></td><td>copies the teacher's slot-boundary errors; 70 M parameters</td><td>logit KD with a same-tokenizer teacher; constrained decoding</td></tr><tr><td>Latency and throughput</td><td>p95 <span class="pending">PENDING</span>, <span class="pending">PENDING</span></td><td>one request at a time per Pod; greedy decoding on 1 CPU</td><td>request batching; ONNX Runtime / int8</td></tr><tr><td>Resource utilisation</td><td>peak memory <span class="pending">PENDING</span> of 1 GiB at 1 CPU</td><td>CPU saturates while memory is mostly idle</td><td>smaller memory limit (cheaper); more replicas per node</td></tr><tr><td>Reliability and recovery</td><td>rolling update <span class="pending">PENDING</span> failed; cold start median <span class="pending">PENDING</span></td><td>single node: no machine-level fault tolerance</td><td>multi-node cluster, anti-affinity, PodDisruptionBudget</td></tr><tr><td>Security and cost</td><td>gitleaks: 0 findings; INR <span class="pending">PENDING</span> per 1,000 requests</td><td>S3 over plain HTTP inside the cluster; replicas billed at full limits when idle</td><td>TLS + NetworkPolicies; scale to zero off-peak</td></tr>
+<caption>Review. <span class="tag m">M</span> evidence column; the other columns are my assessment.</caption></table>
+<h2>References</h2>
+<ol class="small">
+<li>Y. Kim, A. M. Rush. Sequence-Level Knowledge Distillation. EMNLP 2016. https://aclanthology.org/D16-1139/</li>
+<li>G. Hinton, O. Vinyals, J. Dean. Distilling the Knowledge in a Neural Network. arXiv:1503.02531, 2015.</li>
+<li>Y.-C. Chen et al. Distilling Knowledge Learned in BERT for Text Generation. ACL 2020.</li>
+<li>E. Bastianelli et al. SLURP: A Spoken Language Understanding Resource Package. EMNLP 2020 (CC BY 4.0).</li>
+<li>S. Biderman et al. Pythia: A Suite for Analyzing Large Language Models. ICML 2023; EleutherAI/pythia-70m model card.</li>
+<li>Microsoft. Phi-3 Technical Report (Phi-3.5-mini-instruct); Ollama library phi3.5.</li>
+<li>Hugging Face Transformers and TRL documentation (causal LM fine-tuning; GKD/distillation trainer).</li>
+<li>k3d and K3s documentation; SeaweedFS (S3 API); Kubernetes docs: Deployments, Services, Ingress, probes, HPA, Secrets, Indexed Jobs.</li>
+<li>Locust; gitleaks; AWS VPC User Guide, Network ACLs; Google SRE Book, Service Level Objectives.</li>
+</ol>
+<div class="appendix"><h2>Appendix A. Measured results vs assumptions</h2>
+<p><b>Measured</b> (each number in the body is read at build time by <code>report/build_report.py</code> from these files):
+results/task1 (labelling, cleaning, coverage), datasets/v1/train.sha256, training/loss*.csv, results/teacher_validation.json,
+results/task2 (training logs, evaluations, S3 listing, Release checks), results/task3, results/task4, results/network,
+results/task6, results/loadtest_* and results/task7.</p>
+<p><b>Assumptions and design choices</b> (not measurements): the rate card prices are hypothetical; cost counts only the
+parser replicas at their limits and assumes the measured throughput holds for an hour; the SLO target (99 %) and window
+(one standard run) are my choices; the HPA scale-down window was shortened to 60 s for observability; the HPA minimum
+was raised to 2 during the recovery and load-balancing runs; validation scores are optimistic for the teacher because
+the prompt's conventions were chosen after looking at the kind of labels in validation.jsonl (no validation command or
+label is in the prompt); a GitHub-hosted runner (4 vCPU, 16 GiB) stands in for a student laptop.</p>
+<h2>Appendix B. Reproducing every number</h2>
+<p><code>make up</code>; <code>make label</code> (Task 1); <code>make train</code>, <code>make train MODEL_VERSION=v2</code>,
+<code>make eval</code>, <code>make eval-untrained</code> (Task 2); <code>bash scripts/experiments/run_all.sh</code>
+(Tasks 3, 4, 7); <code>python tools/nacl_sim.py network/nacl.json network/packets_sample.jsonl --check</code> (Task 5);
+<code>make lint test</code> (Task 6); <code>python report/build_report.py &amp;&amp; node report/render.cjs</code> (this report).</p></div></body></html>

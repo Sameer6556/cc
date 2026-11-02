@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 236" width="100%" role="img" aria-label="System architecture">
+  <defs>
+    <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="#52514e"/>
+    </marker>
+  </defs>
+  <style>
+    .bx { fill: #fff; stroke: #b9b8b3; stroke-width: 1; }
+    .ns { fill: #f6f5f2; stroke: #c9c8c3; stroke-width: 1; }
+    .cl { fill: none; stroke: #7a7974; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .t  { font-size: 9px; fill: #111110; }
+    .tb { font-size: 9px; fill: #111110; font-weight: 600; }
+    .ts { font-size: 7.6px; fill: #52514e; }
+    .ln { stroke: #52514e; stroke-width: 1.1; fill: none; marker-end: url(#ar); }
+    .lnd { stroke: #52514e; stroke-width: 1.1; fill: none; marker-end: url(#ar); stroke-dasharray: 3 2; }
+  </style>
+  <!-- host -->
+  <rect class="bx" x="4" y="22" width="112" height="196" rx="4"/>
+  <text class="tb" x="12" y="38">Host (laptop / CI runner)</text>
+  <text class="t" x="12" y="56">make up / down</text>
+  <text class="t" x="12" y="70">make label, make train</text>
+  <text class="t" x="12" y="84">docker build (no weights)</text>
+  <text class="t" x="12" y="98">k3d image import</text>
+  <text class="t" x="12" y="116">locust: 4 users</text>
+  <text class="ts" x="12" y="128">POST /parse via :8080</text>
+  <text class="t" x="12" y="146">scripts/s3tool.py</text>
+  <text class="ts" x="12" y="158">S3 via 127.0.0.1:30333</text>
+  <text class="ts" x="12" y="178">.secrets/ (git-ignored)</text>
+  <text class="ts" x="12" y="190">S3 keys -> K8s Secrets</text>
+
+  <!-- cluster -->
+  <rect class="cl" x="128" y="6" width="420" height="226" rx="6"/>
+  <text class="tb" x="138" y="20">k3d cluster "cc" (cluster/k3d.yaml): 1 k3s node</text>
+
+  <!-- traefik -->
+  <rect class="bx" x="138" y="28" width="92" height="30" rx="3"/>
+  <text class="t" x="145" y="41">Traefik ingress</text>
+  <text class="ts" x="145" y="52">host :8080 -> :80</text>
+
+  <!-- app ns -->
+  <rect class="ns" x="138" y="66" width="200" height="72" rx="4"/>
+  <text class="tb" x="145" y="79">namespace app</text>
+  <text class="t" x="145" y="93">Ingress /parse -> Service parser</text>
+  <text class="t" x="145" y="107">Deployment parser: 1-2 Pods</text>
+  <text class="ts" x="145" y="118">FastAPI :8000, 0.5-1 CPU, 768Mi-1Gi</text>
+  <text class="ts" x="145" y="129">probes /healthz /readyz; HPA 70 % CPU</text>
+
+  <!-- pipeline ns -->
+  <rect class="ns" x="138" y="146" width="200" height="80" rx="4"/>
+  <text class="tb" x="145" y="159">namespace pipeline</text>
+  <text class="t" x="145" y="173">Ollama: phi3.5 (temp 0, seed 42)</text>
+  <text class="t" x="145" y="187">Indexed Job teacher-label x2</text>
+  <text class="ts" x="145" y="198">SHARD_INDEX 0,1  SHARD_COUNT 2</text>
+  <text class="t" x="145" y="212">Jobs: clean, teacher-eval</text>
+
+  <!-- data ns -->
+  <rect class="ns" x="352" y="28" width="186" height="198" rx="4"/>
+  <text class="tb" x="359" y="41">namespace data: SeaweedFS (S3)</text>
+  <rect class="bx" x="360" y="50" width="170" height="92" rx="3"/>
+  <text class="tb" x="367" y="63">bucket datasets</text>
+  <text class="ts" x="367" y="76">commands_pool.jsonl</text>
+  <text class="ts" x="367" y="88">teacher/shard-0.jsonl, shard-1.jsonl</text>
+  <text class="ts" x="367" y="100">v1/train.jsonl, v1/train.sha256</text>
+  <text class="ts" x="367" y="112">eval/validation_texts.jsonl</text>
+  <text class="ts" x="367" y="124">eval/teacher_validation_raw.jsonl</text>
+  <rect class="bx" x="360" y="150" width="170" height="68" rx="3"/>
+  <text class="tb" x="367" y="163">bucket models</text>
+  <text class="ts" x="367" y="176">v1/  model + tokenizer + version.json</text>
+  <text class="ts" x="367" y="188">v2/  (one more epoch)</text>
+  <text class="ts" x="367" y="200">*/model.sha256</text>
+  <text class="ts" x="367" y="212">app reads with a read-only key</text>
+
+  <!-- github -->
+  <rect class="bx" x="560" y="22" width="136" height="196" rx="4"/>
+  <text class="tb" x="568" y="38">GitHub</text>
+  <text class="t" x="568" y="56">Actions: ci.yml</text>
+  <text class="ts" x="568" y="68">1 lint + gitleaks</text>
+  <text class="ts" x="568" y="79">2 unit tests</text>
+  <text class="ts" x="568" y="90">3 evaluate Release model</text>
+  <text class="ts" x="568" y="101">4 gate --min-validity 95</text>
+  <text class="t" x="568" y="124">Releases</text>
+  <text class="ts" x="568" y="136">model-v1, model-v2</text>
+  <text class="ts" x="568" y="147">weights, tokenizer,</text>
+  <text class="ts" x="568" y="158">version.json, model.sha256</text>
+  <text class="t" x="568" y="180">label / train /</text>
+  <text class="t" x="568" y="192">experiments workflows</text>
+  <text class="ts" x="568" y="204">commit evidence to results/</text>
+
+  <!-- arrows -->
+  <path class="ln" d="M116,121 L138,45"/>
+  <path class="ln" d="M184,58 L184,66"/>
+  <path class="ln" d="M338,104 C346,104 346,180 360,182"/>
+  <text class="ts" x="341" y="146" transform="rotate(90 341 146)">model at start-up</text>
+  <path class="ln" d="M338,190 C348,190 350,96 360,96"/>
+  <path class="ln" d="M116,150 C230,232 300,232 360,204"/>
+  <path class="lnd" d="M560,150 C548,150 545,170 530,170"/>
+  <text class="ts" x="533" y="146">seed</text>
+</svg>

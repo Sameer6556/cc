@@ -28,10 +28,15 @@ jobs:
         run: make venv cluster secrets storage seed-data
       - name: Training environment
         run: make venv-train
-      - name: make train SUBSET=50 (smoke test of the command the marker runs)
+      - name: make train SUBSET=50, twice (smoke test of the marker's command + determinism check)
         run: |
           mkdir -p results/task2
           make train SUBSET=50 2>&1 | tee results/task2/train_subset50.log
+          first=$(sha256sum artifacts/models/v1-subset/model.safetensors | cut -d' ' -f1)
+          make train SUBSET=50 > /dev/null 2>&1
+          second=$(sha256sum artifacts/models/v1-subset/model.safetensors | cut -d' ' -f1)
+          { echo "run 1: $first"; echo "run 2: $second"; [ "$first" = "$second" ] && echo "IDENTICAL" || echo "DIFFERENT"; } \
+            | tee results/task2/determinism_check.txt
           mv training/loss_subset50.csv results/task2/loss_subset50.csv
       - name: make train (v1)
         run: make train 2>&1 | tee results/task2/train_v1.log
