@@ -16,15 +16,15 @@ and CI.
 
 ```
             make up                                         namespace app
-  +---------------------------+   Ingress /parse   +------------------------------------+
+  +---------------------------+   Ingress /parse   +-------------------------------------+
   | k3d cluster (cluster/     |  --------------->  | Service parser -> Deployment parser |
   |  k3d.yaml), Traefik :8080 |                    | (1-2 Pods, HPA 70 % CPU)            |
-  +---------------------------+                    +------------------+-----------------+
+  +---------------------------+                    +------------------+------------------+
             |                                                         | model download at start-up
   namespace pipeline                         namespace data           v (read-only credentials)
   +---------------------------+    S3     +------------------------------------------------+
-  | Ollama phi3.5, 4 workers  | <-------> | SeaweedFS: buckets datasets/ and models/v1,v2/ |
-  | (Indexed Job), clean.py   |           +------------------------------------------------+
+  | Ollama phi3.5, 4 shards   | <-------> | SeaweedFS: buckets datasets/ and models/v1,v2/ |
+  | 2 at a time, clean.py     |           +------------------------------------------------+
   +---------------------------+
 ```
 
