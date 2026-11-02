@@ -1,0 +1,7 @@
+[2026-11-02T19:14:39.586Z] deleting pod parser-7845cb4bf7-979sp
+pod "parser-7845cb4bf7-979sp" deleted from app namespace
+[2026-11-02T19:14:50.401Z] replica count back to 2 ready, 10809 ms after the deletion
+NAME                      READY   STATUS    RESTARTS   AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+parser-7845cb4bf7-q5snf   1/1     Running   0          11s    10.42.0.25   k3d-cc-server-0   <none>           <none>
+parser-7845cb4bf7-whbt2   1/1     Running   0          4m9s   10.42.0.23   k3d-cc-server-0   <none>           <none>
+[2026-11-02T19:16:54.799Z] load test: {"requests": 840, "failures": 0, "failure_pct": 0.0, "p50_ms": 830.0, "p95_ms": 1300.0, "rps": 4.693, "headers": {"per_replica": {"parser-7845cb4bf7-whbt2": 434, "parser-7845cb4bf7-979sp": 110, "parser-7845cb4bf7-q5snf": 300}, "per_model_version": {"v1": 844}}}

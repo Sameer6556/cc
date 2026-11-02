@@ -1,0 +1,20 @@
+# 2026-11-02T19:01:46.731Z POST /parse through the Traefik Ingress (http://localhost:8080)
+HTTP/1.1 200 OK
+Content-Length: 67
+Content-Type: application/json
+Date: Mon, 02 Nov 2026 19:01:46 GMT
+Server: uvicorn
+X-Model-Version: v1
+X-Served-By: parser-7845cb4bf7-gqckc
+
+{"intent":"weather_query","date":null,"time":null,"place":"london"}
+
+# the Ingress only routes /parse: GET http://localhost:8080/readyz
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Mon, 02 Nov 2026 19:01:47 GMT
+Content-Length: 19
+
+404 page not found
+

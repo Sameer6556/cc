@@ -1,0 +1,14 @@
+2026-11-02T19:01:48.007Z GET /readyz -> 000  GET /healthz -> 000
+2026-11-02T19:01:48.524Z GET /readyz -> 000  GET /healthz -> 000
+2026-11-02T19:01:49.069Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:49.588Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:50.168Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:50.685Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:51.202Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:51.721Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:52.245Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:52.762Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:53.282Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:53.821Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:54.354Z GET /readyz -> 503  GET /healthz -> 200
+2026-11-02T19:01:54.874Z GET /readyz -> 200  GET /healthz -> 200

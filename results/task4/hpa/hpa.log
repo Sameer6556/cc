@@ -1,0 +1,5 @@
+[2026-11-02T19:03:11.654Z] waiting for the HPA to settle at 1 replica (no load)
+[2026-11-02T19:03:27.007Z] load on: 4 users for 4m
+[2026-11-02T19:07:27.412Z] load off: {"requests": 1130, "failures": 0, "failure_pct": 0.0, "p50_ms": 860.0, "p95_ms": 1400.0, "rps": 4.727, "headers": {"per_replica": {"parser-7845cb4bf7-kcjm9": 618, "parser-7845cb4bf7-cwfmv": 515}, "per_model_version": {"v1": 1133}}}
+[2026-11-02T19:07:27.416Z] waiting for the scale-down to 1 replica
+[2026-11-02T19:08:50.914Z] max replicas seen: 2

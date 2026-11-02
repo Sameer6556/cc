@@ -1,0 +1,68 @@
+# 2026-11-02T19:01:46.413Z kubectl get nodes -o wide
+NAME              STATUS   ROLES           AGE     VERSION         INTERNAL-IP   EXTERNAL-IP   OS-IMAGE            KERNEL-VERSION     CONTAINER-RUNTIME
+k3d-cc-server-0   Ready    control-plane   2m49s   v1.34.12+k3s1   172.18.0.2    <none>        K3s v1.34.12+k3s1   7.0.0-1017-azure   containerd://2.2.7-k3s1
+
+# kubectl -n app get deploy,rs,pods,svc,ingress,hpa,endpointslices -o wide
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                 SELECTOR
+deployment.apps/parser   2/2     2            2           22s   parser       parser-service:0.1.0   app=parser
+
+NAME                                DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES                 SELECTOR
+replicaset.apps/parser-7845cb4bf7   2         2         2       22s   parser       parser-service:0.1.0   app=parser,pod-template-hash=7845cb4bf7
+
+NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+pod/parser-7845cb4bf7-gqckc   1/1     Running   0          22s   10.42.0.11   k3d-cc-server-0   <none>           <none>
+pod/parser-7845cb4bf7-xl48j   1/1     Running   0          22s   10.42.0.12   k3d-cc-server-0   <none>           <none>
+
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+service/parser   ClusterIP   10.43.117.74   <none>        80/TCP    22s   app=parser
+
+NAME                               CLASS     HOSTS   ADDRESS      PORTS   AGE
+ingress.networking.k8s.io/parser   traefik   *       172.18.0.2   80      22s
+
+NAME                                         REFERENCE           TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/parser   Deployment/parser   cpu: <unknown>/70%   1         2         2          22s
+
+NAME                                          ADDRESSTYPE   PORTS   ENDPOINTS               AGE
+endpointslice.discovery.k8s.io/parser-6qv5w   IPv4          8000    10.42.0.11,10.42.0.12   22s
+
+# requests, limits and probes of the parser container
+resources: {"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}
+readinessProbe: {"failureThreshold":2,"httpGet":{"path":"/readyz","port":"http","scheme":"HTTP"},"periodSeconds":2,"successThreshold":1,"timeoutSeconds":2}
+livenessProbe: {"failureThreshold":6,"httpGet":{"path":"/healthz","port":"http","scheme":"HTTP"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}
+
+{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}
+
+# kubectl -n app describe hpa parser
+Name:                                                  parser
+Namespace:                                             app
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Mon, 02 Nov 2026 19:01:24 +0000
+Reference:                                             Deployment/parser
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  <unknown> / 70%
+Min replicas:                                          1
+Max replicas:                                          2
+Behavior:
+  Scale Up:
+    Stabilization Window: 0 seconds
+    Select Policy: Max
+    Policies:
+      - Type: Pods     Value: 4    Period: 15 seconds
+      - Type: Percent  Value: 100  Period: 15 seconds
+  Scale Down:
+    Stabilization Window: 60 seconds
+    Select Policy: Max
+    Policies:
+      - Type: Percent  Value: 100  Period: 15 seconds
+Deployment pods:       2 current / 0 desired
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+Events:
+  Type     Reason                        Age   From                       Message
+  ----     ------                        ----  ----                       -------
+  Warning  FailedGetResourceMetric       7s    horizontal-pod-autoscaler  failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Warning  FailedComputeMetricsReplicas  7s    horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)

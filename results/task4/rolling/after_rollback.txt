@@ -1,0 +1,23 @@
+# 2026-11-02T19:13:51.638Z after the rollback: five requests through the Ingress
+HTTP/1.1 200 OK
+X-Model-Version: v1
+X-Served-By: parser-7845cb4bf7-whbt2
+HTTP/1.1 200 OK
+X-Model-Version: v1
+X-Served-By: parser-7845cb4bf7-979sp
+HTTP/1.1 200 OK
+X-Model-Version: v1
+X-Served-By: parser-7845cb4bf7-whbt2
+HTTP/1.1 200 OK
+X-Model-Version: v1
+X-Served-By: parser-7845cb4bf7-979sp
+HTTP/1.1 200 OK
+X-Model-Version: v1
+X-Served-By: parser-7845cb4bf7-whbt2
+# env of the running Deployment
+MODEL_URI=s3://models/v1/
+MODEL_VERSION=v1
+S3_ENDPOINT=http://seaweedfs-s3.data.svc.cluster.local:8333
+MAX_NEW_TOKENS=64
+FAULT_INJECT=0
+POD_NAME=

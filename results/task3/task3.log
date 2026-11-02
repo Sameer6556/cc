@@ -1,0 +1,4 @@
+[2026-11-02T19:01:47.885Z] starting parser-service:0.1.0 with --cpus 1 --memory 1g --memory-swap 1g
+[2026-11-02T19:01:55.360Z] 50 sequential requests
+status codes: {200: 50}; completed 50/50; mean 368 ms, median 365 ms, max 440 ms
+[2026-11-02T19:02:14.127Z] FAULT_INJECT=1

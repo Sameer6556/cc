@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"parser"},"name":"parser","namespace":"app"},"spec":{"replicas":2,"revisionHistoryLimit":5,"selector":{"matchLabels":{"app":"parser"}},"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"labels":{"app":"parser"}},"spec":{"containers":[{"env":[{"name":"MODEL_URI","value":"s3://models/v1/"},{"name":"MODEL_VERSION","value":"v1"},{"name":"S3_ENDPOINT","value":"http://seaweedfs-s3.data.svc.cluster.local:8333"},{"name":"MAX_NEW_TOKENS","value":"64"},{"name":"FAULT_INJECT","value":"0"},{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}}],"envFrom":[{"secretRef":{"name":"s3-credentials"}}],"image":"parser-service:0.1.0","imagePullPolicy":"IfNotPresent","lifecycle":{"preStop":{"exec":{"command":["sleep","5"]}}},"livenessProbe":{"failureThreshold":6,"httpGet":{"path":"/healthz","port":"http"},"initialDelaySeconds":10,"periodSeconds":10,"timeoutSeconds":5},"name":"parser","ports":[{"containerPort":8000,"name":"http"}],"readinessProbe":{"failureThreshold":2,"httpGet":{"path":"/readyz","port":"http"},"periodSeconds":2,"timeoutSeconds":2},"resources":{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"500m","memory":"768Mi"}}}],"terminationGracePeriodSeconds":30}}}}
+  creationTimestamp: "2026-11-02T19:01:24Z"
+  generation: 1
+  labels:
+    app: parser
+  name: parser
+  namespace: app
+  resourceVersion: "925"
+  uid: eaa980d7-5efa-4021-a919-9c3de293dcf4
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: parser
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: parser
+    spec:
+      containers:
+      - env:
+        - name: MODEL_URI
+          value: s3://models/v1/
+        - name: MODEL_VERSION
+          value: v1
+        - name: S3_ENDPOINT
+          value: http://seaweedfs-s3.data.svc.cluster.local:8333
+        - name: MAX_NEW_TOKENS
+          value: "64"
+        - name: FAULT_INJECT
+          value: "0"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        envFrom:
+        - secretRef:
+            name: s3-credentials
+        image: parser-service:0.1.0
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sleep
+              - "5"
+        livenessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /healthz
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: parser
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /readyz
+            port: http
+            scheme: HTTP
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 768Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2026-11-02T19:01:36Z"
+    lastUpdateTime: "2026-11-02T19:01:36Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2026-11-02T19:01:24Z"
+    lastUpdateTime: "2026-11-02T19:01:36Z"
+    message: ReplicaSet "parser-7845cb4bf7" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 2
+  replicas: 2
+  updatedReplicas: 2

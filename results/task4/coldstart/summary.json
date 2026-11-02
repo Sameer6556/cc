@@ -1,0 +1,80 @@
+{
+  "runs": [
+    {
+      "run": 1,
+      "pods": [
+        {
+          "pod": "parser-7845cb4bf7-9d5s2",
+          "created": "2026-11-02T19:02:21Z",
+          "ready": "2026-11-02T19:02:31Z",
+          "creation_to_ready_s": 10.0,
+          "download_s": 2.39,
+          "download_mb": 285.3,
+          "load_s": 5.74
+        },
+        {
+          "pod": "parser-7845cb4bf7-c5n87",
+          "created": "2026-11-02T19:02:21Z",
+          "ready": "2026-11-02T19:02:31Z",
+          "creation_to_ready_s": 10.0,
+          "download_s": 2.42,
+          "download_mb": 285.3,
+          "load_s": 5.8
+        }
+      ],
+      "cold_start_s": 10.0,
+      "samples_with_zero_ready_endpoints": 10
+    },
+    {
+      "run": 2,
+      "pods": [
+        {
+          "pod": "parser-7845cb4bf7-kpj6j",
+          "created": "2026-11-02T19:02:37Z",
+          "ready": "2026-11-02T19:02:49Z",
+          "creation_to_ready_s": 12.0,
+          "download_s": 3.59,
+          "download_mb": 285.3,
+          "load_s": 5.59
+        },
+        {
+          "pod": "parser-7845cb4bf7-z46kn",
+          "created": "2026-11-02T19:02:37Z",
+          "ready": "2026-11-02T19:02:49Z",
+          "creation_to_ready_s": 12.0,
+          "download_s": 3.57,
+          "download_mb": 285.3,
+          "load_s": 5.63
+        }
+      ],
+      "cold_start_s": 12.0,
+      "samples_with_zero_ready_endpoints": 12
+    },
+    {
+      "run": 3,
+      "pods": [
+        {
+          "pod": "parser-7845cb4bf7-kcjm9",
+          "created": "2026-11-02T19:02:55Z",
+          "ready": "2026-11-02T19:03:06Z",
+          "creation_to_ready_s": 11.0,
+          "download_s": 1.65,
+          "download_mb": 285.3,
+          "load_s": 5.79
+        },
+        {
+          "pod": "parser-7845cb4bf7-vqzqg",
+          "created": "2026-11-02T19:02:55Z",
+          "ready": "2026-11-02T19:03:06Z",
+          "creation_to_ready_s": 11.0,
+          "download_s": 1.64,
+          "download_mb": 285.3,
+          "load_s": 5.71
+        }
+      ],
+      "cold_start_s": 11.0,
+      "samples_with_zero_ready_endpoints": 10
+    }
+  ],
+  "median_cold_start_s": 11.0
+}

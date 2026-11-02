@@ -1,0 +1,10 @@
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+2026-11-02T19:02:23.216 INFO starting pod=parser-7845cb4bf7-9d5s2 version=v1 uri=s3://models/v1/ max_new_tokens=64 fault_inject=False
+2026-11-02T19:02:23.216 INFO downloading model from s3://models/v1/ (endpoint http://seaweedfs-s3.data.svc.cluster.local:8333, version v1)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-11-02T19:02:23.388 INFO Found credentials in environment variables.
+2026-11-02T19:02:25.604 INFO downloaded 7 objects (285.3 MB) in 2.39s; 6 checksums verified
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 7047.22it/s]
+2026-11-02T19:02:31.344 INFO model loaded in 5.74s (torch threads 1); ready 8.16s after process start

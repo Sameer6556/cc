@@ -1,0 +1,26 @@
+# 2026-11-02T19:01:47.148Z docker image ls parser-service:0.1.0
+REPOSITORY       TAG       IMAGE ID       CREATED              SIZE
+parser-service   0.1.0     8dbe91b0bec5   About a minute ago   1.27GB
+size_bytes=1268358378
+
+# docker history
+0B	CMD ["uvicorn" "app:app" "--host" "0.0.0.0" "--port" "8000" "--no-access-log" "--timeout-graceful-shutdown" "20"]
+0B	EXPOSE map[8000/tcp:{}]
+0B	USER 10001
+8.46kB	RUN /bin/sh -c python -c "import app"  && useradd --uid 10001 --create-home app # buildkit
+10.6kB	COPY service/app.py service/parser_core.py /app/ # buildkit
+1.41kB	COPY data/schema.json /app/schema.json # buildkit
+1.14GB	RUN /bin/sh -c if [ -s /run/secrets/extra_ca ]; then export PIP_CERT=/run/secrets/extra_ca; fi;     pip install --no-deps --index-url https://download.pytorch.org/whl/cpu torch==2.14.1+cpu  && pip install --no-dep
+1.25kB	COPY service/requirements.txt . # buildkit
+0B	WORKDIR /app
+0B	ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1 HF_HUB_OFFLINE=1 TOKENIZERS_PARALLELISM=false
+0B	CMD ["python3"]
+0B	RUN /bin/sh -c set -eux;  for src in idle3 pip3 pydoc3 python3 python3-config; do   dst="$(echo "$src" | tr -d 3)";   [ -s "/usr/local/bin/$src" ];   [ ! -e "/usr/local/bin/$dst" ];   ln -svT "$src" "/usr/local/bin/$d
+40.2MB	RUN /bin/sh -c set -eux;   savedAptMark="$(apt-mark showmanual)";  apt-get update;  apt-get install -y --no-install-recommends   dpkg-dev   g++   gcc   gnupg   libbluetooth-dev   libbz2-dev   libc6-dev   libdb-dev
+0B	ENV PYTHON_SHA256=5c8462af5790baf43a321a1559dbe0db06d1be4300fb85fb53c40060668e548a
+0B	ENV PYTHON_VERSION=3.12.14
+0B	ENV GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305
+9.26MB	RUN /bin/sh -c set -eux;  apt-get update;  apt-get install -y --no-install-recommends   ca-certificates   netbase   tzdata  ;  rm -rf /var/lib/apt/lists/* # buildkit
+0B	ENV LANG=C.UTF-8
+0B	ENV PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+74.8MB	# debian.sh --arch 'amd64' out/ 'bookworm' '@1789689600'

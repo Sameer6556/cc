@@ -1,0 +1,4 @@
+run 1: parser-7845cb4bf7-9d5s2 10s (download 2.39s, load 5.74s), parser-7845cb4bf7-c5n87 10s (download 2.42s, load 5.8s); samples with 0 ready endpoints: 10
+run 2: parser-7845cb4bf7-kpj6j 12s (download 3.59s, load 5.59s), parser-7845cb4bf7-z46kn 12s (download 3.57s, load 5.63s); samples with 0 ready endpoints: 12
+run 3: parser-7845cb4bf7-kcjm9 11s (download 1.65s, load 5.79s), parser-7845cb4bf7-vqzqg 11s (download 1.64s, load 5.71s); samples with 0 ready endpoints: 10
+median cold start (Pod creation -> Ready, slowest new Pod per run) over 3 runs: 11.0 s

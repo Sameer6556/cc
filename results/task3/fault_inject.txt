@@ -1,0 +1,10 @@
+# 2026-11-02T19:02:21.012Z FAULT_INJECT=1: POST /parse
+HTTP/1.1 500 Internal Server Error
+date: Mon, 02 Nov 2026 19:02:20 GMT
+server: uvicorn
+x-model-version: v1
+x-served-by: runnervm48cm3
+content-length: 32
+content-type: application/json
+
+{"error":"invalid_model_output"}

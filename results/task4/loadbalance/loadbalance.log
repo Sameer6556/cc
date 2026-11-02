@@ -1,0 +1,7 @@
+NAME                      READY   STATUS    RESTARTS   AGE     IP           NODE              NOMINATED NODE   READINESS GATES
+parser-7845cb4bf7-q5snf   1/1     Running   0          2m16s   10.42.0.25   k3d-cc-server-0   <none>           <none>
+parser-7845cb4bf7-whbt2   1/1     Running   0          6m14s   10.42.0.23   k3d-cc-server-0   <none>           <none>
+[2026-11-02T19:18:55.611Z] load test: {"requests": 588, "failures": 0, "failure_pct": 0.0, "p50_ms": 800.0, "p95_ms": 1300.0, "rps": 4.945, "headers": {"per_replica": {"parser-7845cb4bf7-q5snf": 297, "parser-7845cb4bf7-whbt2": 295}, "per_model_version": {"v1": 592}}}
+parser-7845cb4bf7-q5snf: 297 requests = 50.2 % of 592 successful requests
+parser-7845cb4bf7-whbt2: 295 requests = 49.8 % of 592 successful requests
+every replica served at least 30 %: True
