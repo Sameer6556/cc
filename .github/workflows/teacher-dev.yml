@@ -1,0 +1,61 @@
+# Prompt development: run the teacher (phi3.5 on Ollama, temperature 0, seed 42) on the
+# validation commands directly on the runner, to measure speed and quality before the
+# multi-hour labelling run. Nothing is trained on these results.
+name: teacher-dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Validation commands to label (0 = all 100)"
+        default: "0"
+
+permissions:
+  contents: read
+
+jobs:
+  teacher:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start Ollama and pull phi3.5
+        run: |
+          docker run -d --name ollama -p 11434:11434 -e OLLAMA_NUM_PARALLEL=2 \
+            -v ollama:/root/.ollama ollama/ollama:0.40.9
+          for i in $(seq 1 60); do curl -sf http://localhost:11434/ && break; sleep 2; done
+          docker exec ollama ollama pull phi3.5
+          docker exec ollama ollama list
+          docker exec ollama ollama show phi3.5
+          nproc; lscpu | grep -E 'Model name|Thread|Core|Socket|Flags' | cut -c1-200
+
+      - name: Label the validation commands
+        env:
+          SHARD_INDEX: "0"
+          SHARD_COUNT: "1"
+          INPUT_URI: data/validation.jsonl
+          OUTPUT_URI: results/dev/teacher_validation_raw.jsonl
+          OLLAMA_URL: http://localhost:11434
+          LIMIT: ${{ inputs.limit }}
+          CHECKPOINT_EVERY: "10"
+        run: python3 worker/worker.py
+
+      - name: Score
+        run: |
+          python3 scripts/to_predictions.py results/dev/teacher_validation_raw.jsonl results/dev/teacher_validation_predictions.jsonl
+          python3 tools/score.py results/dev/teacher_validation_predictions.jsonl data/validation.jsonl --out results/dev/teacher_validation.json
+          python3 - <<'EOF'
+          import json
+          gold = {json.loads(l)['id']: json.loads(l) for l in open('data/validation.jsonl')}
+          for l in open('results/dev/teacher_validation_raw.jsonl'):
+              r = json.loads(l); g = gold[r['id']]
+              exp = json.dumps({k: g[k] for k in ('intent', 'date', 'time', 'place')})
+              print(f"{r['id']} | {r['text']}\n   gold: {exp}\n   got : {r['teacher_raw']!r}")
+          EOF
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacher-dev
+          path: results/dev/
