@@ -1,0 +1,6 @@
+config.json: OK
+generation_config.json: OK
+model.safetensors: OK
+tokenizer.json: OK
+tokenizer_config.json: OK
+version.json: OK

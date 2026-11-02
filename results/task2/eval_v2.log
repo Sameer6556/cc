@@ -1,0 +1,17 @@
+mkdir -p results/eval
+.venv-train/bin/python training/predict.py --model artifacts/models/v2 \
+  --out results/eval/student_v2_validation_predictions.jsonl
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 4293.91it/s]
+100 predictions in 40.5s -> results/eval/student_v2_validation_predictions.jsonl
+python3 tools/score.py results/eval/student_v2_validation_predictions.jsonl data/validation.jsonl \
+  --out results/eval/student_v2_validation.json
+{
+  "json_validity": 99.0,
+  "intent_accuracy": 85.0,
+  "date_accuracy": 79.0,
+  "time_accuracy": 89.0,
+  "place_accuracy": 91.0,
+  "full_frame": 57.0,
+  "examples": 100,
+  "missing_predictions": 0
+}

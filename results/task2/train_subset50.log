@@ -1,0 +1,16 @@
+.venv-train/bin/python training/train.py --config training/config.yaml --version v1 --subset 50
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 2441.56it/s]
+{"event": "start", "version": "v1", "records": 50, "truncated": 0, "first_id": "C0001", "last_id": "C0051", "epochs": 10, "steps": 40, "base_model": "EleutherAI/pythia-70m", "revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42", "threads": 4}
+{"event": "epoch", "epoch": 1, "loss": 2.990012, "elapsed_s": 6.4}
+{"event": "epoch", "epoch": 2, "loss": 3.290517, "elapsed_s": 12.6}
+{"event": "epoch", "epoch": 3, "loss": 0.993142, "elapsed_s": 18.8}
+{"event": "epoch", "epoch": 4, "loss": 0.541532, "elapsed_s": 25.0}
+{"event": "epoch", "epoch": 5, "loss": 0.296866, "elapsed_s": 31.2}
+{"event": "epoch", "epoch": 6, "loss": 0.202907, "elapsed_s": 37.2}
+{"event": "epoch", "epoch": 7, "loss": 0.158467, "elapsed_s": 43.3}
+{"event": "epoch", "epoch": 8, "loss": 0.11436, "elapsed_s": 49.5}
+{"event": "epoch", "epoch": 9, "loss": 0.082771, "elapsed_s": 55.7}
+{"event": "epoch", "epoch": 10, "loss": 0.051641, "elapsed_s": 61.8}
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00, 13.75it/s]
+{"event": "saved", "dir": "/home/runner/work/cc/cc/artifacts/models/v1-subset", "loss_csv": "/home/runner/work/cc/cc/training/loss_subset50.csv", "train_seconds": 61.9}
