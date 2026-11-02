@@ -1,0 +1,26 @@
+NAMESPACE     NAME                                      READY   STATUS             RESTARTS         AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+data          seaweedfs-759fbb76bb-gjhkk                1/1     Running            0                178m   10.42.0.6    k3d-cc-server-0   <none>           <none>
+kube-system   coredns-5688c889c9-m99sp                  1/1     Running            0                178m   10.42.0.2    k3d-cc-server-0   <none>           <none>
+kube-system   helm-install-traefik-crd-tqqxt            0/1     Completed          0                178m   10.42.0.7    k3d-cc-server-0   <none>           <none>
+kube-system   helm-install-traefik-ffx47                0/1     Completed          1                178m   10.42.0.8    k3d-cc-server-0   <none>           <none>
+kube-system   local-path-provisioner-67d6887d65-n7thc   1/1     Running            0                178m   10.42.0.4    k3d-cc-server-0   <none>           <none>
+kube-system   metrics-server-74c8c4d68b-hcjwq           1/1     Running            0                178m   10.42.0.3    k3d-cc-server-0   <none>           <none>
+kube-system   svclb-traefik-2600865c-6cgmg              2/2     Running            0                178m   10.42.0.9    k3d-cc-server-0   <none>           <none>
+kube-system   traefik-7f6d8db88c-mmpv4                  1/1     Running            0                178m   10.42.0.10   k3d-cc-server-0   <none>           <none>
+pipeline      ollama-54d67954f4-mjkrj                   0/1     CrashLoopBackOff   23 (4m42s ago)   178m   10.42.0.12   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-0-7mlnh                     0/1     Error              0                39m    10.42.0.26   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-0-pg589                     0/1     Error              0                50m    10.42.0.21   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-0-q8f89                     0/1     Error              0                176m   10.42.0.13   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-0-rdfcp                     0/1     Error              0                59m    10.42.0.17   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-1-8wbsz                     0/1     Error              0                59m    10.42.0.18   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-1-9994f                     0/1     Error              0                39m    10.42.0.25   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-1-hd9v9                     0/1     Error              0                176m   10.42.0.14   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-1-slwdq                     0/1     Error              0                50m    10.42.0.22   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-2-8zn2z                     0/1     Error              0                39m    10.42.0.27   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-2-cd2sh                     0/1     Error              0                50m    10.42.0.23   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-2-f2tvr                     0/1     Error              0                176m   10.42.0.16   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-2-zdgzv                     0/1     Error              0                59m    10.42.0.19   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-3-9mfwg                     0/1     Error              0                50m    10.42.0.24   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-3-h6gzb                     0/1     Error              0                176m   10.42.0.15   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-3-pf6b7                     0/1     Error              0                59m    10.42.0.20   k3d-cc-server-0   <none>           <none>
+pipeline      teacher-label-3-z6ghk                     0/1     Error              0                39m    10.42.0.28   k3d-cc-server-0   <none>           <none>
