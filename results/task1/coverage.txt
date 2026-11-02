@@ -1,0 +1,9 @@
+shard-0.jsonl: 750 records
+shard-1.jsonl: 750 records
+shard-2.jsonl: 750 records
+shard-3.jsonl: 750 records
+pool ids: 3000  shards: 4  ids covered: 3000
+missing ids (gaps): 0 []
+ids in more than one record (repeats): 0 []
+placement / text problems: 0 []
+COVERAGE OK: every id appears in exactly one shard output
