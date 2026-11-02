@@ -1,0 +1,2 @@
+student_v1: identical to the teacher reply on 66/100; full frame right with teacher 50, right where teacher was wrong 6; wrong like the teacher (inherited) 16; wrong in its own way 28; replies with a slot value not found in the command 13
+student_v2: identical to the teacher reply on 64/100; full frame right with teacher 49, right where teacher was wrong 8; wrong like the teacher (inherited) 15; wrong in its own way 28; replies with a slot value not found in the command 12
