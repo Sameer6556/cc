@@ -1,0 +1,26 @@
+# 2026-11-02T19:01:54.881Z curl -i GET /healthz
+HTTP/1.1 200 OK
+date: Mon, 02 Nov 2026 19:01:54 GMT
+server: uvicorn
+content-length: 18
+content-type: application/json
+
+{"status":"alive"}
+# curl -i GET /readyz
+HTTP/1.1 200 OK
+date: Mon, 02 Nov 2026 19:01:54 GMT
+server: uvicorn
+content-length: 39
+content-type: application/json
+
+{"status":"ready","model_version":"v1"}
+# curl -i POST /parse
+HTTP/1.1 200 OK
+date: Mon, 02 Nov 2026 19:01:54 GMT
+server: uvicorn
+x-model-version: v1
+x-served-by: runnervm48cm3
+content-length: 78
+content-type: application/json
+
+{"intent":"alarm_set","date":"tomorrow","time":"seven thirty am","place":null}

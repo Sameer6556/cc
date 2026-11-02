@@ -1,0 +1,10 @@
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+2026-11-02T19:01:48.724 INFO starting pod=runnervm48cm3 version=v1 uri=s3://models/v1/ max_new_tokens=64 fault_inject=False
+2026-11-02T19:01:48.724 INFO downloading model from s3://models/v1/ (endpoint http://127.0.0.1:30333, version v1)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18000 (Press CTRL+C to quit)
+2026-11-02T19:01:48.887 INFO Found credentials in environment variables.
+2026-11-02T19:01:49.849 INFO downloaded 7 objects (285.3 MB) in 1.12s; 6 checksums verified
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 5100.84it/s]
+2026-11-02T19:01:54.417 INFO model loaded in 4.57s (torch threads 1); ready 5.72s after process start

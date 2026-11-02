@@ -1,0 +1,6 @@
+[2026-11-02T19:02:21.774Z] run 1: deleting all parser pods: parser-7845cb4bf7-gqckc parser-7845cb4bf7-xl48j
+[2026-11-02T19:02:32.767Z] run 1 done: 11 samples
+[2026-11-02T19:02:37.820Z] run 2: deleting all parser pods: parser-7845cb4bf7-9d5s2 parser-7845cb4bf7-c5n87
+[2026-11-02T19:02:50.534Z] run 2 done: 13 samples
+[2026-11-02T19:02:55.587Z] run 3: deleting all parser pods: parser-7845cb4bf7-kpj6j parser-7845cb4bf7-z46kn
+[2026-11-02T19:03:06.529Z] run 3 done: 11 samples

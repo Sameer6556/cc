@@ -1,0 +1,2 @@
+# 2026-11-02T19:01:47.197Z files that could be model weights inside the image (expect none):
+# (end of list)

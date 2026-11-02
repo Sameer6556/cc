@@ -1,0 +1,6 @@
+# 2026-11-02T19:02:13.808Z after the 50 requests
+OOMKilled=false Running=true RestartCount=0
+limits: NanoCpus=1000000000 Memory=1073741824
+cgroup memory peak (bytes): 690036736
+cgroup memory current (bytes): 686424064
+highest docker stats sample: 381.3MiB / 1GiB

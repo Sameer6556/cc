@@ -1,0 +1,2 @@
+[2026-11-02T19:18:55.729Z] locust -f tools/locustfile.py --headless --users 4 --spawn-rate 4 --run-time 2m --host http://localhost:8080 --csv results/loadtest
+[2026-11-02T19:21:06.109Z] summary: {"requests": 588, "failures": 0, "failure_pct": 0.0, "p50_ms": 770.0, "p95_ms": 1300.0, "rps": 4.942, "headers": {"per_replica": {"parser-7845cb4bf7-q5snf": 296, "parser-7845cb4bf7-whbt2": 294}, "per_model_version": {"v1": 590}}}
