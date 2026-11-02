@@ -9,7 +9,8 @@ git add -A -- "$@"
 if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
 git commit -q -m "$msg" -m "Produced by workflow run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 for i in 1 2 3 4 5; do
-  git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+  # -X theirs: on a conflict the evidence produced by this run wins over an older copy
+  git pull -q --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && exit 0
   sleep $((i * 5))
 done
 echo "push failed" >&2; exit 1

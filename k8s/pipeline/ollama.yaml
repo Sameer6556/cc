@@ -1,5 +1,5 @@
 # The teacher: phi3.5 served by Ollama inside the cluster (Task 1).
-# OLLAMA_NUM_PARALLEL=2 lets the two labelling workers be served at the same time.
+# OLLAMA_NUM_PARALLEL=4 decodes the four labelling workers' requests together (batched on the CPU).
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -54,7 +54,7 @@ spec:
           image: ollama/ollama:0.40.9
           env:
             - name: OLLAMA_NUM_PARALLEL
-              value: "2"
+              value: "4"
             - name: OLLAMA_KEEP_ALIVE
               value: "24h"
           ports:
@@ -63,9 +63,9 @@ spec:
           resources:
             requests:
               cpu: "2"
-              memory: 4Gi
+              memory: 5Gi
             limits:
-              memory: 8Gi        # no CPU limit: CPU inference should use every core it can get
+              memory: 10Gi        # no CPU limit: CPU inference should use every core it can get
           readinessProbe:
             httpGet:
               path: /

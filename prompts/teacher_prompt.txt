@@ -4,25 +4,27 @@ Reply with one JSON object on a single line and nothing else: no code fences, no
 The object has exactly four keys, in this order: "intent", "date", "time", "place".
 
 "intent" is exactly one of these eight labels:
-- alarm_set: create or change an alarm or a wake-up call
+- alarm_set: create or change an alarm or a wake-up call; also "remind me at <time>" when no event is named
 - alarm_query: ask about alarms that are already set
-- calendar_set: add an event, meeting or reminder (most "remind me ..." commands)
-- calendar_query: ask about events, meetings, reminders or plans
-- calendar_remove: delete, cancel or clear events, meetings or reminders
-- weather_query: ask about the weather, temperature, rain, snow or what to wear
-- datetime_query: ask the time, the date, the day of the week or a time zone
-- recommendation_events: ask for events, activities or things to do
+- calendar_set: add an event, meeting or reminder about something (most "remind me ..." commands)
+- calendar_query: ask about my own events, meetings, reminders or plans
+- calendar_remove: delete, cancel or clear events, meetings, reminders or the calendar
+- weather_query: ask about the weather, temperature, rain, snow, or what to wear or bring
+- datetime_query: ask the current time, the date, the day of the week, or the time somewhere
+- recommendation_events: ask for events, activities or things to do, for example in a city or nearby
 
 "date", "time" and "place" are slots. Each slot is either null or a phrase copied from the command:
 - date: a day, date or period, such as today, tomorrow, friday, june ninth, the fifteenth, this week, this weekend
 - time: a clock time or an amount of time, such as seven am, six thirty pm, ten, two hours
-- place: a named city, region or location, such as london, new york city, home
+- place: a named city, region, country or venue, such as london, new york city, home
 
 Slot rules:
-1. Copy the words exactly as they appear in the command. Never convert them: "seven am" stays "seven am", never "07:00".
-2. Copy the shortest phrase that carries the meaning. Leave out words such as at, on, in, for and next.
-3. If the command does not mention a slot, the slot is null. Never invent a value.
-4. Parts of the day (morning, afternoon, evening, night) are not times. Words such as here, near me, nearby and my area are not places.
+1. Copy the words exactly as they appear in the command, in lower case. Never convert them: "seven am" stays "seven am", never "07:00"; "fridays" stays "fridays".
+2. Copy the shortest phrase that carries the meaning. Leave out words such as at, on, in, for and next: "next tuesday" gives "tuesday", "at six in the morning" gives "six". Keep "this": "this week" stays "this week".
+3. If the command does not mention a slot, the slot is null. Never invent a value. Write null, never the text "null".
+4. Never a date or a time: parts of the day (morning, afternoon, evening, night, noon) and vague words (now, right now, this time, upcoming, next, later, soon).
+5. Never a place: here, near me, nearby, around me, my area, our city, the area, a time zone (pst, eastern time), the name of a person, or the assistant's name (alexa, olly).
+6. Names of people, pets and events are never a date, a time or a place.
 
 Examples:
 Command: set an alarm for seven thirty am tomorrow
@@ -39,18 +41,30 @@ Command: add a call with the bank on thursday at three pm
 JSON: {"intent": "calendar_set", "date": "thursday", "time": "three pm", "place": null}
 Command: what is on my calendar this week
 JSON: {"intent": "calendar_query", "date": "this week", "time": null, "place": null}
+Command: is my meeting with tom next monday
+JSON: {"intent": "calendar_query", "date": "monday", "time": null, "place": null}
 Command: delete the meeting with ana on june ninth
 JSON: {"intent": "calendar_remove", "date": "june ninth", "time": null, "place": null}
+Command: cancel fridays dentist appointment
+JSON: {"intent": "calendar_remove", "date": "fridays", "time": null, "place": null}
 Command: clear all events from my calendar
 JSON: {"intent": "calendar_remove", "date": null, "time": null, "place": null}
 Command: how cold will it be in oslo on monday
 JSON: {"intent": "weather_query", "date": "monday", "time": null, "place": "oslo"}
+Command: should i take a jacket tomorrow
+JSON: {"intent": "weather_query", "date": "tomorrow", "time": null, "place": null}
 Command: what time is it in tokyo
 JSON: {"intent": "datetime_query", "date": null, "time": null, "place": "tokyo"}
+Command: tell me the time in eastern time
+JSON: {"intent": "datetime_query", "date": null, "time": null, "place": null}
 Command: are there any concerts near me this weekend
 JSON: {"intent": "recommendation_events", "date": "this weekend", "time": null, "place": null}
+Command: what events are happening around here
+JSON: {"intent": "recommendation_events", "date": null, "time": null, "place": null}
 Command: show me food festivals happening in chicago
 JSON: {"intent": "recommendation_events", "date": null, "time": null, "place": "chicago"}
+
+Remember: a slot is null for vague words, parts of the day, people's names, time zones and places like "near me".
 
 Command: {command}
 JSON:
