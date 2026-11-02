@@ -11,6 +11,9 @@ import urllib.request
 TEACHER_MODEL = 'phi3.5'
 TEMPERATURE = 0
 SEED = 42
+# Generation ends at a blank line or when the model starts another "Command:" line. A frame is one
+# line, so this only cuts off trailing chatter; the stored reply is still exactly what was generated.
+STOP = ['\n\n', '\nCommand:']
 
 
 def load_prompt(path):
@@ -27,7 +30,7 @@ def build_prompt(template, command):
 
 
 def options(num_predict, num_ctx):
-    return {'temperature': TEMPERATURE, 'seed': SEED, 'num_predict': num_predict, 'num_ctx': num_ctx}
+    return {'temperature': TEMPERATURE, 'seed': SEED, 'num_predict': num_predict, 'num_ctx': num_ctx, 'stop': STOP}
 
 
 def generate(base_url, prompt, model=TEACHER_MODEL, num_predict=128, num_ctx=2048,
