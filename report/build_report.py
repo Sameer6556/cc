@@ -281,7 +281,9 @@ straight into Kubernetes Secrets: an admin identity for the pipeline and a read-
 <code>make up</code> creates the buckets <code>datasets</code> and <code>models</code> and uploads
 <code>commands_pool.jsonl</code>. The teacher runs inside the cluster (Ollama 0.40.9, namespace <code>pipeline</code>,
 phi3.5 pulled by an init container) with temperature 0 and seed 42 hard-coded in <code>worker/teacher.py</code>,
-plus <code>num_predict</code> 128 and <code>num_ctx</code> 2048.</p>
+plus <code>num_predict</code> 128, <code>num_ctx</code> 2048 and the stop sequences blank line and
+<code>\nCommand:</code> (a frame is one line, so they only end trailing chatter early; the stored reply is still
+exactly what was generated).</p>
 <p><b>Prompt</b> (<code>prompts/teacher_prompt.txt</code>). It restates the four keys, gives a one-line definition per
 intent, the three slot rules, and two conventions of the data (drop "next"; parts of the day and words such as
 "near me" are not slots), followed by 13 examples I wrote. None of the 13 commands occurs in the pool or the

@@ -40,6 +40,7 @@ def test_prompt_and_fixed_decoding_settings():
     assert '{command}' not in prompt
     opts = teacher.options(128, 2048)
     assert opts['temperature'] == 0 and opts['seed'] == 42
+    assert opts['num_predict'] == 128 and '\n\n' in opts['stop']
 
 
 def test_resume_keeps_complete_lines_and_drops_a_torn_one(tmp_path):
