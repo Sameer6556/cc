@@ -5,3 +5,6 @@ extend-exclude = ["tools/"]   # the provided kit files are kept exactly as distr
 [lint]
 select = ["E", "F", "W", "B", "I"]
 ignore = ["I001"]
+
+[lint.per-file-ignores]
+"report/build_report.py" = ["E501"]   # long HTML template lines
