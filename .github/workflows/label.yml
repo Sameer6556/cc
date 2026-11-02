@@ -1,0 +1,51 @@
+# Task 1 on a GitHub-hosted runner: k3d cluster from cluster/k3d.yaml, SeaweedFS, Ollama (phi3.5),
+# two parallel labelling workers, clean.py, and the teacher's run on the validation texts.
+# The evidence (shard outputs, train.jsonl + sha256, logs) is committed back to the branch.
+name: label
+
+on:
+  workflow_dispatch:
+    inputs:
+      resume:
+        description: "1 = continue from the partial shards already in datasets/teacher"
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: label-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  label:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tools
+        run: scripts/ci/install-tools.sh
+      - name: Cluster, object storage and dataset
+        run: make venv cluster secrets storage seed-data worker-image 2>&1 | tee /tmp/setup.log
+      - name: Label (Ollama + 2 workers + clean.py + teacher on validation)
+        env:
+          RESUME: ${{ inputs.resume }}
+          LABEL_TIMEOUT: "17400"
+        run: ./scripts/label.sh
+      - name: Save partial shards if the run did not finish
+        if: failure() || cancelled()
+        run: |
+          .venv/bin/python scripts/s3tool.py get s3://datasets/teacher/ datasets/teacher || true
+          mkdir -p results/task1
+          kubectl -n pipeline logs -l job-name=teacher-label --prefix --tail=50 > results/task1/partial_worker_tail.log 2>&1 || true
+      - name: Commit evidence
+        if: always()
+        run: |
+          mkdir -p results/task1
+          cp /tmp/setup.log results/task1/setup.log 2>/dev/null || true
+          kubectl get nodes -o wide > results/task1/nodes.txt 2>&1 || true
+          kubectl get pods -A -o wide > results/task1/pods_all_namespaces.txt 2>&1 || true
+          scripts/ci/commit-results.sh "Task 1: teacher labelling evidence" datasets results

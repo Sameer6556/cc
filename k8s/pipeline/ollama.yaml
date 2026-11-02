@@ -1,0 +1,99 @@
+# The teacher: phi3.5 served by Ollama inside the cluster (Task 1).
+# OLLAMA_NUM_PARALLEL=2 lets the two labelling workers be served at the same time.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pipeline
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-models
+  namespace: pipeline
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 6Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: pipeline
+  labels:
+    app: ollama
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      initContainers:
+        # Pull the teacher once into the volume, so the server starts with the model present.
+        - name: pull-teacher
+          image: ollama/ollama:0.40.9
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              ollama serve > /tmp/serve.log 2>&1 &
+              for i in $(seq 1 60); do ollama list >/dev/null 2>&1 && break; sleep 1; done
+              ollama pull phi3.5 && ollama show phi3.5 --modelfile | head -5
+          volumeMounts:
+            - name: models
+              mountPath: /root/.ollama
+      containers:
+        - name: ollama
+          image: ollama/ollama:0.40.9
+          env:
+            - name: OLLAMA_NUM_PARALLEL
+              value: "2"
+            - name: OLLAMA_KEEP_ALIVE
+              value: "24h"
+          ports:
+            - name: http
+              containerPort: 11434
+          resources:
+            requests:
+              cpu: "2"
+              memory: 4Gi
+            limits:
+              memory: 8Gi        # no CPU limit: CPU inference should use every core it can get
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          volumeMounts:
+            - name: models
+              mountPath: /root/.ollama
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: ollama-models
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama
+  namespace: pipeline
+spec:
+  selector:
+    app: ollama
+  ports:
+    - name: http
+      port: 11434
+      targetPort: http

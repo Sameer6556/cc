@@ -1,0 +1,31 @@
+# Clean the shard outputs into s3://datasets/v1/train.jsonl + train.sha256 (Task 1, step 6).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clean
+  namespace: pipeline
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: clean
+          image: teacher-worker:0.1.0
+          imagePullPolicy: IfNotPresent
+          command: ["python", "clean.py", "--shards", "s3://datasets/teacher/", "--out", "s3://datasets/v1/",
+                    "--schema", "/app/schema.json"]
+          env:
+            - name: S3_ENDPOINT
+              value: http://seaweedfs-s3.data.svc.cluster.local:8333
+          envFrom:
+            - secretRef:
+                name: s3-credentials
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
