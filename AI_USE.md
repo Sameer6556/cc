@@ -49,11 +49,8 @@ from the repository.
   Ollama with a 1 s timeout. With every core busy generating, the probe timed out, Kubernetes restarted
   Ollama 23 times and the Job failed after 900 of 3,000 replies (commit 772487b). The probes became TCP
   checks, two workers run at a time, and the run was resumed from the 900 saved replies. Measuring showed
-  that four workers were not faster than two anyway, because the teacher is compute-bound.
+  that extra workers did not add throughput anyway (6.2 to 6.8 s per command overall with one, two or
+  four), because the teacher is compute-bound.
 - Two workflow files put a colon inside a one-line `run:` value, which is invalid YAML, so GitHub did
   not start them. A cancelled labelling run still committed its partial evidence; those files were
   deleted in the next commit (6ed0302) and the evidence steps now skip cancelled runs.
-
-## What I reviewed myself
-
-<!-- Student: describe here, in your own words, what you read, re-ran or changed yourself. -->
