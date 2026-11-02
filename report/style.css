@@ -38,5 +38,6 @@ figure { margin: 2pt 0 5pt; break-inside: avoid; }
 figcaption { font-size: 7.2pt; color: var(--ink-2); }
 svg text { font-family: "Inter", "DejaVu Sans", sans-serif; }
 .small { font-size: 7.6pt; color: var(--ink-2); }
-.appendix { break-before: page; }
+/* references and appendices start on their own page, after the (at most 8-page) body */
+.refs { break-before: page; }
 .nowrap { white-space: nowrap; }

@@ -699,7 +699,7 @@ control plane) and assumes the measured throughput is sustained for the whole ho
     w(review_table(t1, t2, t3, t4, t7))
 
     # ------------------------------------------------------------------ references + appendix
-    w('''<h2>References</h2>
+    w('''<div class="refs"><h2>References</h2>
 <ol class="small">
 <li>Y. Kim, A. M. Rush. Sequence-Level Knowledge Distillation. EMNLP 2016. https://aclanthology.org/D16-1139/</li>
 <li>G. Hinton, O. Vinyals, J. Dean. Distilling the Knowledge in a Neural Network. arXiv:1503.02531, 2015.</li>
@@ -710,7 +710,7 @@ control plane) and assumes the measured throughput is sustained for the whole ho
 <li>Hugging Face Transformers and TRL documentation (causal LM fine-tuning; GKD/distillation trainer).</li>
 <li>k3d and K3s documentation; SeaweedFS (S3 API); Kubernetes docs: Deployments, Services, Ingress, probes, HPA, Secrets, Indexed Jobs.</li>
 <li>Locust; gitleaks; AWS VPC User Guide, Network ACLs; Google SRE Book, Service Level Objectives.</li>
-</ol>''')
+</ol></div>''')
     w(appendix())
     return '\n'.join(out)
 
