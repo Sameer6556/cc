@@ -14,8 +14,8 @@ import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = 'https://github.com/Sameer6556/cc'
-STUDENT = os.environ.get('STUDENT_NAME', '[YOUR NAME]')
-ROLL = os.environ.get('ROLL_NUMBER', '[ROLL NUMBER]')
+STUDENT = os.environ.get('STUDENT_NAME', 'Sameer Singh')
+ROLL = os.environ.get('ROLL_NUMBER', '230101096')
 PENDING = '<span class="pending">PENDING</span>'
 
 

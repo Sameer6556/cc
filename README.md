@@ -1,6 +1,6 @@
 # Knowledge distillation and deployment of a command-parsing model on a local cloud
 
-CS3081 Cloud Computing mini project. Student: **[YOUR NAME]**, roll number **[ROLL NUMBER]**.
+CS3081 Cloud Computing mini project. Student: **Sameer Singh**, roll number **230101096**.
 
 - GitHub repository: https://github.com/Sameer6556/cc
 - Model releases (weights, tokenizer, version information, checksums):
