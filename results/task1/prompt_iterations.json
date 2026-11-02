@@ -1,0 +1,27 @@
+{
+  "note": "Teacher (phi3.5, temperature 0, seed 42) on the 100 validation commands, run on a GitHub-hosted runner by the teacher-dev workflow before the full labelling run. Scores are tools/score.py output copied from the run logs.",
+  "iterations": [
+    {
+      "prompt_commit": "fa2123f",
+      "run": "https://github.com/Sameer6556/cc/actions/runs/41417021229",
+      "json_validity": 99.0, "intent_accuracy": 90.0, "date_accuracy": 79.0, "time_accuracy": 87.0,
+      "place_accuracy": 90.0, "full_frame": 55.0,
+      "seconds_per_command": 7.66,
+      "main_errors": "vague words (upcoming, next, right now, this time) and parts of the day used as dates or times; time zones, 'near me', 'my area', 'our city' and person names used as places; 'next tuesday' kept whole; one reply missing a key"
+    },
+    {
+      "prompt_commit": "6ed0302",
+      "run": "https://github.com/Sameer6556/cc/actions/runs/41419425690",
+      "json_validity": 100.0, "intent_accuracy": 89.0, "date_accuracy": 80.0, "time_accuracy": 87.0,
+      "place_accuracy": 96.0, "full_frame": 61.0,
+      "seconds_per_command": 5.92,
+      "main_errors": "still uses 'upcoming'/'next' and parts of the day as dates in some commands; a few intent confusions inherent to the labels (e.g. 'is my alarm set for seven am')"
+    }
+  ],
+  "two_worker_trial": {
+    "commit_with_partial_evidence": "6c96f5a",
+    "seconds_per_command_per_worker": 11.0,
+    "aggregate_speedup_vs_one_stream": 1.39,
+    "decision": "cancelled after 100 commands; switched to 4 workers with OLLAMA_NUM_PARALLEL=4 and the second prompt"
+  }
+}

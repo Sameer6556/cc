@@ -170,9 +170,14 @@ plus <code>num_predict</code> 128, <code>num_ctx</code> 2048 and the stop sequen
 Command:</code> (a frame is one line, so they only end trailing chatter early; the stored reply is still
 exactly what was generated).</p>
 <p><b>Prompt</b> (<code>prompts/teacher_prompt.txt</code>). It restates the four keys, gives a one-line definition per
-intent, the three slot rules, and two conventions of the data (drop "next"; parts of the day and words such as
-"near me" are not slots), followed by 13 examples I wrote. None of the 13 commands occurs in the pool or the
-validation set (checked by script), so no hand-made label can leak into the training data.</p>
+intent, the three slot rules plus three conventions of the data (drop "next"; parts of the day and vague words such as
+"upcoming" are never dates or times; "near me", time zones and people's names are never places), followed by 18
+examples I wrote and a closing reminder. None of the 18 commands occurs in the pool or the validation set (checked by
+script), so no hand-made label can leak into the training data. Before the full run I compared two prompt versions on
+the 100 validation commands (teacher-dev workflow): the first gave 99 % valid JSON, 55 % full frame, 7.7 s per command (<a href="https://github.com/Sameer6556/cc/actions/runs/41417021229">run</a>), the second 100 % valid JSON, 61 % full frame, 5.9 s per command (<a href="https://github.com/Sameer6556/cc/actions/runs/41419425690">run</a>), so the second was used
+<span class="tag m">M</span> (results/task1/prompt_iterations.json). <span class="tag a">A</span> Because the prompt was
+chosen by looking at validation errors, the teacher's validation score is optimistic; this raises, not lowers, the bar
+of "half the teacher's full frame" for the student, whose score on the hidden set is unaffected.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
 <i>n</i> mod <i>K</i> = <i>k</i>. The workers are one Kubernetes <i>Indexed Job</i> with
 <code>completions = parallelism = 4</code>; each Pod receives its completion index through the downward API as
