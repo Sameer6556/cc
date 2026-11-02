@@ -1,0 +1,12 @@
+{
+  "failing_gate": "https://github.com/Sameer6556/cc/actions/runs/41422191466",
+  "failing_gate_detail": {
+    "trigger": "workflow_dispatch, model=untrained (EleutherAI/pythia-70m with the same prompt and decoding)",
+    "stages": {"1. lint + secret scan": "success", "2. unit tests": "success",
+               "3. model evaluation": "success", "4. quality gate": "failure"},
+    "gate_output": "QUALITY GATE FAILED: json_validity 0.0 < 95.0",
+    "score": {"json_validity": 0.0, "intent_accuracy": 0.0, "date_accuracy": 0.0, "time_accuracy": 0.0,
+              "place_accuracy": 0.0, "full_frame": 0.0, "examples": 100}
+  },
+  "passing": null
+}
