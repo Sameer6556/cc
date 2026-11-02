@@ -1,0 +1,16 @@
+.venv-train/bin/python training/train.py --config training/config.yaml --version v2 
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 1603.99it/s]
+{"event": "start", "version": "v2", "records": 1500, "truncated": 0, "first_id": "C0001", "last_id": "C1627", "epochs": 11, "steps": 1034, "base_model": "EleutherAI/pythia-70m", "revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42", "threads": 4}
+{"event": "epoch", "epoch": 1, "loss": 0.527406, "elapsed_s": 184.9}
+{"event": "epoch", "epoch": 2, "loss": 0.425568, "elapsed_s": 369.0}
+{"event": "epoch", "epoch": 3, "loss": 0.171719, "elapsed_s": 553.6}
+{"event": "epoch", "epoch": 4, "loss": 0.1131, "elapsed_s": 738.1}
+{"event": "epoch", "epoch": 5, "loss": 0.075391, "elapsed_s": 922.1}
+{"event": "epoch", "epoch": 6, "loss": 0.055008, "elapsed_s": 1106.6}
+{"event": "epoch", "epoch": 7, "loss": 0.035688, "elapsed_s": 1290.5}
+{"event": "epoch", "epoch": 8, "loss": 0.022479, "elapsed_s": 1475.0}
+{"event": "epoch", "epoch": 9, "loss": 0.0172, "elapsed_s": 1661.8}
+{"event": "epoch", "epoch": 10, "loss": 0.005323, "elapsed_s": 1849.1}
+{"event": "epoch", "epoch": 11, "loss": 0.001605, "elapsed_s": 2035.8}
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00, 13.88it/s]
+{"event": "saved", "dir": "/home/runner/work/cc/cc/artifacts/models/v2", "loss_csv": "/home/runner/work/cc/cc/training/loss_v2.csv", "train_seconds": 2035.9}

@@ -1,0 +1,18 @@
+bucket datasets
+  2026-11-02 17:31:25        197541  s3://datasets/commands_pool.jsonl
+  2026-11-02 17:31:25          6423  s3://datasets/eval/validation_texts.jsonl
+bucket models
+  2026-11-02 18:39:27           781  s3://models/v1/config.json
+  2026-11-02 18:39:27           132  s3://models/v1/generation_config.json
+  2026-11-02 18:39:30     281715176  s3://models/v1/model.safetensors
+  2026-11-02 18:39:30           499  s3://models/v1/model.sha256
+  2026-11-02 18:39:30       3564298  s3://models/v1/tokenizer.json
+  2026-11-02 18:39:30           378  s3://models/v1/tokenizer_config.json
+  2026-11-02 18:39:30          1184  s3://models/v1/version.json
+  2026-11-02 18:39:31           781  s3://models/v2/config.json
+  2026-11-02 18:39:31           132  s3://models/v2/generation_config.json
+  2026-11-02 18:39:34     281715176  s3://models/v2/model.safetensors
+  2026-11-02 18:39:34           499  s3://models/v2/model.sha256
+  2026-11-02 18:39:34       3564298  s3://models/v2/tokenizer.json
+  2026-11-02 18:39:34           378  s3://models/v2/tokenizer_config.json
+  2026-11-02 18:39:34          1195  s3://models/v2/version.json

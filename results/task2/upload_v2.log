@@ -1,0 +1,9 @@
+model.sha256 covers 6 files: ['config.json', 'generation_config.json', 'model.safetensors', 'tokenizer.json', 'tokenizer_config.json', 'version.json']
+  s3://models/v2/config.json  (781 bytes)
+  s3://models/v2/generation_config.json  (132 bytes)
+  s3://models/v2/model.safetensors  (281715176 bytes)
+  s3://models/v2/model.sha256  (499 bytes)
+  s3://models/v2/tokenizer.json  (3564298 bytes)
+  s3://models/v2/tokenizer_config.json  (378 bytes)
+  s3://models/v2/version.json  (1195 bytes)
+copied checksums to models/v2/model.sha256

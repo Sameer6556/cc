@@ -1,0 +1,1 @@
+{"assets":[{"name":"config.json","size":781},{"name":"generation_config.json","size":132},{"name":"model.safetensors","size":281715176},{"name":"model.sha256","size":499},{"name":"tokenizer.json","size":3564298},{"name":"tokenizer_config.json","size":378},{"name":"version.json","size":1184}],"tag":"model-v1","url":"https://github.com/Sameer6556/cc/releases/tag/model-v1"}
