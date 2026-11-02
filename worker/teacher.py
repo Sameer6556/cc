@@ -34,7 +34,7 @@ def options(num_predict, num_ctx):
 
 
 def generate(base_url, prompt, model=TEACHER_MODEL, num_predict=128, num_ctx=2048,
-             timeout=600, retries=8):
+             timeout=600, retries=30):
     """Send one prompt to Ollama's /api/generate. Return (reply_text, metadata)."""
     body = json.dumps({
         'model': model,

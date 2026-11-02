@@ -28,7 +28,8 @@ fi
 kubectl -n pipeline delete job teacher-label --ignore-not-found --wait=true
 kubectl apply -f k8s/pipeline/label-job.yaml
 WORKERS=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.spec.parallelism}')
-log "started the labelling Job ($WORKERS workers in parallel)"
+SHARDS=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.spec.completions}')
+log "started the labelling Job ($SHARDS shards, $WORKERS workers in parallel)"
 for i in $(seq 1 60); do
   running=$(kubectl -n pipeline get pods -l job-name=teacher-label --field-selector=status.phase=Running -o name | wc -l)
   [ "$running" -ge "$WORKERS" ] && break
@@ -48,9 +49,10 @@ start=$(date +%s)
 while true; do
   done_=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.status.succeeded}')
   failed=$(kubectl -n pipeline get job teacher-label -o jsonpath='{.status.failed}')
-  log "job teacher-label: succeeded=${done_:-0}/$WORKERS failed=${failed:-0}; $(kubectl -n pipeline logs -l job-name=teacher-label --tail=1 --prefix 2>/dev/null | tr '\n' ' ' | cut -c1-600)"
-  [ "${done_:-0}" -ge "$WORKERS" ] && break
+  log "job teacher-label: succeeded=${done_:-0}/$SHARDS failed=${failed:-0}; $(kubectl -n pipeline logs -l job-name=teacher-label --tail=1 --prefix 2>/dev/null | tr '\n' ' ' | cut -c1-600)"
+  [ "${done_:-0}" -ge "$SHARDS" ] && break
   if kubectl -n pipeline get job teacher-label -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}' | grep -q True; then
+    kubectl -n pipeline describe pod -l app=ollama > "$OUT/ollama_describe.txt" 2>&1 || true
     log "labelling job failed"; exit 1
   fi
   [ $(( $(date +%s) - start )) -gt "$LABEL_TIMEOUT" ] && { log "timeout"; exit 1; }
@@ -62,6 +64,7 @@ for p in $(kubectl -n pipeline get pods -l job-name=teacher-label -o name); do
 done
 kubectl -n pipeline get job teacher-label -o wide > "$OUT/label_job_status.txt"
 kubectl -n pipeline describe job teacher-label >> "$OUT/label_job_status.txt"
+kubectl -n pipeline describe pod -l app=ollama > "$OUT/ollama_describe.txt" 2>&1 || true
 log "labelling finished"
 
 log "cleaning (clean.py in a Job)"
