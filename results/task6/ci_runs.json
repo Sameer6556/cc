@@ -2,11 +2,45 @@
   "failing_gate": "https://github.com/Sameer6556/cc/actions/runs/41422191466",
   "failing_gate_detail": {
     "trigger": "workflow_dispatch, model=untrained (EleutherAI/pythia-70m with the same prompt and decoding)",
-    "stages": {"1. lint + secret scan": "success", "2. unit tests": "success",
-               "3. model evaluation": "success", "4. quality gate": "failure"},
+    "stages": {
+      "1. lint + secret scan": "success",
+      "2. unit tests": "success",
+      "3. model evaluation": "success",
+      "4. quality gate": "failure"
+    },
     "gate_output": "QUALITY GATE FAILED: json_validity 0.0 < 95.0",
-    "score": {"json_validity": 0.0, "intent_accuracy": 0.0, "date_accuracy": 0.0, "time_accuracy": 0.0,
-              "place_accuracy": 0.0, "full_frame": 0.0, "examples": 100}
+    "score": {
+      "json_validity": 0.0,
+      "intent_accuracy": 0.0,
+      "date_accuracy": 0.0,
+      "time_accuracy": 0.0,
+      "place_accuracy": 0.0,
+      "full_frame": 0.0,
+      "examples": 100
+    }
   },
-  "passing": null
+  "passing": "https://github.com/Sameer6556/cc/actions/runs/41505313666",
+  "passing_detail": {
+    "trigger": "workflow_dispatch, model=release, release_tag=model-v1 (weights downloaded from the GitHub Release and checked against model.sha256)",
+    "commit": "22eaabc26f18364d292621248a3fbd33399c954f",
+    "stages": {
+      "1. lint + secret scan": "success",
+      "2. unit tests": "success",
+      "3. model evaluation (release)": "success",
+      "4. quality gate (json_validity >= 95)": "success"
+    },
+    "gate_command": "python3 tools/score.py results/ci/predictions.jsonl data/validation.jsonl --min-validity 95",
+    "gate_output": "exit 0 (no QUALITY GATE FAILED line)",
+    "prediction_time": "100 predictions in 43.8s on the GitHub runner",
+    "score": {
+      "json_validity": 100.0,
+      "intent_accuracy": 88.0,
+      "date_accuracy": 83.0,
+      "time_accuracy": 84.0,
+      "place_accuracy": 94.0,
+      "full_frame": 56.0,
+      "examples": 100,
+      "missing_predictions": 0
+    }
+  }
 }
