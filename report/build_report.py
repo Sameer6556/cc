@@ -139,13 +139,17 @@ def task1_data():
     reproduce = text('results', 'task1', 'clean_reproduce.txt') or ''
     sha = (text('datasets', 'v1', 'train.sha256') or '').split()
     timeline = text('results', 'task1', 'label_timeline.log') or ''
-    stamps = re.findall(r'^\[(\S+)\] (starting the labelling Job|labelling finished)', timeline, re.M)
-    duration_h = None
-    if len(stamps) >= 2:
-        from datetime import datetime
-        t0 = datetime.strptime(stamps[0][0], '%Y-%m-%dT%H:%M:%SZ')
-        t1 = datetime.strptime(stamps[-1][0], '%Y-%m-%dT%H:%M:%SZ')
-        duration_h = (t1 - t0).total_seconds() / 3600
+    # every attempt: from "started the labelling Job" to "labelling finished" or "labelling job failed"
+    from datetime import datetime
+    attempts, start = [], None
+    for ts_, what in re.findall(r'^\[(\S+)\] (start\w* the labelling Job|labelling finished|labelling job failed)', timeline, re.M):
+        t = datetime.strptime(ts_, '%Y-%m-%dT%H:%M:%SZ')
+        if what.startswith('start'):
+            start = t
+        elif start is not None:
+            attempts.append(((t - start).total_seconds() / 3600, what == 'labelling finished'))
+            start = None
+    duration_h = sum(h for h, _ in attempts) if attempts else None
     workers = {}
     import glob
     for f in sorted(glob.glob(path('results', 'task1', 'worker-shard-*.log'))):
@@ -161,7 +165,7 @@ def task1_data():
         'counts': counts, 'per_shard': stats.get('per_shard'), 'canonical': stats.get('raw_already_canonical'),
         'coverage_ok': 'COVERAGE OK' in coverage if coverage else None,
         'reproduced': ('MATCH' in reproduce) if reproduce else None,
-        'sha256': sha[0] if sha else None, 'duration_h': duration_h, 'workers': workers,
+        'sha256': sha[0] if sha else None, 'duration_h': duration_h, 'attempts': attempts, 'workers': workers,
     }
 
 
@@ -313,7 +317,14 @@ shards are disjoint and together cover every line without any coordination, lock
 writes only its own object <code>datasets/teacher/shard-k.jsonl</code>, so there are no write conflicts. Round-robin
 (rather than contiguous blocks) keeps the shards balanced even if command length drifts through the file. A worker
 uploads its partial object every 25 replies and, when restarted, skips the ids already present, so a Pod failure
-costs at most 25 teacher calls. Ollama decodes the two running workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>). <span class="tag m">M</span> A first attempt with 4 concurrent workers was no faster than a single stream (about 25 s per command per worker, 6.3 s overall, against 5.9 s for one stream), and its HTTP liveness probe (1 s timeout) restarted the busy Ollama server 23 times until the Job gave up; the 900 replies saved by then were reused (the run was resumed with <code>RESUME=1</code>), the probes became TCP checks and the concurrency was set to 2 (results/task1/label_timeline.log, pods_all_namespaces.txt from commit 772487b).
+costs at most 25 teacher calls. Ollama decodes the two running workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>).
+<span class="tag m">M</span> The first attempt ran all 4 workers at once: its HTTP liveness probe (1 s timeout) failed while every core was
+busy generating, Kubernetes restarted Ollama 23 times and the Job gave up after 900 saved replies (pods_all_namespaces.txt in
+commit 772487b). The probes became TCP checks, concurrency was set to 2 and the run was resumed (<code>RESUME=1</code>), reusing the
+900 replies. <b>Finding:</b> on this runner the teacher is compute-bound, so parallel workers did not add throughput: two
+concurrent workers needed 13.5 s per command each (6.8 s overall), four needed about 25 s each (6.3 s overall), and one stream
+6.2 s (teacher_eval.log). The workers bought robustness (independent shards, resumable checkpoints); more speed would need
+more teacher replicas on more machines.
 The trade-off of a static split is that a slow worker cannot hand work to a fast one.</p>
 <div class="two"><div>
 <table><tr><th>clean.py outcome (each record counted once, first rule that applies)</th><th class="n">records</th></tr>
@@ -328,13 +339,14 @@ The trade-off of a static split is that a slow worker cannot hand work to a fast
 </div><div>
 <table><tr><th>worker</th><th class="n">replies</th><th class="n">wall time</th><th class="n">s / command</th><th class="n">reply tokens</th></tr>
 {shard_rows}
-<caption><span class="tag m">M</span> results/task1/worker-shard-*.log (two Pods at a time: workers_running.txt).</caption></table>
+<caption><span class="tag m">M</span> resumed run, 525 new replies per shard (225 were reused); results/task1/worker-shard-*.log. Two Pods at a time: workers_running.txt.</caption></table>
 <p class="small">Coverage (every id in exactly one shard, in the shard its line number dictates):
 <b>{v({True: "no gaps, no repeats", False: "FAILED"}.get(t1["coverage_ok"]))}</b> (coverage.txt).
 Re-running <code>clean.py</code> outside the cluster reproduces <code>train.sha256</code>:
 <b>{v({True: "match", False: "MISMATCH"}.get(t1["reproduced"]))}</b> (clean_reproduce.txt).
 SHA-256 of <code>datasets/v1/train.jsonl</code>: <code>{v(t1["sha256"])}</code>.
-Labelling wall time: <b>{v(t1["duration_h"], "{:.2f}", " h")}</b>.</p>
+Labelling wall time: <b>{v(t1["duration_h"], "{:.1f}", " h")}</b> over {v(len(t1["attempts"]) if t1["attempts"] else None)} attempts
+({', '.join(f"{h:.1f} h {'ok' if ok else 'failed'}" for h, ok in t1["attempts"]) if t1["attempts"] else PENDING}).</p>
 </div></div>
 <p><b>Cleaning decisions</b> <span class="tag a">A</span>. A reply is parsed after trimming surrounding whitespace (as
 <code>score.py</code> does); a repeated key counts as (b); NaN is invalid JSON; rule (d) compares whole words, case-
