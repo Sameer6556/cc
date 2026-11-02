@@ -1,0 +1,16 @@
+{"id": "X01", "direction": "inbound", "protocol": "tcp", "port": 80, "address": "203.0.113.7", "expected": "allow"}
+{"id": "X02", "direction": "inbound", "protocol": "tcp", "port": 80, "address": "198.51.100.200", "expected": "deny"}
+{"id": "X03", "direction": "inbound", "protocol": "udp", "port": 443, "address": "203.0.113.7", "expected": "deny"}
+{"id": "X04", "direction": "inbound", "protocol": "tcp", "port": 22, "address": "10.20.5.130", "expected": "allow"}
+{"id": "X05", "direction": "inbound", "protocol": "tcp", "port": 22, "address": "10.20.5.160", "expected": "deny"}
+{"id": "X06", "direction": "inbound", "protocol": "tcp", "port": 22, "address": "198.51.100.1", "expected": "deny"}
+{"id": "X07", "direction": "inbound", "protocol": "tcp", "port": 50123, "address": "10.20.2.17", "expected": "allow"}
+{"id": "X08", "direction": "inbound", "protocol": "tcp", "port": 50123, "address": "203.0.113.7", "expected": "deny"}
+{"id": "X09", "direction": "inbound", "protocol": "tcp", "port": 8000, "address": "10.20.4.9", "expected": "deny"}
+{"id": "X10", "direction": "inbound", "protocol": "tcp", "port": 1023, "address": "10.20.1.1", "expected": "deny"}
+{"id": "X11", "direction": "outbound", "protocol": "tcp", "port": 8000, "address": "10.20.3.254", "expected": "allow"}
+{"id": "X12", "direction": "outbound", "protocol": "tcp", "port": 443, "address": "203.0.113.7", "expected": "deny"}
+{"id": "X13", "direction": "outbound", "protocol": "udp", "port": 53, "address": "8.8.8.8", "expected": "deny"}
+{"id": "X14", "direction": "outbound", "protocol": "tcp", "port": 1024, "address": "198.51.100.9", "expected": "allow"}
+{"id": "X15", "direction": "outbound", "protocol": "tcp", "port": 80, "address": "10.20.1.1", "expected": "deny"}
+{"id": "X16", "direction": "inbound", "protocol": "tcp", "port": 443, "address": "10.20.0.1", "expected": "allow"}

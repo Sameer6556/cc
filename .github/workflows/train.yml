@@ -1,0 +1,70 @@
+# Task 2 on a GitHub-hosted runner: train the student v1 and v2 with `make train`, store both in the
+# object store (models/v1, models/v2), evaluate teacher-vs-untrained-vs-student on validation.jsonl,
+# and publish each version as a GitHub Release (model-v1, model-v2) whose checksums match model.sha256.
+name: train
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: train-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tools
+        run: scripts/ci/install-tools.sh
+      - name: Cluster and object storage (the models are stored there)
+        run: make venv cluster secrets storage seed-data
+      - name: Training environment
+        run: make venv-train
+      - name: make train SUBSET=50 (smoke test of the command the marker runs)
+        run: |
+          mkdir -p results/task2
+          make train SUBSET=50 2>&1 | tee results/task2/train_subset50.log
+          mv training/loss_subset50.csv results/task2/loss_subset50.csv
+      - name: make train (v1)
+        run: make train 2>&1 | tee results/task2/train_v1.log
+      - name: make train MODEL_VERSION=v2
+        run: make train MODEL_VERSION=v2 2>&1 | tee results/task2/train_v2.log
+      - name: Store v1 and v2 in object storage (bucket models)
+        run: |
+          .venv/bin/python scripts/s3tool.py put-model v1 artifacts/models/v1 | tee results/task2/upload_v1.log
+          .venv/bin/python scripts/s3tool.py put-model v2 artifacts/models/v2 | tee results/task2/upload_v2.log
+          .venv/bin/python scripts/s3tool.py ls | tee results/task2/s3_listing.txt
+      - name: Evaluate the untrained Pythia-70M and the students on validation.jsonl
+        run: |
+          make eval-untrained 2>&1 | tee results/task2/eval_untrained.log
+          make eval 2>&1 | tee results/task2/eval_v1.log
+          make eval MODEL_VERSION=v2 2>&1 | tee results/task2/eval_v2.log
+          cp results/eval/* results/task2/
+      - name: Publish GitHub Releases model-v1 and model-v2
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for v in v1 v2; do
+            notes="Student model $v: EleutherAI/pythia-70m fine-tuned on the first 1,500 cleaned teacher replies (phi3.5).
+          Assets: model weights (safetensors), config, tokenizer, version.json (version information) and model.sha256.
+          Verify with: sha256sum -c model.sha256"
+            if gh release view "model-$v" >/dev/null 2>&1; then
+              gh release upload "model-$v" artifacts/models/$v/* --clobber
+            else
+              gh release create "model-$v" artifacts/models/$v/* --title "Student model $v" --notes "$notes" --target "$GITHUB_SHA"
+            fi
+            gh release view "model-$v" --json tagName,url,assets --jq '{tag: .tagName, url: .url, assets: [.assets[] | {name, size}]}' \
+              | tee results/task2/release_$v.json
+          done
+          (cd artifacts/models/v1 && sha256sum -c model.sha256) | tee results/task2/release_v1_sha256_check.txt
+      - name: Commit evidence
+        if: always()
+        run: scripts/ci/commit-results.sh "Task 2: training, evaluation and release evidence" training models results

@@ -1,0 +1,7 @@
+line-length = 120
+target-version = "py312"
+extend-exclude = ["tools/"]   # the provided kit files are kept exactly as distributed
+
+[lint]
+select = ["E", "F", "W", "B", "I"]
+ignore = ["I001"]

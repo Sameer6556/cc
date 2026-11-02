@@ -1,0 +1,37 @@
+# Student training configuration (Task 2). `make train` reads only this file.
+# The six required items are at the top: seed, learning rate, batch size, epochs,
+# maximum sequence length and library versions.
+
+seed: 42
+learning_rate: 0.0003
+batch_size: 16
+epochs: 10
+max_seq_len: 128
+libraries:            # checked against the installed packages before training starts
+  python: "3.12"
+  torch: "2.14.1"
+  transformers: "5.19.0"
+  tokenizers: "0.23.3"
+  safetensors: "0.8.0"
+
+# Model and data
+base_model: EleutherAI/pythia-70m
+base_model_revision: main        # replaced by the exact commit hash once resolved (see version.json)
+train_file: datasets/v1/train.jsonl
+max_train_records: 1500          # the first 1,500 records of the cleaned dataset, never more
+num_threads: 4                   # torch CPU threads
+
+# Optimiser details
+weight_decay: 0.0
+warmup_ratio: 0.05               # linear warm-up, then linear decay to zero
+grad_clip: 1.0
+
+# Model versions. v1 uses the values above; v2 overrides only what is listed.
+versions:
+  v1:
+    output_dir: artifacts/models/v1
+    loss_csv: training/loss.csv
+  v2:
+    epochs: 11                   # one more epoch than v1, everything else identical
+    output_dir: artifacts/models/v2
+    loss_csv: training/loss_v2.csv

@@ -1,0 +1,54 @@
+# Run the teacher on the 100 validation commands with the SAME prompt, model and settings as the
+# labelling run (Task 2, step 6). Only ids and texts are uploaded; the gold labels stay on the host.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: teacher-eval
+  namespace: pipeline
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: teacher-worker
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: worker
+          image: teacher-worker:0.1.0
+          imagePullPolicy: IfNotPresent
+          command: ["python", "worker.py"]
+          env:
+            - name: SHARD_INDEX
+              value: "0"
+            - name: SHARD_COUNT
+              value: "1"
+            - name: INPUT_URI
+              value: s3://datasets/eval/validation_texts.jsonl
+            - name: OUTPUT_URI
+              value: s3://datasets/eval/teacher_validation_raw.jsonl
+            - name: OLLAMA_URL
+              value: http://ollama.pipeline.svc.cluster.local:11434
+            - name: S3_ENDPOINT
+              value: http://seaweedfs-s3.data.svc.cluster.local:8333
+            - name: PROMPT_FILE
+              value: /etc/teacher/teacher_prompt.txt
+          envFrom:
+            - secretRef:
+                name: s3-credentials
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: prompt
+              mountPath: /etc/teacher
+              readOnly: true
+      volumes:
+        - name: prompt
+          configMap:
+            name: teacher-prompt

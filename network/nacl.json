@@ -1,0 +1,16 @@
+{
+  "description": "Stateless NACL for the public subnet 10.20.4.0/24, where the load balancer lives. Rules are evaluated from the lowest number upward; the first match decides; no match means deny.",
+  "inbound": [
+    {"rule": 50,    "protocol": "all",                                   "cidr": "198.51.100.0/24", "action": "deny",  "description": "known abusive range: block everything, even web ports (lowest number so it wins over 100-130)"},
+    {"rule": 100,   "protocol": "tcp", "port_from": 80,   "port_to": 80,    "cidr": "0.0.0.0/0",       "action": "allow", "description": "HTTP from anywhere"},
+    {"rule": 110,   "protocol": "tcp", "port_from": 443,  "port_to": 443,   "cidr": "0.0.0.0/0",       "action": "allow", "description": "HTTPS from anywhere"},
+    {"rule": 120,   "protocol": "tcp", "port_from": 22,   "port_to": 22,    "cidr": "10.20.5.128/27",  "action": "allow", "description": "SSH only from the management subnet"},
+    {"rule": 130,   "protocol": "tcp", "port_from": 1024, "port_to": 65535, "cidr": "10.20.0.0/22",    "action": "allow", "description": "replies from the app subnet (port 8000) to the load balancer's ephemeral ports"},
+    {"rule": 32766, "protocol": "all",                                   "cidr": "0.0.0.0/0",       "action": "deny",  "description": "nothing else (same as the implicit default deny)"}
+  ],
+  "outbound": [
+    {"rule": 100,   "protocol": "tcp", "port_from": 8000, "port_to": 8000,  "cidr": "10.20.0.0/22",    "action": "allow", "description": "load balancer to the inference service on the app subnet"},
+    {"rule": 110,   "protocol": "tcp", "port_from": 1024, "port_to": 65535, "cidr": "0.0.0.0/0",       "action": "allow", "description": "replies to clients anywhere, on their ephemeral ports"},
+    {"rule": 32766, "protocol": "all",                                   "cidr": "0.0.0.0/0",       "action": "deny",  "description": "nothing else (same as the implicit default deny)"}
+  ]
+}

@@ -1,0 +1,38 @@
+# Tasks 3, 4, 6 and 7 on a GitHub-hosted runner, starting from a fresh clone:
+#   make up  ->  container limits test  ->  Kubernetes experiments  ->  standard load test  ->  make down
+name: experiments
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: experiments-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  experiments:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tools
+        run: scripts/ci/install-tools.sh
+      - name: make up (fresh clone -> whole system)
+        run: |
+          mkdir -p results/task6
+          { echo "$ git clone https://github.com/${GITHUB_REPOSITORY}.git && cd cc && make up"; time make up; } 2>&1 | tee results/task6/make_up.log
+      - name: Run the experiments (Tasks 3, 4 and 7)
+        run: bash scripts/experiments/run_all.sh 2>&1 | tee results/task6/experiments_console.log
+      - name: make down
+        if: always()
+        run: |
+          { echo "$ make down"; make down; echo "$ k3d cluster list"; k3d cluster list; } 2>&1 | tee results/task6/make_down.log
+      - name: Commit evidence
+        if: always()
+        run: scripts/ci/commit-results.sh "Tasks 3, 4, 6, 7: deployment experiment evidence" results
