@@ -1,0 +1,10 @@
+shards: {'shard-0.jsonl': 750, 'shard-1.jsonl': 750, 'shard-2.jsonl': 750, 'shard-3.jsonl': 750}
+input records                       3000
+(a) not valid JSON                     5
+(b) keys not exactly the four          2
+(c) intent not one of the eight        7
+(d) slot value not in the command    187
+(e) duplicate command                 46
+kept                                2753
+kept records whose raw reply is already canonical: 2753/2753
+sha256 432f46a3f35aacc0716bb2b239c87aaec6ac94eecf59949ddb4d5be3a249f0b1  train.jsonl -> /tmp/tmp.pQvQzy5jay/train.jsonl

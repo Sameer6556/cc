@@ -1,0 +1,11 @@
+bucket datasets
+  2026-11-02 13:04:27        197541  s3://datasets/commands_pool.jsonl
+  2026-11-02 17:14:52         17258  s3://datasets/eval/teacher_validation_raw.jsonl
+  2026-11-02 13:04:27          6423  s3://datasets/eval/validation_texts.jsonl
+  2026-11-02 15:04:34        130806  s3://datasets/teacher/shard-0.jsonl
+  2026-11-02 15:04:05        130682  s3://datasets/teacher/shard-1.jsonl
+  2026-11-02 17:02:26        130155  s3://datasets/teacher/shard-2.jsonl
+  2026-11-02 17:03:07        129998  s3://datasets/teacher/shard-3.jsonl
+  2026-11-02 17:04:33        758458  s3://datasets/v1/train.jsonl
+  2026-11-02 17:04:33            78  s3://datasets/v1/train.sha256
+bucket models
