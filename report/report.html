@@ -39,7 +39,8 @@ figure { margin: 2pt 0 5pt; break-inside: avoid; }
 figcaption { font-size: 7.2pt; color: var(--ink-2); }
 svg text { font-family: "Inter", "DejaVu Sans", sans-serif; }
 .small { font-size: 7.6pt; color: var(--ink-2); }
-.appendix { break-before: page; }
+/* references and appendices start on their own page, after the (at most 8-page) body */
+.refs { break-before: page; }
 .nowrap { white-space: nowrap; }
 </style></head><body><h1>Knowledge Distillation and Deployment of a Lightweight Command-Parsing Model on a Local Cloud</h1>
 <div class="subtitle">CS3081 Cloud Computing, mini project report</div>
@@ -396,7 +397,7 @@ control plane) and assumes the measured throughput is sustained for the whole ho
 <p><b>Where the time goes.</b> One request alone takes 365 ms (median) on 1 CPU (Task 3). In the standard test the 2 Pods each ran at 989 m or more of their 1,000 m CPU limit while memory stayed at or below 407 Mi of 1,024 Mi, so the service is CPU-bound. With 4 users and 2 Pods, each Pod usually holds two requests and serves them one after the other, so the median latency (770 ms) is about twice the single-request time, and the throughput (4.94 req/s) is close to the ceiling of 2 Pods / 368 ms = 5.4 req/s. Cost follows the same bottleneck: on this rate card the CPU is 89 % of a replica's price, so lowering the memory limit to 768 Mi would save only 2.8 %, while decoding twice as fast (ONNX Runtime, int8) would halve the cost per request.</p>
 <table><tr><th>component or concern</th><th>evidence (a measured number)</th><th>limitation found</th><th>improvement proposed</th></tr><tr><td>Data and storage</td><td>2753 of 3000 teacher replies kept; train.jsonl checksum reproduced</td><td>rule (d) keeps fluent but wrong spans; single SeaweedFS replica</td><td>second teacher pass on rejects; replicated object store</td></tr><tr><td>Model quality</td><td>student full frame 56.0 %, JSON validity 100.0 %</td><td>copies the teacher's slot-boundary errors; 70 M parameters</td><td>logit KD with a same-tokenizer teacher; constrained decoding</td></tr><tr><td>Latency and throughput</td><td>p95 1300 ms, 4.94 req/s</td><td>one request at a time per Pod; greedy decoding on 1 CPU</td><td>request batching; ONNX Runtime / int8</td></tr><tr><td>Resource utilisation</td><td>under load: CPU 989 m or more of 1,000 m, memory at most 407 Mi of 1,024 Mi</td><td>CPU is the bottleneck; the working set uses well under half of the memory limit</td><td>cheaper decoding per request (ONNX Runtime, int8); a 768 Mi memory limit</td></tr><tr><td>Reliability and recovery</td><td>rolling update 0.17 % failed (all invalid v2 outputs, none from the rollout); Pod lost under load: 0.00 % failed; cold start median 11 s</td><td>single node: no machine-level fault tolerance</td><td>multi-node cluster, anti-affinity, PodDisruptionBudget</td></tr><tr><td>Security and cost</td><td>gitleaks: 0 findings; INR 0.444 per 1,000 requests</td><td>S3 over plain HTTP inside the cluster; replicas billed at full limits when idle</td><td>TLS + NetworkPolicies; scale to zero off-peak</td></tr>
 <caption>Review. <span class="tag m">M</span> evidence column; the other columns are my assessment.</caption></table>
-<h2>References</h2>
+<div class="refs"><h2>References</h2>
 <ol class="small">
 <li>Y. Kim, A. M. Rush. Sequence-Level Knowledge Distillation. EMNLP 2016. https://aclanthology.org/D16-1139/</li>
 <li>G. Hinton, O. Vinyals, J. Dean. Distilling the Knowledge in a Neural Network. arXiv:1503.02531, 2015.</li>
@@ -407,7 +408,7 @@ control plane) and assumes the measured throughput is sustained for the whole ho
 <li>Hugging Face Transformers and TRL documentation (causal LM fine-tuning; GKD/distillation trainer).</li>
 <li>k3d and K3s documentation; SeaweedFS (S3 API); Kubernetes docs: Deployments, Services, Ingress, probes, HPA, Secrets, Indexed Jobs.</li>
 <li>Locust; gitleaks; AWS VPC User Guide, Network ACLs; Google SRE Book, Service Level Objectives.</li>
-</ol>
+</ol></div>
 <div class="appendix"><h2>Appendix A. Measured results vs assumptions</h2>
 <p><b>Measured</b> (each number in the body is read at build time by <code>report/build_report.py</code> from these files):
 results/task1 (labelling, cleaning, coverage), datasets/v1/train.sha256, training/loss*.csv, results/teacher_validation.json,

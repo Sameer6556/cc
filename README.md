@@ -2,7 +2,8 @@
 
 CS3081 Cloud Computing mini project. Student: **Sameer Singh**, roll number **230101096**.
 
-- GitHub repository: https://github.com/Sameer6556/cc
+- GitHub repository: https://github.com/Sameer6556/cc (submitted version: tag `final`,
+  https://github.com/Sameer6556/cc/tree/final)
 - Model releases (weights, tokenizer, version information, checksums):
   https://github.com/Sameer6556/cc/releases/tag/model-v1 and https://github.com/Sameer6556/cc/releases/tag/model-v2
 - CI runs: https://github.com/Sameer6556/cc/actions
@@ -46,6 +47,7 @@ and CI.
 | `tools/`, `data/` | the student kit, unmodified |
 | `results/` | every log, score report, Locust output and command output used in the report |
 | `.github/workflows/` | `ci.yml` (lint, tests, evaluation, quality gate, gitleaks) and the experiment workflows |
+| `.gitleaks.toml` | secret-scan rules for CI: the gitleaks defaults plus one documented false positive |
 
 ## Prerequisites
 
