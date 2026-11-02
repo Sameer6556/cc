@@ -147,9 +147,12 @@ def task1_data():
         t1 = datetime.strptime(stamps[-1][0], '%Y-%m-%dT%H:%M:%SZ')
         duration_h = (t1 - t0).total_seconds() / 3600
     workers = {}
-    for i in (0, 1):
-        ev = [e for e in json_events(text('results', 'task1', f'worker-shard-{i}.log')) if e.get('event') == 'finished']
-        prog = [e for e in json_events(text('results', 'task1', f'worker-shard-{i}.log')) if e.get('event') == 'progress']
+    import glob
+    for f in sorted(glob.glob(path('results', 'task1', 'worker-shard-*.log'))):
+        i = int(re.search(r'worker-shard-(\d+)\.log$', f).group(1))
+        events = json_events(open(f, encoding='utf-8').read())
+        ev = [e for e in events if e.get('event') == 'finished']
+        prog = [e for e in events if e.get('event') == 'progress']
         if ev:
             workers[i] = {'written': ev[-1].get('written'), 'seconds': ev[-1].get('seconds'),
                           'mean_s': ev[-1].get('mean_s_per_cmd'),
@@ -290,13 +293,13 @@ intent, the three slot rules, and two conventions of the data (drop "next"; part
 validation set (checked by script), so no hand-made label can leak into the training data.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
 <i>n</i> mod <i>K</i> = <i>k</i>. The workers are one Kubernetes <i>Indexed Job</i> with
-<code>completions = parallelism = 2</code>; each Pod receives its completion index through the downward API as
-<code>SHARD_INDEX</code>, and <code>SHARD_COUNT</code>=2. The assignment is a pure function of the line number, so the
+<code>completions = parallelism = 4</code>; each Pod receives its completion index through the downward API as
+<code>SHARD_INDEX</code>, and <code>SHARD_COUNT</code>=4. The assignment is a pure function of the line number, so the
 shards are disjoint and together cover every line without any coordination, locking or shared state; each worker
 writes only its own object <code>datasets/teacher/shard-k.jsonl</code>, so there are no write conflicts. Round-robin
 (rather than contiguous blocks) keeps the shards balanced even if command length drifts through the file. A worker
 uploads its partial object every 25 replies and, when restarted, skips the ids already present, so a Pod failure
-costs at most 25 teacher calls. Ollama decodes the two workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>).
+costs at most 25 teacher calls. Ollama decodes the four workers' requests together in one batch (<code>OLLAMA_NUM_PARALLEL=4</code>), which raises CPU throughput because one pass over the weights serves four sequences.
 The trade-off of a static split is that a slow worker cannot hand work to a fast one.</p>
 <div class="two"><div>
 <table><tr><th>clean.py outcome (each record counted once, first rule that applies)</th><th class="n">records</th></tr>
@@ -311,7 +314,7 @@ The trade-off of a static split is that a slow worker cannot hand work to a fast
 </div><div>
 <table><tr><th>worker</th><th class="n">replies</th><th class="n">wall time</th><th class="n">s / command</th><th class="n">reply tokens</th></tr>
 {shard_rows}
-<caption><span class="tag m">M</span> results/task1/worker-shard-*.log (both Pods ran concurrently: workers_running.txt).</caption></table>
+<caption><span class="tag m">M</span> results/task1/worker-shard-*.log (all four Pods ran concurrently: workers_running.txt).</caption></table>
 <p class="small">Coverage (every id in exactly one shard, in the shard its line number dictates):
 <b>{v({True: "no gaps, no repeats", False: "FAILED"}.get(t1["coverage_ok"]))}</b> (coverage.txt).
 Re-running <code>clean.py</code> outside the cluster reproduces <code>train.sha256</code>:

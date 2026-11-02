@@ -37,13 +37,13 @@ jobs:
           LABEL_TIMEOUT: "17400"
         run: ./scripts/label.sh
       - name: Save partial shards if the run did not finish
-        if: failure() || cancelled()
+        if: failure()
         run: |
           .venv/bin/python scripts/s3tool.py get s3://datasets/teacher/ datasets/teacher || true
           mkdir -p results/task1
           kubectl -n pipeline logs -l job-name=teacher-label --prefix --tail=50 > results/task1/partial_worker_tail.log 2>&1 || true
       - name: Commit evidence
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           mkdir -p results/task1
           cp /tmp/setup.log results/task1/setup.log 2>/dev/null || true
