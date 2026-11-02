@@ -275,6 +275,15 @@ by the workflows <code>label</code>, <code>train</code> and <code>experiments</c
                          f'<td class="n">{v(wk.get("reply_tokens"), "{:.1f}")}</td></tr>'
                          for i, wk in sorted(t1['workers'].items())) or f'<tr><td colspan="5">{PENDING}</td></tr>'
     total = c.get('input')
+    iters = (js('results', 'task1', 'prompt_iterations.json') or {}).get('iterations', [])
+
+    def _it(i):
+        if len(iters) <= i:
+            return PENDING
+        r = iters[i]
+        return (f"{r['json_validity']:.0f} % valid JSON, {r['full_frame']:.0f} % full frame, "
+                f"{r['seconds_per_command']:.1f} s per command (<a href=\"{esc(r['run'])}\">run</a>)")
+    pi_a, pi_b = _it(0), _it(1)
     w(f'''<h2>Task 1. Object storage and parallel teacher labelling</h2>
 <p><b>Architecture.</b> The cluster is a single k3s node; Traefik is published on host port 8080 and the S3 port of
 SeaweedFS on 127.0.0.1:30333 only. SeaweedFS 4.47 runs as one <code>weed server -s3</code> Pod in namespace
@@ -288,9 +297,14 @@ plus <code>num_predict</code> 128, <code>num_ctx</code> 2048 and the stop sequen
 <code>\nCommand:</code> (a frame is one line, so they only end trailing chatter early; the stored reply is still
 exactly what was generated).</p>
 <p><b>Prompt</b> (<code>prompts/teacher_prompt.txt</code>). It restates the four keys, gives a one-line definition per
-intent, the three slot rules, and two conventions of the data (drop "next"; parts of the day and words such as
-"near me" are not slots), followed by 13 examples I wrote. None of the 13 commands occurs in the pool or the
-validation set (checked by script), so no hand-made label can leak into the training data.</p>
+intent, the three slot rules plus three conventions of the data (drop "next"; parts of the day and vague words such as
+"upcoming" are never dates or times; "near me", time zones and people's names are never places), followed by 18
+examples I wrote and a closing reminder. None of the 18 commands occurs in the pool or the validation set (checked by
+script), so no hand-made label can leak into the training data. Before the full run I compared two prompt versions on
+the 100 validation commands (teacher-dev workflow): the first gave {pi_a}, the second {pi_b}, so the second was used
+<span class="tag m">M</span> (results/task1/prompt_iterations.json). <span class="tag a">A</span> Because the prompt was
+chosen by looking at validation errors, the teacher's validation score is optimistic; this raises, not lowers, the bar
+of "half the teacher's full frame" for the student, whose score on the hidden set is unaffected.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
 <i>n</i> mod <i>K</i> = <i>k</i>. The workers are one Kubernetes <i>Indexed Job</i> with
 <code>completions = parallelism = 4</code>; each Pod receives its completion index through the downward API as
