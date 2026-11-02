@@ -374,6 +374,29 @@ static-split imbalance, and a second teacher pass on rejected commands could rec
     ratio = (ff_s / ff_t * 100) if (ff_t and ff_s is not None) else None
     det = text('results', 'task2', 'determinism_check.txt')
     determinism = None if det is None else ('IDENTICAL' in det)
+    ea = text('results', 'task2', 'error_analysis.txt') or ''
+    m = re.search(r'student_v1: identical to the teacher reply on (\d+)/(\d+); full frame right with teacher (\d+), '
+                  r'right where teacher was wrong (\d+); wrong like the teacher \(inherited\) (\d+); wrong in its own way (\d+); '
+                  r'replies with a slot value not found in the command (\d+)', ea)
+    v1s, v2s, ut = t2['v1'] or {}, t2['v2'] or {}, t2['untrained'] or {}
+    l1 = t2['loss_v1'][-1][1] if t2['loss_v1'] else None
+    l2 = t2['loss_v2'][-1][1] if t2['loss_v2'] else None
+    if m and v1s and v2s:
+        same, n, both, sbetter, inh, own, hal = (int(x) for x in m.groups())
+        what_changed = (
+            f"The untrained Pythia-70M scores {ut.get('full_frame', 0):.0f} on every metric: after <code>JSON:</code> its first "
+            f"token is a line break, so under the service's decoding it returns an empty answer. After distillation, student v1 "
+            f"gives valid JSON for {v1s['json_validity']:.0f} % of the commands and {v1s['full_frame']:.0f} % full frame, "
+            f"{ratio:.0f} % of the teacher's {ff_t:.0f} %. Its reply is identical to the teacher's on {same} of {n} commands. "
+            f"Of its {inh + own} wrong frames, {inh} repeat the teacher's mistake exactly (e.g. \"upcoming\" kept as a date) and "
+            f"{own} are its own; {hal} replies contain a slot value that is not in the command at all (a mis-copied span, e.g. "
+            f"\"dallas de's birthday\" for \"dale's birthday\"), an error the filtered teacher data never contains. It was right "
+            f"on {sbetter} commands where the teacher was wrong. One more epoch (v2) cut the final training loss from {l1:.4f} to "
+            f"{l2:.4f} but did not help on validation ({v2s['full_frame']:.0f} % full frame, {v2s['json_validity']:.0f} % valid "
+            f"JSON, intent {v2s['intent_accuracy']:.0f} % against {v1s['intent_accuracy']:.0f} %): it starts to memorise. "
+            f"v1 is the deployed version (results/task2/error_analysis.txt).")
+    else:
+        what_changed = PENDING
     w(f'''<h2>Task 2. Training the student (sequence-level distillation)</h2>
 <div class="two"><div>
 <table><tr><th>training/config.yaml</th><th>value</th></tr>
@@ -403,10 +426,7 @@ Weights: <code class="small">{v(sha_line)}</code>.</p>
 {metric_row("student v1 (10 epochs)", t2["v1"], True)}
 {metric_row("student v2 (11 epochs)", t2["v2"])}
 <caption><span class="tag m">M</span> score.py reports: results/teacher_validation.json, results/task2/untrained_validation.json, student_v1_validation.json, student_v2_validation.json (raw outputs next to them). Student v1 full frame = {v(ratio, "{:.0f}", " %")} of the teacher's.</caption></table>
-<p><b>What changed.</b> The untrained model does not produce the frame at all; after distillation the student
-emits a schema-valid frame for almost every command, and its errors are concentrated in the slots, where it has to
-copy an exact span. Because the student is trained only on the teacher's replies, the teacher's full-frame accuracy is
-effectively its ceiling, and the teacher's systematic deviations from the SLURP conventions are inherited.</p>
+<p><b>What changed.</b> {what_changed}</p>
 <h3>Sequence-level vs logit-based distillation</h3>
 <p><b>(a) Sequence-level KD</b> (Kim and Rush, 2016), used here, trains the student with ordinary cross-entropy on the
 teacher's <i>generated output sequence</i>: the teacher's (approximate) mode, decoded greedily, is treated as the
