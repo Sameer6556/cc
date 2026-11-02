@@ -170,12 +170,14 @@ plus <code>num_predict</code> 128, <code>num_ctx</code> 2048 and the stop sequen
 Command:</code> (a frame is one line, so they only end trailing chatter early; the stored reply is still
 exactly what was generated).</p>
 <p><b>Prompt</b> (<code>prompts/teacher_prompt.txt</code>). It restates the four keys, gives a one-line definition per
-intent, the three slot rules plus three conventions of the data (drop "next"; parts of the day and vague words such as
-"upcoming" are never dates or times; "near me", time zones and people's names are never places), followed by 18
+intent, the three slot rules of <code>schema.json</code> plus three conventions of the data (drop "next" but keep "this"; parts
+of the day and vague words such as "upcoming" are never dates or times; "near me", time zones and the names of people or
+of the assistant are never places), followed by 18
 examples I wrote and a closing reminder. None of the 18 commands occurs in the pool or the validation set (checked by
 script), so no hand-made label can leak into the training data. Before the full run I compared two prompt versions on
 the 100 validation commands (teacher-dev workflow): the first gave 99 % valid JSON, 55 % full frame, 7.7 s per command (<a href="https://github.com/Sameer6556/cc/actions/runs/41417021229">run</a>), the second 100 % valid JSON, 61 % full frame, 5.9 s per command (<a href="https://github.com/Sameer6556/cc/actions/runs/41419425690">run</a>), so the second was used
-<span class="tag m">M</span> (results/task1/prompt_iterations.json). <span class="tag a">A</span> Because the prompt was
+<span class="tag m">M</span> (results/task1/prompt_iterations.json; the final in-cluster run of the same prompt and settings,
+on another runner, scored 62 % full frame, Task 2). <span class="tag a">A</span> Because the prompt was
 chosen by looking at validation errors, the teacher's validation score is optimistic; this raises, not lowers, the bar
 of "half the teacher's full frame" for the student, whose score on the hidden set is unaffected.</p>
 <p><b>Sharding.</b> Worker <i>k</i> of <i>K</i> owns the commands whose 0-based line number <i>n</i> satisfies
@@ -197,7 +199,7 @@ more teacher replicas on more machines.
 The trade-off of a static split is that a slow worker cannot hand work to a fast one.</p>
 <div class="two"><div>
 <table><tr><th>clean.py outcome (each record counted once, first rule that applies)</th><th class="n">records</th></tr>
-<tr><td>input records (both shards)</td><td class="n">3,000</td></tr>
+<tr><td>input records (all four shards)</td><td class="n">3,000</td></tr>
 <tr><td>(a) reply is not valid JSON</td><td class="n">5</td></tr>
 <tr><td>(b) keys not exactly intent, date, time, place</td><td class="n">2</td></tr>
 <tr><td>(c) intent not one of the eight</td><td class="n">7</td></tr>
@@ -286,13 +288,13 @@ torch uses as many threads as the container's CPU limit (read from the cgroup). 
 installs the CPU-only torch wheel, then every other package from a fully pinned lock with <code>--no-deps</code> and
 <code>pip check</code>; it runs as a non-root user and contains no weights.</p>
 <table><tr><th>check</th><th>result</th><th>evidence (results/task3/)</th></tr>
-<tr><td>image size (limit 2 GB)</td><td><span class="pending">PENDING</span></td><td>image.txt</td></tr>
-<tr><td>model files inside the image</td><td><span class="pending">PENDING</span></td><td>no_weights_in_image.txt</td></tr>
-<tr><td>/readyz 503 while loading, then 200; /healthz 200 throughout</td><td><span class="pending">PENDING</span></td><td>readiness.log, endpoints.txt</td></tr>
-<tr><td>50 sequential requests at <code>--cpus 1 --memory 1g</code></td><td><span class="pending">PENDING</span>, codes <span class="pending">PENDING</span>; median <span class="pending">PENDING</span>, max <span class="pending">PENDING</span></td><td>sequential_50.txt</td></tr>
-<tr><td>peak memory (cgroup <code>memory.peak</code>), OOM-killed</td><td><b><span class="pending">PENDING</span></b> of 1,024 MiB; OOMKilled=<span class="pending">PENDING</span></td><td>memory_peak.txt, docker_stats.log</td></tr>
-<tr><td><code>FAULT_INJECT=1</code></td><td><span class="pending">PENDING</span></td><td>fault_inject.txt</td></tr>
-<caption><span class="tag m">M</span> all rows; non-200 codes in the 50-request run are invalid model outputs, which the service correctly refuses.</caption></table>
+<tr><td>image size (limit 2 GB)</td><td>1.27 GB</td><td>image.txt</td></tr>
+<tr><td>model files inside the image</td><td>none</td><td>no_weights_in_image.txt</td></tr>
+<tr><td>/readyz 503 while loading, then 200; /healthz 200 throughout</td><td>11 samples at 503 before 200</td><td>readiness.log, endpoints.txt</td></tr>
+<tr><td>50 sequential requests at <code>--cpus 1 --memory 1g</code></td><td>50/50 completed, codes {200: 50}; median 365 ms, max 440 ms</td><td>sequential_50.txt</td></tr>
+<tr><td>peak memory, OOM-killed</td><td><b>658 MiB</b> of 1,024 MiB (cgroup <code>memory.peak</code>, includes page cache); highest <code>docker stats</code> sample 381 MiB; OOMKilled=false</td><td>memory_peak.txt, docker_stats.log</td></tr>
+<tr><td><code>FAULT_INJECT=1</code></td><td>HTTP 500 with the exact error body</td><td>fault_inject.txt</td></tr>
+<caption><span class="tag m">M</span> all rows.</caption></table>
 <p><b>Limitations / improvements.</b> torch dominates the image size and start-up time; exporting the model to ONNX
 Runtime would shrink both. One request at a time per Pod caps throughput at one CPU's worth of decoding; batching
 concurrent requests would raise it. Invalid outputs are refused, not repaired; constrained decoding against the JSON
@@ -301,18 +303,18 @@ schema would make every answer valid by construction.</p>
 <p><b>Implementation</b> (<code>k8s/app/parser.yaml</code>). Namespace <code>app</code>: a Deployment starting at
 2 replicas (requests 500m CPU / 768 Mi, limits 1 CPU / 1 Gi; readiness probe <code>/readyz</code> every 2 s,
 liveness <code>/healthz</code> every 10 s with 6 allowed failures; rolling update <code>maxSurge 1,
-maxUnavailable 0</code>; <code>preStop</code> sleep 5 s so Traefik drops a terminating Pod before it stops; graceful
-shutdown 20 s), a ClusterIP Service, a Traefik Ingress for <code>/parse</code> only, and an <code>autoscaling/v2</code>
+maxUnavailable 0</code>; <code>preStop</code> sleep 5 s so Traefik drops a terminating Pod before it stops; uvicorn
+finishes in-flight requests for up to 20 s inside a 30 s termination grace period), a ClusterIP Service, a Traefik Ingress for <code>/parse</code> only, and an <code>autoscaling/v2</code>
 HPA (1 to 2 replicas, 70 % average CPU of the request, scale-down window shortened to 60 s so it can be observed).
 The scripts in <code>scripts/experiments/</code> produce every row below.</p>
 <table><tr><th>experiment</th><th>measured result</th><th>evidence (results/task4/)</th></tr>
-<tr><td>/parse through the Ingress</td><td><span class="pending">PENDING</span></td><td>basics/ingress_curl.txt, resources.txt</td></tr>
-<tr><td>no ready endpoints while the model loads</td><td><span class="pending">PENDING</span> timeline samples (0.5 s apart) with 0 ready endpoints after deleting all Pods</td><td>coldstart/run*_endpoints.log</td></tr>
-<tr><td>HPA under load (4 users)</td><td>replicas <span class="pending">PENDING</span> &rarr; <span class="pending">PENDING</span> &rarr; <span class="pending">PENDING</span>; <span class="pending">PENDING</span> failed of <span class="pending">PENDING</span></td><td>hpa/timeline.log, describe_hpa.txt</td></tr>
-<tr><td>rolling update v1&rarr;v2, then <code>rollout undo</code>, under load</td><td><b><span class="pending">PENDING</span></b> failed (<span class="pending">PENDING</span> of <span class="pending">PENDING</span>); versions served <span class="pending">PENDING</span>; after rollback <span class="pending">PENDING</span> of 5 answers say v1</td><td>rolling/rolling.log, version_timeline.log, after_rollback.txt</td></tr>
-<tr><td>delete one Pod under load</td><td>back to 2 Ready after <span class="pending">PENDING</span>; <b><span class="pending">PENDING</span></b> failed (<span class="pending">PENDING</span> of <span class="pending">PENDING</span>)</td><td>recovery/recovery.log, timeline.log</td></tr>
-<tr><td>cold start: delete all Pods, 3 runs</td><td><span class="pending">PENDING</span>; <b>median <span class="pending">PENDING</span></b> (Pod creation to Ready); logs show the download from <code>s3://models/v1/</code></td><td>coldstart/summary.txt, run*_*.log</td></tr>
-<tr><td>load balancing, exactly 2 Ready replicas</td><td>successful requests per replica: <span class="pending">PENDING</span> (each must be &ge; 30 %)</td><td>loadbalance/loadbalance.log</td></tr>
+<tr><td>/parse through the Ingress</td><td>HTTP 200 with both headers</td><td>basics/ingress_curl.txt, resources.txt</td></tr>
+<tr><td>no ready endpoints while the model loads</td><td>10, 12, 10 timeline samples in the 3 runs (1.0 s apart on average) with 0 ready endpoints after deleting all Pods; the Service sends no traffic to a loading Pod</td><td>coldstart/run*_endpoints.log</td></tr>
+<tr><td>HPA under load (4 users, 4 min)</td><td>replicas 1 &rarr; 2 &rarr; 1; second replica requested 31 s and Ready 37 s after the load started, back to one 73 s after it stopped (60 s window); 0 failed of 1130</td><td>hpa/hpa.log, timeline.log, describe_hpa.txt</td></tr>
+<tr><td>rolling update v1&rarr;v2, then <code>rollout undo</code>, under load</td><td><b>0.17 %</b> failed (2 of 1202): both are HTTP 500, the service's answer to an invalid model output, at 19:10:10 and 19:10:32 UTC, when only the two v2 Pods were serving (rollout complete 19:09:56, undo 19:10:41); v2 gives invalid JSON for 1 of the 100 validation commands that the load test cycles through. No request failed because of the Pod replacement itself; answers per version v1 915, v2 287; after rollback 5 of 5 answers say v1</td><td>rolling/rolling.log, loadtest_failures.csv, timeline.log, version_timeline.log, after_rollback.txt</td></tr>
+<tr><td>delete one Pod under load</td><td>back to 2 Ready after 10.8 s; <b>0.00 %</b> failed (0 of 840)</td><td>recovery/recovery.log, timeline.log</td></tr>
+<tr><td>cold start: delete all Pods, 3 runs</td><td>10 s, 12 s, 11 s; <b>median 11 s</b> (Pod creation to Ready); each Pod downloads 285 MB in 1.6 to 3.6 s from <code>s3://models/v1/</code> and loads it, with one warm-up generation, in 5.6 to 5.8 s</td><td>coldstart/summary.txt, run*_*.log</td></tr>
+<tr><td>load balancing, exactly 2 Ready replicas</td><td>successful requests per replica: 50.2 %, 49.8 % (each must be &ge; 30 %)</td><td>loadbalance/loadbalance.log</td></tr>
 <caption><span class="tag m">M</span> all rows. For the recovery and load-balancing runs the HPA minimum was held at 2 so that two replicas existed; it was set back to 1 afterwards.</caption></table>
 <p><b>Limitations.</b> <span class="tag a">A</span> The cluster is one k3s node in one container on one machine:
 the experiments show recovery from a lost <i>Pod</i>, not from a lost node, disk or machine; there is no fault tolerance
@@ -354,15 +356,15 @@ connections to any high port.</p>
 <code>cd cc</code>, <code>make up</code>): cluster, Secrets, SeaweedFS, buckets and dataset, model Releases downloaded,
 verified and uploaded, image built and imported, app deployed, smoke request. <code>make down</code> deletes the cluster.
 The <code>experiments</code> workflow runs exactly this on a clean runner: <code>make up</code> took
-<span class="pending">PENDING</span> (results/task6/make_up.log) and <code>make down</code> left
-<span class="pending">PENDING</span> (make_down.log).
+3.0 min (results/task6/make_up.log) and <code>make down</code> left
+no clusters (make_down.log).
 Python dependencies are pinned (service image: full lock); the cluster image, SeaweedFS and Ollama tags are pinned.</p>
 <table><tr><th>ci.yml stage (in order)</th><th>what it does</th></tr>
-<tr><td>1. lint + secret scan</td><td><code>ruff check .</code>; gitleaks 8.30.1 over the full Git history (must report nothing)</td></tr>
+<tr><td>1. lint + secret scan</td><td><code>ruff check .</code>; gitleaks 8.30.1 over the full Git history (must report nothing; <code>.gitleaks.toml</code> allowlists one documented false positive, the public CPython signing-key fingerprint in the <code>docker history</code> evidence)</td></tr>
 <tr><td>2. unit tests</td><td>54 pytest tests: clean.py rules, sharding, service API and headers, schema validation, subnets, NACL</td></tr>
 <tr><td>3. model evaluation</td><td>downloads the Release <code>model-v1</code>, checks <code>sha256sum -c model.sha256</code>, predicts validation.jsonl, runs score.py</td></tr>
 <tr><td>4. quality gate</td><td><code>score.py --min-validity 95</code>; fails the pipeline below 95 % JSON validity</td></tr>
-<caption><span class="tag m">M</span> passing run: <span class="pending">PENDING</span>;
+<caption><span class="tag m">M</span> passing run: <a href="https://github.com/Sameer6556/cc/actions/runs/41505313666">https://github.com/Sameer6556/cc/actions/runs/41505313666</a>;
 run with the untrained Pythia-70M failing at the gate: <a href="https://github.com/Sameer6556/cc/actions/runs/41422191466">https://github.com/Sameer6556/cc/actions/runs/41422191466</a>.</caption></table>
 <p>The AI tools used, and how their output was checked, are described in <code>AI_USE.md</code>.
 <b>Limitation:</b> CI evaluates on the 100 validation commands only and cannot reproduce the multi-hour labelling;
@@ -370,28 +372,29 @@ run with the untrained Pythia-70M failing at the gate: <a href="https://github.c
 <h2>Task 7. Performance, cost and review</h2>
 <div class="two"><div>
 <table><tr><th>standard load test (4 users, 2 min, via Ingress)</th><th class="n">value</th></tr>
-<tr><td>requests / failed</td><td class="n"><span class="pending">PENDING</span> / <span class="pending">PENDING</span></td></tr>
-<tr><td>error rate</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
-<tr><td>p50 latency</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
-<tr><td>p95 latency</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
-<tr><td>throughput</td><td class="n"><b><span class="pending">PENDING</span></b></td></tr>
-<tr><td>mean replicas during the run</td><td class="n"><span class="pending">PENDING</span></td></tr>
-<tr><td>cold start, median of 3 (Task 4)</td><td class="n"><span class="pending">PENDING</span></td></tr>
+<tr><td>requests / failed</td><td class="n">588 / 0</td></tr>
+<tr><td>error rate</td><td class="n"><b>0.00 %</b></td></tr>
+<tr><td>p50 latency</td><td class="n"><b>770 ms</b></td></tr>
+<tr><td>p95 latency</td><td class="n"><b>1300 ms</b></td></tr>
+<tr><td>throughput</td><td class="n"><b>4.94 req/s</b></td></tr>
+<tr><td>mean replicas during the run</td><td class="n">2</td></tr>
+<tr><td>cold start, median of 3 (Task 4)</td><td class="n">11 s</td></tr>
 <caption><span class="tag m">M</span> results/loadtest_stats.csv, results/task7/summary.json, timeline.log.</caption></table>
 </div><div>
 <table><tr><th>Pod (kubectl top, every 10 s)</th><th class="n">CPU mean / max</th><th class="n">memory mean / max</th><th class="n">n</th></tr>
-<tr><td colspan="4"><span class="pending">PENDING</span></td></tr>
-<caption><span class="tag m">M</span> results/task7/top_pods.log. metrics-server reports a 15 s window, so the first sample after the load starts still shows idle CPU.</caption></table>
+<tr><td><code>parser-7845cb4bf7-q5snf</code></td><td class="n">989 / 999 m</td><td class="n">401 / 401 Mi</td><td class="n">13</td></tr><tr><td><code>parser-7845cb4bf7-whbt2</code></td><td class="n">999 / 1000 m</td><td class="n">406 / 407 Mi</td><td class="n">13</td></tr>
+<caption><span class="tag m">M</span> results/task7/top_pods.log, one sample every 10 s during the run; the CPU limit is 1,000 m and the memory limit 1,024 Mi.</caption></table>
 <div class="box"><b>Cost per 1,000 requests</b> (data/rate_card.json: INR 3.50 per vCPU-hour, INR 0.45 per GiB-hour; each replica billed for its limits, 1 vCPU and 1 GiB):
-<ol><li><span class="pending">PENDING</span></li></ol></div>
+<ol><li>per replica: 1 vCPU x 3.50 + 1 GiB x 0.45 = 3.9500 INR/hour</li><li>at the measured mean replica count: 2.00 replicas x 3.9500 = 7.9000 INR/hour; 4.942 req/s x 3600 = 17789.7 req/hour; 7.9000 / 17789.7 x 1000 = 0.4441 INR per 1,000 requests</li></ol></div>
 </div></div>
-<p><b>SLO.</b> <i><span class="pending">PENDING</span></i> over the window <i><span class="pending">PENDING</span></i>. Error budget =
-1 % of <span class="pending">PENDING</span> requests = <b><span class="pending">PENDING</span></b> failed requests;
-used: <span class="pending">PENDING</span> failed = <b><span class="pending">PENDING</span></b> of the budget
-(SLO <span class="pending">PENDING</span>).
+<p><b>SLO.</b> <i>99% of /parse requests return HTTP 200 within 30 s</i> over the window <i>one standard load-test run (4 users, 2 minutes)</i>. Error budget =
+1 % of 588 requests = <b>5.88</b> failed requests;
+used: 0 failed = <b>0 %</b> of the budget
+(SLO met).
 <span class="tag a">A</span> The cost counts only the parser replicas at their limits (not SeaweedFS, Traefik or the
 control plane) and assumes the measured throughput is sustained for the whole hour.</p>
-<table><tr><th>component or concern</th><th>evidence (a measured number)</th><th>limitation found</th><th>improvement proposed</th></tr><tr><td>Data and storage</td><td>2753 of 3000 teacher replies kept; train.jsonl checksum reproduced</td><td>rule (d) keeps fluent but wrong spans; single SeaweedFS replica</td><td>second teacher pass on rejects; replicated object store</td></tr><tr><td>Model quality</td><td>student full frame 56.0 %, JSON validity 100.0 %</td><td>copies the teacher's slot-boundary errors; 70 M parameters</td><td>logit KD with a same-tokenizer teacher; constrained decoding</td></tr><tr><td>Latency and throughput</td><td>p95 <span class="pending">PENDING</span>, <span class="pending">PENDING</span></td><td>one request at a time per Pod; greedy decoding on 1 CPU</td><td>request batching; ONNX Runtime / int8</td></tr><tr><td>Resource utilisation</td><td>peak memory <span class="pending">PENDING</span> of 1 GiB at 1 CPU</td><td>CPU saturates while memory is mostly idle</td><td>smaller memory limit (cheaper); more replicas per node</td></tr><tr><td>Reliability and recovery</td><td>rolling update <span class="pending">PENDING</span> failed; cold start median <span class="pending">PENDING</span></td><td>single node: no machine-level fault tolerance</td><td>multi-node cluster, anti-affinity, PodDisruptionBudget</td></tr><tr><td>Security and cost</td><td>gitleaks: 0 findings; INR <span class="pending">PENDING</span> per 1,000 requests</td><td>S3 over plain HTTP inside the cluster; replicas billed at full limits when idle</td><td>TLS + NetworkPolicies; scale to zero off-peak</td></tr>
+<p><b>Where the time goes.</b> One request alone takes 365 ms (median) on 1 CPU (Task 3). In the standard test the 2 Pods each ran at 989 m or more of their 1,000 m CPU limit while memory stayed at or below 407 Mi of 1,024 Mi, so the service is CPU-bound. With 4 users and 2 Pods, each Pod usually holds two requests and serves them one after the other, so the median latency (770 ms) is about twice the single-request time, and the throughput (4.94 req/s) is close to the ceiling of 2 Pods / 368 ms = 5.4 req/s. Cost follows the same bottleneck: on this rate card the CPU is 89 % of a replica's price, so lowering the memory limit to 768 Mi would save only 2.8 %, while decoding twice as fast (ONNX Runtime, int8) would halve the cost per request.</p>
+<table><tr><th>component or concern</th><th>evidence (a measured number)</th><th>limitation found</th><th>improvement proposed</th></tr><tr><td>Data and storage</td><td>2753 of 3000 teacher replies kept; train.jsonl checksum reproduced</td><td>rule (d) keeps fluent but wrong spans; single SeaweedFS replica</td><td>second teacher pass on rejects; replicated object store</td></tr><tr><td>Model quality</td><td>student full frame 56.0 %, JSON validity 100.0 %</td><td>copies the teacher's slot-boundary errors; 70 M parameters</td><td>logit KD with a same-tokenizer teacher; constrained decoding</td></tr><tr><td>Latency and throughput</td><td>p95 1300 ms, 4.94 req/s</td><td>one request at a time per Pod; greedy decoding on 1 CPU</td><td>request batching; ONNX Runtime / int8</td></tr><tr><td>Resource utilisation</td><td>under load: CPU 989 m or more of 1,000 m, memory at most 407 Mi of 1,024 Mi</td><td>CPU is the bottleneck; the working set uses well under half of the memory limit</td><td>cheaper decoding per request (ONNX Runtime, int8); a 768 Mi memory limit</td></tr><tr><td>Reliability and recovery</td><td>rolling update 0.17 % failed (all invalid v2 outputs, none from the rollout); Pod lost under load: 0.00 % failed; cold start median 11 s</td><td>single node: no machine-level fault tolerance</td><td>multi-node cluster, anti-affinity, PodDisruptionBudget</td></tr><tr><td>Security and cost</td><td>gitleaks: 0 findings; INR 0.444 per 1,000 requests</td><td>S3 over plain HTTP inside the cluster; replicas billed at full limits when idle</td><td>TLS + NetworkPolicies; scale to zero off-peak</td></tr>
 <caption>Review. <span class="tag m">M</span> evidence column; the other columns are my assessment.</caption></table>
 <h2>References</h2>
 <ol class="small">

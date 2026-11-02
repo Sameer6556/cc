@@ -191,6 +191,7 @@ def task3_data():
     m = re.search(r'size_bytes=(\d+)', image)
     mem = text('results', 'task3', 'memory_peak.txt') or ''
     peak = re.search(r'cgroup memory peak \(bytes\): (\d+)', mem)
+    ws = re.search(r'highest docker stats sample: ([\d.]+)MiB', mem)
     oom = re.search(r'OOMKilled=(\w+)', mem)
     seq = text('results', 'task3', 'sequential_50.txt') or ''
     s = re.search(r"status codes: (\{.*?\}); completed (\d+)/50; mean (\d+) ms, median (\d+) ms, max (\d+) ms", seq)
@@ -202,6 +203,7 @@ def task3_data():
     return {
         'size_gb': int(m.group(1)) / 1e9 if m else None,
         'peak_mib': int(peak.group(1)) / 2 ** 20 if peak else None,
+        'ws_mib': float(ws.group(1)) if ws else None,
         'oom': oom.group(1) if oom else None,
         'seq': s.groups() if s else None,
         'fault_ok': ('500' in fault and '{"error":"invalid_model_output"}' in fault) if fault else None,
@@ -221,6 +223,44 @@ def task4_data():
     rec_ms = re.search(r'back to 2 ready, (\d+) ms', recovery_log)
     lb = js('results', 'task4', 'loadbalance', 'loadtest_headers.json')
     ingress = text('results', 'task4', 'basics', 'ingress_curl.txt') or ''
+
+    from datetime import datetime
+
+    def ts(s):
+        s = s.replace('Z', '')
+        return datetime.strptime(s[:26] if '.' in s else s + '.0', '%Y-%m-%dT%H:%M:%S.%f')
+    # HPA reaction: first sample after "load on" whose desired count is 2, first with 2 ready endpoints,
+    # and first sample after "load off" whose desired count is back to 1 (timeline is deploy=ready/desired)
+    hpa_times = None
+    on = re.search(r'\[(\S+)\] load on', hpa_log or '')
+    off = re.search(r'\[(\S+)\] load off', hpa_log or '')
+    rows = [(ts(a), int(b), int(c)) for a, b, c in re.findall(r'^(\S+) deploy=\d*/(\d+) ready_endpoints=(\d+)', tl, re.M)]
+    if on and off and rows:
+        t_on, t_off = ts(on.group(1)), ts(off.group(1))
+        up = next((t for t, d, _ in rows if t >= t_on and d == 2), None)
+        ready2 = next((t for t, _, r in rows if t >= t_on and r == 2), None)
+        down = next((t for t, d, _ in rows if t >= t_off and d == 1), None)
+        if up and ready2 and down:
+            hpa_times = ((up - t_on).total_seconds(), (ready2 - t_on).total_seconds(), (down - t_off).total_seconds())
+    # spacing of the cold-start endpoint samples
+    import glob
+    gaps = []
+    for f in sorted(glob.glob(path('results', 'task4', 'coldstart', 'run*_endpoints.log'))):
+        t = [ts(ln.split()[0]) for ln in open(f, encoding='utf-8') if ln.strip()]
+        gaps += [(b - a).total_seconds() for a, b in zip(t, t[1:], strict=False)]
+    # rolling update: were all HTTP 500s inside the window in which only v2 Pods served (rollout complete -> undo)?
+    roll_log = text('results', 'task4', 'rolling', 'rolling.log') or ''
+    fails = text('results', 'task4', 'rolling', 'loadtest_failures.csv') or ''
+    done = re.search(r'\[(\S+)\] rollout to v2 complete', roll_log)
+    undo = re.search(r'\[(\S+)\] rollback: kubectl rollout undo', roll_log)
+    f500 = list(csv.DictReader(fails.splitlines())) if fails else []
+    in_v2_window = None
+    if done and undo and f500:
+        t0, t1 = ts(done.group(1)), ts(undo.group(1))
+        in_v2_window = all('HTTP 500' in r['Error'] and t0 <= ts(r['First Seen']) and ts(r['Last Seen']) <= t1
+                           for r in f500)
+        in_v2_window = (in_v2_window, done.group(1)[11:19], undo.group(1)[11:19],
+                        sorted({r['First Seen'][11:19] for r in f500} | {r['Last Seen'][11:19] for r in f500}))
     return {
         'cold': cold,
         'hpa_load': last_json_after(hpa_log, 'load off:'),
@@ -232,6 +272,9 @@ def task4_data():
         'recovery_s': int(rec_ms.group(1)) / 1000 if rec_ms else None,
         'lb': lb.get('per_replica') if lb else None,
         'ingress_ok': ('200 OK' in ingress and 'X-Served-By' in ingress) if ingress else None,
+        'hpa_times': hpa_times,
+        'sample_gap_s': (sum(gaps) / len(gaps)) if gaps else None,
+        'roll_500_window': in_v2_window,
     }
 
 
@@ -447,6 +490,9 @@ malformed replies but cannot remove fluent, wrong ones.</p>''')
 
     # ------------------------------------------------------------------ task 3
     seq = t3['seq']
+    seq_note = ''
+    if seq and (seq[1] != '50' or '200: 50' not in seq[0]):
+        seq_note = ' Non-200 codes in the 50-request run are invalid model outputs, which the service correctly refuses.'
     w(f'''<h2>Task 3. The inference service in a container</h2>
 <p><b>Implementation.</b> FastAPI (<code>service/app.py</code>), port 8000. <code>POST /parse</code> runs greedy
 generation, validates the output against <code>schema.json</code> with <code>jsonschema</code> (exactly the four keys,
@@ -466,9 +512,9 @@ installs the CPU-only torch wheel, then every other package from a fully pinned 
 <tr><td>model files inside the image</td><td>{v(None if t3["weights_found"] is None else (len(t3["weights_found"]) or "none"))}</td><td>no_weights_in_image.txt</td></tr>
 <tr><td>/readyz 503 while loading, then 200; /healthz 200 throughout</td><td>{v(t3["readyz_503_samples"], "{} samples at 503 before 200")}</td><td>readiness.log, endpoints.txt</td></tr>
 <tr><td>50 sequential requests at <code>--cpus 1 --memory 1g</code></td><td>{v(seq and seq[1], "{}/50 completed")}, codes {v(seq and seq[0])}; median {v(seq and seq[3], "{} ms")}, max {v(seq and seq[4], "{} ms")}</td><td>sequential_50.txt</td></tr>
-<tr><td>peak memory (cgroup <code>memory.peak</code>), OOM-killed</td><td><b>{v(t3["peak_mib"], "{:.0f}", " MiB")}</b> of 1,024 MiB; OOMKilled={v(t3["oom"])}</td><td>memory_peak.txt, docker_stats.log</td></tr>
+<tr><td>peak memory, OOM-killed</td><td><b>{v(t3["peak_mib"], "{:.0f}", " MiB")}</b> of 1,024 MiB (cgroup <code>memory.peak</code>, includes page cache); highest <code>docker stats</code> sample {v(t3["ws_mib"], "{:.0f}", " MiB")}; OOMKilled={v(t3["oom"])}</td><td>memory_peak.txt, docker_stats.log</td></tr>
 <tr><td><code>FAULT_INJECT=1</code></td><td>{v({True: "HTTP 500 with the exact error body", False: "unexpected"}.get(t3["fault_ok"]))}</td><td>fault_inject.txt</td></tr>
-<caption><span class="tag m">M</span> all rows; non-200 codes in the 50-request run are invalid model outputs, which the service correctly refuses.</caption></table>
+<caption><span class="tag m">M</span> all rows.{seq_note}</caption></table>
 <p><b>Limitations / improvements.</b> torch dominates the image size and start-up time; exporting the model to ONNX
 Runtime would shrink both. One request at a time per Pod caps throughput at one CPU's worth of decoding; batching
 concurrent requests would raise it. Invalid outputs are refused, not repaired; constrained decoding against the JSON
@@ -478,6 +524,13 @@ schema would make every answer valid by construction.</p>''')
     cold = t4['cold'] or {}
     runs = cold.get('runs', [])
     cold_cells = ', '.join(f"{r['cold_start_s']:.0f} s" for r in runs) if runs else PENDING
+    cpods = [p for r in runs for p in r.get('pods', [])]
+    if cpods:
+        cold_dl = (f"{cpods[0]['download_mb']:.0f} MB in {min(p['download_s'] for p in cpods):.1f} to "
+                   f"{max(p['download_s'] for p in cpods):.1f} s")
+        cold_ld = f"{min(p['load_s'] for p in cpods):.1f} to {max(p['load_s'] for p in cpods):.1f} s"
+    else:
+        cold_dl = cold_ld = PENDING
     roll = t4['rolling'] or {}
     rec = t4['recovery'] or {}
     lb = t4['lb']
@@ -485,6 +538,18 @@ schema would make every answer valid by construction.</p>''')
     lb_text = ', '.join(f'{100.0 * n / lb_total:.1f} %' for n in sorted(lb.values(), reverse=True)) if lb else PENDING
     seq0, seqmax, seqend = t4['hpa_seq']
     zero_samples = [r.get('samples_with_zero_ready_endpoints') for r in runs]
+    ht = t4['hpa_times']
+    hpa_when = (f'second replica requested {ht[0]:.0f} s and Ready {ht[1]:.0f} s after the load started, back to one '
+                f'{ht[2]:.0f} s after it stopped (60 s window)') if ht else PENDING
+    rw = t4['roll_500_window']
+    v2_invalid = (t2['v2'] or {}).get('json_validity')
+    if rw and rw[0] and v2_invalid is not None:
+        roll_why = (f': both are HTTP 500, the service\'s answer to an invalid model output, at {" and ".join(rw[3])} UTC, when only '
+                    f'the two v2 Pods were serving (rollout complete {rw[1]}, undo {rw[2]}); v2 gives invalid JSON for '
+                    f'{100 - v2_invalid:.0f} of the 100 validation commands that the load test cycles through. No request failed '
+                    f'because of the Pod replacement itself')
+    else:
+        roll_why = ''
     w(f'''<h2>Task 4. Kubernetes deployment, scaling and reliability</h2>
 <p><b>Implementation</b> (<code>k8s/app/parser.yaml</code>). Namespace <code>app</code>: a Deployment starting at
 2 replicas (requests 500m CPU / 768 Mi, limits 1 CPU / 1 Gi; readiness probe <code>/readyz</code> every 2 s,
@@ -495,11 +560,11 @@ HPA (1 to 2 replicas, 70 % average CPU of the request, scale-down window shorten
 The scripts in <code>scripts/experiments/</code> produce every row below.</p>
 <table><tr><th>experiment</th><th>measured result</th><th>evidence (results/task4/)</th></tr>
 <tr><td>/parse through the Ingress</td><td>{v({True: "HTTP 200 with both headers", False: "failed"}.get(t4["ingress_ok"]))}</td><td>basics/ingress_curl.txt, resources.txt</td></tr>
-<tr><td>no ready endpoints while the model loads</td><td>{v(zero_samples if runs else None)} timeline samples (0.5 s apart) with 0 ready endpoints after deleting all Pods</td><td>coldstart/run*_endpoints.log</td></tr>
-<tr><td>HPA under load (4 users)</td><td>replicas {v(seq0)} &rarr; {v(seqmax)} &rarr; {v(seqend)}; {v((t4["hpa_load"] or {}).get("failures"))} failed of {v((t4["hpa_load"] or {}).get("requests"))}</td><td>hpa/timeline.log, describe_hpa.txt</td></tr>
-<tr><td>rolling update v1&rarr;v2, then <code>rollout undo</code>, under load</td><td><b>{v(roll.get("failure_pct"), "{:.2f}", " %")}</b> failed ({v(roll.get("failures"))} of {v(roll.get("requests"))}); versions served {v((roll.get("headers") or {}).get("per_model_version"))}; after rollback {v(t4["after_v1"])} of 5 answers say v1</td><td>rolling/rolling.log, version_timeline.log, after_rollback.txt</td></tr>
+<tr><td>no ready endpoints while the model loads</td><td>{v(", ".join(str(z) for z in zero_samples) if runs else None)} timeline samples in the 3 runs ({v(t4["sample_gap_s"], "{:.1f}", " s")} apart on average) with 0 ready endpoints after deleting all Pods; the Service sends no traffic to a loading Pod</td><td>coldstart/run*_endpoints.log</td></tr>
+<tr><td>HPA under load (4 users, 4 min)</td><td>replicas {v(seq0)} &rarr; {v(seqmax)} &rarr; {v(seqend)}; {hpa_when}; {v((t4["hpa_load"] or {}).get("failures"))} failed of {v((t4["hpa_load"] or {}).get("requests"))}</td><td>hpa/hpa.log, timeline.log, describe_hpa.txt</td></tr>
+<tr><td>rolling update v1&rarr;v2, then <code>rollout undo</code>, under load</td><td><b>{v(roll.get("failure_pct"), "{:.2f}", " %")}</b> failed ({v(roll.get("failures"))} of {v(roll.get("requests"))}){roll_why}; answers per version {v(", ".join(f"{k} {n}" for k, n in sorted(((roll.get("headers") or {}).get("per_model_version") or {}).items())) or None)}; after rollback {v(t4["after_v1"])} of 5 answers say v1</td><td>rolling/rolling.log, loadtest_failures.csv, timeline.log, version_timeline.log, after_rollback.txt</td></tr>
 <tr><td>delete one Pod under load</td><td>back to 2 Ready after {v(t4["recovery_s"], "{:.1f}", " s")}; <b>{v(rec.get("failure_pct"), "{:.2f}", " %")}</b> failed ({v(rec.get("failures"))} of {v(rec.get("requests"))})</td><td>recovery/recovery.log, timeline.log</td></tr>
-<tr><td>cold start: delete all Pods, 3 runs</td><td>{cold_cells}; <b>median {v(cold.get("median_cold_start_s"), "{:.0f}", " s")}</b> (Pod creation to Ready); logs show the download from <code>s3://models/v1/</code></td><td>coldstart/summary.txt, run*_*.log</td></tr>
+<tr><td>cold start: delete all Pods, 3 runs</td><td>{cold_cells}; <b>median {v(cold.get("median_cold_start_s"), "{:.0f}", " s")}</b> (Pod creation to Ready); each Pod downloads {cold_dl} from <code>s3://models/v1/</code> and loads it, with one warm-up generation, in {cold_ld}</td><td>coldstart/summary.txt, run*_*.log</td></tr>
 <tr><td>load balancing, exactly 2 Ready replicas</td><td>successful requests per replica: {lb_text} (each must be &ge; 30 %)</td><td>loadbalance/loadbalance.log</td></tr>
 <caption><span class="tag m">M</span> all rows. For the recovery and load-balancing runs the HPA minimum was held at 2 so that two replicas existed; it was set back to 1 afterwards.</caption></table>
 <p><b>Limitations.</b> <span class="tag a">A</span> The cluster is one k3s node in one container on one machine:
@@ -556,7 +621,7 @@ The <code>experiments</code> workflow runs exactly this on a clean runner: <code
 {v(("no clusters" if "cc " not in md.split("k3d cluster list", 1)[-1] else "a cluster") if md else None)} (make_down.log).
 Python dependencies are pinned (service image: full lock); the cluster image, SeaweedFS and Ollama tags are pinned.</p>
 <table><tr><th>ci.yml stage (in order)</th><th>what it does</th></tr>
-<tr><td>1. lint + secret scan</td><td><code>ruff check .</code>; gitleaks 8.30.1 over the full Git history (must report nothing)</td></tr>
+<tr><td>1. lint + secret scan</td><td><code>ruff check .</code>; gitleaks 8.30.1 over the full Git history (must report nothing; <code>.gitleaks.toml</code> allowlists one documented false positive, the public CPython signing-key fingerprint in the <code>docker history</code> evidence)</td></tr>
 <tr><td>2. unit tests</td><td>54 pytest tests: clean.py rules, sharding, service API and headers, schema validation, subnets, NACL</td></tr>
 <tr><td>3. model evaluation</td><td>downloads the Release <code>model-v1</code>, checks <code>sha256sum -c model.sha256</code>, predicts validation.jsonl, runs score.py</td></tr>
 <tr><td>4. quality gate</td><td><code>score.py --min-validity 95</code>; fails the pipeline below 95 % JSON validity</td></tr>
@@ -574,7 +639,38 @@ run with the untrained Pythia-70M failing at the gate: {('<a href="' + esc(ci['f
                        f'<td class="n">{d["mem_mi_mean"]} / {d["mem_mi_max"]} Mi</td><td class="n">{d["samples"]}</td></tr>'
                        for p, d in sorted(pods.items())) or f'<tr><td colspan="4">{PENDING}</td></tr>'
     slo = t7.get('slo') or {}
-    steps = ''.join(f'<li>{esc(s)}</li>' for s in cost.get('steps', [])) or f'<li>{PENDING}</li>'
+    labels = {'measured_mean_replicas': 'at the measured mean replica count', 'two_replicas': 'at the maximum of 2 replicas'}
+    seen, items = set(), []
+    for st in cost.get('steps', []):
+        key, _, rest = st.partition(': ')
+        if rest in seen:
+            continue
+        seen.add(rest)
+        items.append(f'<li>{esc(labels.get(key, key))}: {esc(rest)}</li>')
+    steps = ''.join(items) or f'<li>{PENDING}</li>'
+    seq3 = t3['seq']
+    if seq3 and pods and t7.get('p50_ms') and t7.get('throughput_rps'):
+        one_ms, mean_ms = int(seq3[3]), int(seq3[2])
+        n_pods = len(pods)
+        cpu = min(d['cpu_m_mean'] for d in pods.values())
+        mem = max(d['mem_mi_max'] for d in pods.values())
+        bottleneck = (
+            f'One request alone takes {one_ms} ms (median) on 1 CPU (Task 3). In the standard test the {n_pods} Pods each '
+            f'ran at {cpu} m or more of their 1,000 m CPU limit while memory stayed at or below {mem} Mi of 1,024 Mi, so the '
+            f'service is CPU-bound. With 4 users and {n_pods} Pods, each Pod usually holds two requests and serves them one '
+            f'after the other, so the median latency ({t7["p50_ms"]:.0f} ms) is about twice the single-request time, and the '
+            f'throughput ({t7["throughput_rps"]:.2f} req/s) is close to the ceiling of {n_pods} Pods / {mean_ms} ms = '
+            f'{n_pods * 1000 / mean_ms:.1f} req/s. ')
+        rate = js('data', 'rate_card.json')
+        if rate:
+            per = rate['vcpu_hour'] + rate['gib_memory_hour']
+            bottleneck += (
+                f'Cost follows the same bottleneck: on this rate card the CPU is {100 * rate["vcpu_hour"] / per:.0f} % of a '
+                f'replica\'s price, so lowering the memory limit to 768 Mi would save only '
+                f'{100 * 0.25 * rate["gib_memory_hour"] / per:.1f} %, while decoding twice as fast (ONNX Runtime, int8) would '
+                f'halve the cost per request.')
+    else:
+        bottleneck = PENDING
     w(f'''<h2>Task 7. Performance, cost and review</h2>
 <div class="two"><div>
 <table><tr><th>standard load test (4 users, 2 min, via Ingress)</th><th class="n">value</th></tr>
@@ -589,7 +685,7 @@ run with the untrained Pythia-70M failing at the gate: {('<a href="' + esc(ci['f
 </div><div>
 <table><tr><th>Pod (kubectl top, every 10 s)</th><th class="n">CPU mean / max</th><th class="n">memory mean / max</th><th class="n">n</th></tr>
 {pod_rows}
-<caption><span class="tag m">M</span> results/task7/top_pods.log. metrics-server reports a 15 s window, so the first sample after the load starts still shows idle CPU.</caption></table>
+<caption><span class="tag m">M</span> results/task7/top_pods.log, one sample every 10 s during the run; the CPU limit is 1,000 m and the memory limit 1,024 Mi.</caption></table>
 <div class="box"><b>Cost per 1,000 requests</b> (data/rate_card.json: INR 3.50 per vCPU-hour, INR 0.45 per GiB-hour; each replica billed for its limits, 1 vCPU and 1 GiB):
 <ol>{steps}</ol></div>
 </div></div>
@@ -598,7 +694,8 @@ run with the untrained Pythia-70M failing at the gate: {('<a href="' + esc(ci['f
 used: {v(slo.get("failed_requests"))} failed = <b>{v(slo.get("budget_used_pct"), "{:.0f}", " %")}</b> of the budget
 (SLO {v({True: "met", False: "missed"}.get(slo.get("met")))}).
 <span class="tag a">A</span> The cost counts only the parser replicas at their limits (not SeaweedFS, Traefik or the
-control plane) and assumes the measured throughput is sustained for the whole hour.</p>''')
+control plane) and assumes the measured throughput is sustained for the whole hour.</p>
+<p><b>Where the time goes.</b> {bottleneck}</p>''')
     w(review_table(t1, t2, t3, t4, t7))
 
     # ------------------------------------------------------------------ references + appendix
@@ -622,6 +719,7 @@ def review_table(t1, t2, t3, t4, t7):
     c = t1['counts']
     v1 = t2['v1'] or {}
     roll = t4['rolling'] or {}
+    rec_fail = (t4['recovery'] or {}).get('failure_pct')
     cold = (t4['cold'] or {}).get('median_cold_start_s')
     cost = (t7.get('cost') or {}).get('measured_mean_replicas', {}).get('cost_per_1000')
     rows = [
@@ -631,9 +729,12 @@ def review_table(t1, t2, t3, t4, t7):
          'copies the teacher\'s slot-boundary errors; 70 M parameters', 'logit KD with a same-tokenizer teacher; constrained decoding'),
         ('Latency and throughput', f'p95 {v(t7.get("p95_ms"), "{:.0f}", " ms")}, {v(t7.get("throughput_rps"), "{:.2f}", " req/s")}',
          'one request at a time per Pod; greedy decoding on 1 CPU', 'request batching; ONNX Runtime / int8'),
-        ('Resource utilisation', f'peak memory {v(t3["peak_mib"], "{:.0f}", " MiB")} of 1 GiB at 1 CPU',
-         'CPU saturates while memory is mostly idle', 'smaller memory limit (cheaper); more replicas per node'),
-        ('Reliability and recovery', f'rolling update {v(roll.get("failure_pct"), "{:.2f}", " %")} failed; cold start median {v(cold, "{:.0f}", " s")}',
+        ('Resource utilisation', f'under load: CPU {v(min((d["cpu_m_mean"] for d in (t7.get("pods") or {}).values()), default=None))} m or more of 1,000 m, '
+                                 f'memory at most {v(max((d["mem_mi_max"] for d in (t7.get("pods") or {}).values()), default=None))} Mi of 1,024 Mi',
+         'CPU is the bottleneck; the working set uses well under half of the memory limit', 'cheaper decoding per request (ONNX Runtime, int8); a 768 Mi memory limit'),
+        ('Reliability and recovery', f'rolling update {v(roll.get("failure_pct"), "{:.2f}", " %")} failed'
+                                     f'{" (all invalid v2 outputs, none from the rollout)" if (t4["roll_500_window"] or [False])[0] else ""}; '
+                                     f'Pod lost under load: {v(rec_fail, "{:.2f}", " %")} failed; cold start median {v(cold, "{:.0f}", " s")}',
          'single node: no machine-level fault tolerance', 'multi-node cluster, anti-affinity, PodDisruptionBudget'),
         ('Security and cost', f'gitleaks: 0 findings; INR {v(cost, "{:.3f}")} per 1,000 requests',
          'S3 over plain HTTP inside the cluster; replicas billed at full limits when idle', 'TLS + NetworkPolicies; scale to zero off-peak'),
