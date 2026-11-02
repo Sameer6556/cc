@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv-*/
+.pytest_cache/
+.ruff_cache/
+
+# Model weights and training outputs never go into Git (they live in object storage and
+# in the GitHub Release).
+artifacts/
+*.safetensors
+*.bin
+*.pt
+*.gguf
+*.tar.gz
+
+# Generated credentials (created by scripts/secrets.sh, never committed)
+.secrets/
+*.env
+!.env.example
+
+# Local scratch
+*.tmp
+.DS_Store
