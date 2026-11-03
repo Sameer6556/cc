@@ -47,10 +47,10 @@ from the repository.
   the host CPU count. This is documented as a limitation; it works on cgroup v2.
 - The first full labelling run was designed badly: four workers at once, and an HTTP liveness probe on
   Ollama with a 1 s timeout. With every core busy generating, the probe timed out, Kubernetes restarted
-  Ollama 23 times and the Job failed after 900 of 3,000 replies (commit 772487b). The probes became TCP
+  Ollama 23 times and the Job failed after 900 of 3,000 replies (commit d263190). The probes became TCP
   checks, two workers run at a time, and the run was resumed from the 900 saved replies. Measuring showed
   that extra workers did not add throughput anyway (6.2 to 6.8 s per command overall with one, two or
   four), because the teacher is compute-bound.
 - Two workflow files put a colon inside a one-line `run:` value, which is invalid YAML, so GitHub did
   not start them. A cancelled labelling run still committed its partial evidence; those files were
-  deleted in the next commit (6ed0302) and the evidence steps now skip cancelled runs.
+  deleted in the next commit (d2b7245) and the evidence steps now skip cancelled runs.
