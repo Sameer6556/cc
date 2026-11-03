@@ -1,4 +1,5 @@
 {
+  "note": "Commit IDs refer to the current history. On 2026-11-03 the commit messages were edited, which changed every commit ID but no file; the passing run page shows the earlier ID 22eaabc of the same commit.",
   "failing_gate": "https://github.com/Sameer6556/cc/actions/runs/41422191466",
   "failing_gate_detail": {
     "trigger": "workflow_dispatch, model=untrained (EleutherAI/pythia-70m with the same prompt and decoding)",
@@ -22,7 +23,7 @@
   "passing": "https://github.com/Sameer6556/cc/actions/runs/41505313666",
   "passing_detail": {
     "trigger": "workflow_dispatch, model=release, release_tag=model-v1 (weights downloaded from the GitHub Release and checked against model.sha256)",
-    "commit": "22eaabc26f18364d292621248a3fbd33399c954f",
+    "commit": "2117812387153fa0333fc947188302ab8b70ba6c",
     "stages": {
       "1. lint + secret scan": "success",
       "2. unit tests": "success",
