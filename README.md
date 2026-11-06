@@ -86,6 +86,14 @@ curl -i -X POST http://localhost:8080/parse -H 'Content-Type: application/json' 
 Behind a TLS-intercepting proxy, pass its CA to the image builds:
 `make up DOCKER_BUILD_FLAGS="--secret id=extra_ca,src=/path/to/proxy-ca.pem"`.
 
+To build only the service image, run this one command from the repository root of a fresh clone
+(`make image` runs the same build and then imports the image into the cluster). The image holds no
+model weights; the service downloads them from object storage when it starts.
+
+```bash
+docker build -f service/Dockerfile -t parser-service:0.1.0 .
+```
+
 ## Test
 
 ```bash
