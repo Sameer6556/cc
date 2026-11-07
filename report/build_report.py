@@ -365,7 +365,7 @@ uploads its partial object every 25 replies and, when restarted, skips the ids a
 costs at most 25 teacher calls. Ollama decodes the two running workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>).
 <span class="tag m">M</span> The first attempt ran all 4 workers at once: its HTTP liveness probe (1 s timeout) failed while every core was
 busy generating, Kubernetes restarted Ollama 23 times and the Job gave up after 900 saved replies (pods_all_namespaces.txt in
-commit d263190). The probes became TCP checks, concurrency was set to 2 and the run was resumed (<code>RESUME=1</code>), reusing the
+commit 81ad99e). The probes became TCP checks, concurrency was set to 2 and the run was resumed (<code>RESUME=1</code>), reusing the
 900 replies. <b>Finding:</b> on this runner the teacher is compute-bound, so parallel workers did not add throughput: two
 concurrent workers needed 13.5 s per command each (6.8 s overall), four needed about 25 s each (6.3 s overall), and one stream
 6.2 s (teacher_eval.log). The workers bought robustness (independent shards, resumable checkpoints); more speed would need

@@ -1,18 +1,33 @@
 # Use of AI tools
 
+The handout allows AI tools and asks for them to be used "with eyes wide open". This file says which tool was
+used, what it did, what I did, and how its output was checked.
+
 ## Tools used
 
 | Tool | Used for |
 |---|---|
-| **Claude Code** (Anthropic's agentic coding assistant, run as a cloud session on claude.ai) | Reading the handout and the student kit; designing the architecture; writing the worker, `clean.py`, training/evaluation scripts, the FastAPI service, Dockerfiles, Kubernetes manifests, Makefile, CI workflows, unit tests, the subnet plan and NACL; running the experiments; drafting the report and the README. |
+| **Claude Code** (Anthropic's coding agent, run as a cloud session on claude.ai) | Reading the handout and the student kit; proposing and implementing the design; writing the worker, `clean.py`, the training and evaluation scripts, the FastAPI service, the Dockerfiles, the Kubernetes manifests, the Makefile, the CI workflows, the unit tests, the subnet plan and the NACL; starting the GitHub Actions runs that produced the evidence in `results/`; drafting the report, the README and a first draft of the reflection text. |
 
 No other AI tool, model or paid API was used. The teacher model (phi3.5 on Ollama) and the student
 (Pythia-70M) are part of the assignment itself, not assistants.
 
+## My part
+
+- I gave the agent the handout and the student kit and told it to follow every rule in them: free tools only,
+  the fixed teacher settings, training on the CPU, and no model weights or secrets in Git.
+- I connected my GitHub account so that it could push to this repository and start the workflows, and I made
+  the choices it asked me about, such as the cloud session's network access.
+- I asked it to explain what the assignment asks, what each part of the system does, and where and how every
+  experiment ran: on GitHub's 4-core CPU runners, with no GPU. I also asked for a Kaggle notebook, to see how
+  the compute-heavy parts could run on a free GPU instead.
+- The handwritten reflection is based on a draft the agent prepared at my request. I asked for changes to its
+  wording and wrote it out by hand.
+
 ## How the output was checked
 
-AI-generated code was treated as untrusted until it was tested. The checks below are reproducible
-from the repository.
+AI-generated code was treated as untrusted until it was tested. In practice that meant the checks below,
+which anyone can repeat from the repository.
 
 1. **Unit tests** (`make test`, 54 tests): every rejection rule of `clean.py`, the duplicate rule, the order
    independence of the output, the shard partition (no gaps, no repeats), the service's three endpoints, both
@@ -47,10 +62,10 @@ from the repository.
   the host CPU count. This is documented as a limitation; it works on cgroup v2.
 - The first full labelling run was designed badly: four workers at once, and an HTTP liveness probe on
   Ollama with a 1 s timeout. With every core busy generating, the probe timed out, Kubernetes restarted
-  Ollama 23 times and the Job failed after 900 of 3,000 replies (commit d263190). The probes became TCP
+  Ollama 23 times and the Job failed after 900 of 3,000 replies (commit 81ad99e). The probes became TCP
   checks, two workers run at a time, and the run was resumed from the 900 saved replies. Measuring showed
   that extra workers did not add throughput anyway (6.2 to 6.8 s per command overall with one, two or
   four), because the teacher is compute-bound.
 - Two workflow files put a colon inside a one-line `run:` value, which is invalid YAML, so GitHub did
   not start them. A cancelled labelling run still committed its partial evidence; those files were
-  deleted in the next commit (d2b7245) and the evidence steps now skip cancelled runs.
+  deleted in the next commit (ce8a375) and the evidence steps now skip cancelled runs.
