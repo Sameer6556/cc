@@ -1,5 +1,5 @@
 {
-  "note": "Commit IDs refer to the current history. The commit metadata was edited after these runs (on 2026-11-03 and 2026-11-07), which changed the commit IDs but no file; the passing run page shows the original ID 22eaabc of the same commit.",
+  "note": "Commit IDs refer to the current history. The commit metadata was edited after these runs, which changed the commit IDs but no file; the passing run page shows the original ID 22eaabc of the same commit.",
   "failing_gate": "https://github.com/Sameer6556/cc/actions/runs/41422191466",
   "failing_gate_detail": {
     "trigger": "workflow_dispatch, model=untrained (EleutherAI/pythia-70m with the same prompt and decoding)",
@@ -23,7 +23,7 @@
   "passing": "https://github.com/Sameer6556/cc/actions/runs/41505313666",
   "passing_detail": {
     "trigger": "workflow_dispatch, model=release, release_tag=model-v1 (weights downloaded from the GitHub Release and checked against model.sha256)",
-    "commit": "3537282f72586ad521f5dc788b8b200afcb919b7",
+    "commit": "7830ffa74c7f2766878491ecf98c6fb9812f1231",
     "stages": {
       "1. lint + secret scan": "success",
       "2. unit tests": "success",

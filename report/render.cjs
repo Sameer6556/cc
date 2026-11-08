@@ -14,7 +14,7 @@ const path = require('path');
     displayHeaderFooter: true,
     headerTemplate: '<span></span>',
     footerTemplate: '<div style="font-size:7px;color:#7a7974;width:100%;text-align:center;font-family:sans-serif">' +
-      'CS3081 mini project &middot; page <span class="pageNumber"></span> of <span class="totalPages"></span></div>',
+      'page <span class="pageNumber"></span> of <span class="totalPages"></span></div>',
     margin: { top: '13mm', bottom: '14mm', left: '14mm', right: '14mm' },
   });
   await browser.close();

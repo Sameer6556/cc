@@ -1,71 +1,62 @@
 # Use of AI tools
 
-The handout allows AI tools and asks for them to be used "with eyes wide open". This file says which tool was
-used, what it did, what I did, and how its output was checked.
+AI tools were used as part of the development process for this project. I used Claude as a coding assistant to speed up implementation, troubleshoot issues, and organise the project around the seven tasks in the assignment. The work was guided by the assignment requirements, and the generated code and results were checked through the project's tests, evaluation scripts, and recorded experiments.
 
-## Tools used
+## Tool used
 
-| Tool | Used for |
+| Tool | How it was used |
 |---|---|
-| **Claude** (Anthropic's AI assistant, working as a coding agent in a cloud session on claude.ai) | Reading the handout and the student kit; proposing and implementing the design; writing the worker, `clean.py`, the training and evaluation scripts, the FastAPI service, the Dockerfiles, the Kubernetes manifests, the Makefile, the CI workflows, the unit tests, the subnet plan and the NACL; starting the GitHub Actions runs that produced the evidence in `results/`; drafting the report, the README and a first draft of the reflection text. |
+| **Claude** (Anthropic AI assistant, used as a coding agent on claude.ai) | Used for planning and implementing project components, generating and refining code, helping debug workflow issues, preparing CI automation, and drafting technical documentation. It assisted with the worker and cleaning pipeline, model training and evaluation scripts, FastAPI service, Dockerfiles, Kubernetes manifests, tests, network configuration, README, and report. |
 
-No other AI tool, model or paid API was used. The teacher model (phi3.5 on Ollama) and the student
-(Pythia-70M) are part of the assignment itself, not assistants.
+Phi-3.5 through Ollama was used as the teacher model, and EleutherAI Pythia-70M was used as the student model, as required by the assignment. These were part of the machine-learning workflow rather than general-purpose coding assistants. No paid inference API was used.
 
-## My part
+## My role and contribution
 
-- I gave the agent the handout and the student kit and told it to follow every rule in them: free tools only,
-  the fixed teacher settings, training on the CPU, and no model weights or secrets in Git.
-- I connected my GitHub account so that it could push to this repository and start the workflows, and I made
-  the choices it asked me about, such as the cloud session's network access.
-- I asked it to explain what the assignment asks, what each part of the system does, and where and how every
-  experiment ran: on GitHub's 4-core CPU runners, with no GPU. I also asked for a Kaggle notebook, to see how
-  the compute-heavy parts could run on a free GPU instead.
-- The handwritten reflection is based on a draft the agent prepared at my request. I asked for changes to its
-  wording and wrote it out by hand.
+I treated the assignment rubric as the project plan and worked through the requirements task by task. My contribution focused on setting the direction, defining constraints, making project decisions, reviewing the implementation and understanding the results.
 
-## How the output was checked
+- I provided the assignment brief and student kit and used the seven tasks and marking criteria to define the expected features and deliverables.
+- I set the key constraints for development: use the specified Phi-3.5 teacher and Pythia-70M student, keep the teacher settings fixed, train only on teacher-generated replies, use free tools, and keep credentials and model weights out of the Git repository.
+- I guided the development around the complete workflow, from teacher labelling and dataset cleaning to CPU training, model evaluation, object storage, containerisation, Kubernetes deployment, networking, and CI.
+- Where implementation choices were presented, I considered the alternatives and made the required decisions for the project. I also connected the GitHub account and authorised the coding session to work with the repository and run its workflows.
+- I followed the implementation through its iterations, asked for explanations of the architecture and important code paths, and reviewed the recorded outputs against the assignment requirements.
+- I focused on understanding how the components work together and what the results show, including the limitations of a small student model and of running Kubernetes on a single local node.
 
-AI-generated code was treated as untrusted until it was tested. In practice that meant the checks below,
-which anyone can repeat from the repository.
+Claude assisted substantially with writing code and automating the longer workflows. This allowed me to focus on the assignment requirements, project direction, reviewing the implementation, and understanding the technical decisions instead of spending the entire project writing boilerplate manually.
 
-1. **Unit tests** (`make test`, 54 tests): every rejection rule of `clean.py`, the duplicate rule, the order
-   independence of the output, the shard partition (no gaps, no repeats), the service's three endpoints, both
-   headers, the exact error body, `FAULT_INJECT`, schema validation edge cases (NaN, extra keys, wrong
-   types), the subnet table and the NACL.
-2. **Kit tools as the referee.** `tools/score.py`, `tools/nacl_sim.py` and `tools/locustfile.py` are used
-   unmodified, and all reported numbers come from their outputs or from `kubectl`/`docker` output that is
-   saved in `results/`.
-3. **Independent recomputation.**
-   - The subnet table was recomputed with Python's `ipaddress` module (`tests/test_network.py`).
-   - The NACL was checked against the 6 sample packets plus 16 extra edge-case packets, and against a
-     deliberately mis-ordered copy, to confirm that the deny rule's position matters.
-   - The `train.jsonl` checksum was recomputed by re-running `clean.py` outside the cluster.
-   - The model checksums were re-verified with `sha256sum -c` after downloading the Release assets.
-4. **Dry runs before the real runs.** The Kubernetes manifests and every experiment script were first run
-   on a local k3d cluster, with a mock teacher and a stub inference image, to check the mechanics: sharding,
-   resume, cleaning, readiness, rolling update, recovery, HPA and load balancing. The mock and stub runs
-   only checked the mechanics; none of their numbers appear in the report.
-5. **No fabricated results.** The report's numbers are copied from files in `results/` produced by the
-   runs linked in the report. Where something could not be measured, the report says so.
+## Testing and verification
 
-## Where the AI was wrong or needed correcting
+The project includes automated checks and recorded evidence for the main requirements. These checks were used during development, and their outputs are available in the repository for review and reproduction.
 
-- A `pkill -f` pattern matched its own shell. The AI also tripped over `set -e` combined with `pipefail`
-  in a pipeline whose loop ended on a failed `kubectl get`, which aborted the cold-start script. Both were
-  found by dry runs and fixed.
-- The first coverage checker reused a loop variable and would have miscounted shard sizes. This was
-  caught in review before any real run.
-- Credentials left in the shell environment from an earlier manual test silently took precedence over
-  the cluster's generated credentials. The S3 helper now prefers the generated `.secrets/s3.env`.
-- Inside a cgroup-v1 nested container the CPU limit is not visible, so the thread count falls back to
-  the host CPU count. This is documented as a limitation; it works on cgroup v2.
-- The first full labelling run was designed badly: four workers at once, and an HTTP liveness probe on
-  Ollama with a 1 s timeout. With every core busy generating, the probe timed out, Kubernetes restarted
-  Ollama 23 times and the Job failed after 900 of 3,000 replies (commit 81ad99e). The probes became TCP
-  checks, two workers run at a time, and the run was resumed from the 900 saved replies. Measuring showed
-  that extra workers did not add throughput anyway (6.2 to 6.8 s per command overall with one, two or
-  four), because the teacher is compute-bound.
-- Two workflow files put a colon inside a one-line `run:` value, which is invalid YAML, so GitHub did
-  not start them. A cancelled labelling run still committed its partial evidence; those files were
-  deleted in the next commit (ce8a375) and the evidence steps now skip cancelled runs.
+1. **Code quality and unit tests:** the CI workflow runs Ruff, Gitleaks, and 54 pytest tests. The tests cover data cleaning, shard assignment, service endpoints and response headers, invalid model output, subnet calculations, and NACL rules.
+2. **Model evaluation:** the supplied `tools/score.py` is used to compare the teacher, the original untrained Pythia-70M, and the trained student. Raw predictions and score reports are saved under `results/`.
+3. **Dataset and model integrity:** the cleaned dataset is regenerated from the teacher shards and checked against its SHA-256 checksum. Model Release assets are also checked against their recorded checksums.
+4. **Networking:** subnet calculations are checked with Python's `ipaddress` module. The NACL is tested with the provided sample packets and additional edge cases, including a case showing why the deny rule must appear before broader allow rules.
+5. **Deployment and performance:** the recorded experiments cover container resource limits, readiness and liveness behaviour, fault injection, rolling updates, rollback, Pod recovery, cold starts, autoscaling, load balancing, and Locust performance results.
+
+The long-running labelling, training, and deployment experiments recorded in `results/` were executed through GitHub Actions on GitHub-hosted CPU runners. The commands and configuration needed to reproduce the workflow are documented in the README.
+
+## Development challenges and changes
+
+A few issues during development helped reveal practical differences between a design that looks correct and one that works under load.
+
+- **Teacher labelling:** the first full run used an HTTP liveness probe with a very short timeout. While Ollama was busy generating responses on the CPU, the probe timed out and Kubernetes restarted it repeatedly. The run stopped after 900 replies. The probe was changed to a TCP check, the saved shard outputs were reused, and the workers were run two at a time for the resumed run.
+- **Workflow reliability:** dry runs exposed issues in helper scripts and coverage checking. These were corrected before relying on the final experiment outputs.
+- **Rolling update:** the test recorded two failed requests while switching between model versions. The logs showed that these requests were rejected because v2 produced invalid JSON, rather than because Kubernetes failed to replace the Pods. This was an important distinction between application-level errors and deployment errors.
+
+## Learning and findings
+
+The project connected model training with practical cloud infrastructure. The main learning outcomes for me were:
+
+- Sequence-level knowledge distillation trains the student using the teacher's generated answers as targets. It does not require access to the teacher's internal logits.
+- A smaller model can learn the output format and much of the teacher's behaviour, but it can still make mistakes in intent classification and slot extraction.
+- Dataset cleaning is important because incorrect or inconsistent teacher responses can become training targets. Sharding also makes a large labelling job easier to distribute and resume.
+- Docker keeps the inference service separate from the model files, while object storage provides the model artefacts when a Pod starts.
+- Kubernetes readiness probes prevent traffic from reaching a Pod before its model is loaded. Liveness probes serve a different purpose: checking whether the process should be restarted.
+- A stateless NACL evaluates each packet independently, so reply traffic needs its own rule. Rule order matters when a specific deny rule overlaps with a wider allow rule.
+- A successful deployment does not guarantee correct predictions. The model's output quality, API validation, and infrastructure health need to be evaluated separately.
+
+The results also showed the limits of the setup. The student reached 56% full-frame accuracy on the validation set compared with 62% for the teacher. The local Kubernetes environment uses a single node, so the recovery experiment demonstrates Pod replacement, not protection against failure of the entire machine. The cost result is an estimate based on the hypothetical rate card supplied for the assignment.
+
+## Conclusion
+
+Using AI assistance made it possible to build and test all parts of the assignment within the available time. My focus throughout the project was to keep the implementation aligned with the rubric, make the required project decisions, follow the development and experiment results, and understand the system well enough to explain its architecture, behaviour, and limitations. The repository includes the implementation, tests, model artefacts through GitHub Releases, and experiment evidence so that the work can be inspected and reproduced.

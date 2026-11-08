@@ -296,9 +296,9 @@ def build():
 
     # ------------------------------------------------------------------ title
     w(f'''<h1>Knowledge Distillation and Deployment of a Lightweight Command-Parsing Model on a Local Cloud</h1>
-<div class="subtitle">CS3081 Cloud Computing, mini project report</div>
+<div class="subtitle">Cloud Computing Assignment</div>
 <div class="meta"><b>Name</b><span>{esc(STUDENT)}</span><b>Roll number</b><span>{esc(ROLL)}</span>
-<b>Repository</b><span><a href="{REPO}">{REPO}</a> (assessed commit: tag <code>final</code>)</span>
+<b>Repository</b><span><a href="{REPO}">{REPO}</a>; submitted version (tag <code>final</code>): <a href="{REPO}/tree/final">{REPO}/tree/final</a></span>
 <b>Model releases</b><span><a href="{REPO}/releases/tag/model-v1">model-v1</a>, <a href="{REPO}/releases/tag/model-v2">model-v2</a></span></div>''')
 
     # ------------------------------------------------------------------ overview
@@ -365,7 +365,7 @@ uploads its partial object every 25 replies and, when restarted, skips the ids a
 costs at most 25 teacher calls. Ollama decodes the two running workers' requests together (<code>OLLAMA_NUM_PARALLEL=2</code>).
 <span class="tag m">M</span> The first attempt ran all 4 workers at once: its HTTP liveness probe (1 s timeout) failed while every core was
 busy generating, Kubernetes restarted Ollama 23 times and the Job gave up after 900 saved replies (pods_all_namespaces.txt in
-commit 81ad99e). The probes became TCP checks, concurrency was set to 2 and the run was resumed (<code>RESUME=1</code>), reusing the
+commit 2e112ab). The probes became TCP checks, concurrency was set to 2 and the run was resumed (<code>RESUME=1</code>), reusing the
 900 replies. <b>Finding:</b> on this runner the teacher is compute-bound, so parallel workers did not add throughput: two
 concurrent workers needed 13.5 s per command each (6.8 s overall), four needed about 25 s each (6.3 s overall), and one stream
 6.2 s (teacher_eval.log). The workers bought robustness (independent shards, resumable checkpoints); more speed would need
@@ -766,7 +766,7 @@ label is in the prompt); a GitHub-hosted runner (4 vCPU, 16 GiB) stands in for a
 def main():
     body = build()
     css = text('report', 'style.css')
-    doc = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Command Parser Report</title>
+    doc = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Cloud Computing Assignment</title>
 <style>{css}</style></head><body>{body}</body></html>'''
     with open(path('report', 'report.html'), 'w', encoding='utf-8') as f:
         f.write(doc)
